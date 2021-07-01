@@ -1,0 +1,195 @@
+/**************************************************************************************************
+ * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ *                                                                                                *
+ * See the NOTICE file(s) distributed with this work for additional information regarding         *
+ * copyright ownership.                                                                           *
+ *                                                                                                *
+ * This program and the accompanying materials are made available under the terms of the Eclipse  *
+ * Public License 2.0 which is available at http://www.eclipse.org/legal/epl-2.0                  *
+ *                                                                                                *
+ * SPDX-License-Identifier: EPL-2.0                                                               *
+ **************************************************************************************************/
+
+#pragma once
+
+#include <future>
+#include <typeinfo>
+
+/* Keyple Core Util */
+#include "ExecutorService.h"
+#include "LoggerFactory.h"
+
+/* Keyple Core Service */
+#include "AbstractMonitoringJobAdapter.h"
+#include "ObservableLocalReaderAdapter.h"
+
+
+namespace keyple {
+namespace core {
+namespace service {
+
+using namespace keyple::core::util::cpp;
+
+using InternalEvent = ObservableLocalReaderAdapter::InternalEvent;
+
+/**
+ * (package-private)<br>
+ * Abstract class for all states of a {@link ObservableLocalReaderAdapter}.
+ *
+ * @since 2.0
+ */
+class AbstractObservableStateAdapter {
+public:
+    /**
+     * (package-private)<br>
+     * The states that the reader monitoring state machine can have
+     *
+     * @since 2.0
+     */
+    enum class MonitoringState {
+        /**
+         * The reader is idle and waiting for a start signal to enter the card detection mode.
+         *
+         * @since 2.0
+         */
+        WAIT_FOR_START_DETECTION,
+
+        /**
+         * The reader is in card detection mode and is waiting for a card to be presented.
+         *
+         * @since 2.0
+         */
+        WAIT_FOR_CARD_INSERTION,
+
+        /**
+         * The reader waits for the application to finish processing the card.
+         *
+         * @since 2.0
+         */
+        WAIT_FOR_CARD_PROCESSING,
+
+        /**
+         * The reader waits for the removal of the card.
+         *
+         * @since 2.0
+         */
+        WAIT_FOR_CARD_REMOVAL
+    };
+
+    /**
+     * (package-private)<br>
+     * Create a new state with a state identifier and a monitor job
+     *
+     * @param monitoringState the state identifier
+     * @param reader the current reader
+     * @param monitoringJob the job to be executed in background (may be null if no background job is
+     *     required)
+     * @param executorService the executor service
+     * @since 2.0
+     */
+    AbstractObservableStateAdapter(
+        const MonitoringState monitoringState,
+        std::shared_ptr<ObservableLocalReaderAdapter> reader,
+        std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob,
+        std::shared_ptr<ExecutorService> executorService);
+
+    /**
+     * (package-private)<br>
+     * Create a new state with a state identifier without monitoring job.
+     *
+     * @param reader observable reader this currentState is attached to
+     * @param monitoringState name of the currentState
+     * @since 2.0
+     */
+    AbstractObservableStateAdapter(const MonitoringState monitoringState,
+                                   std::shared_ptr<ObservableLocalReaderAdapter> reader);
+
+    /**
+     * (package-private)<br>
+     * Get the current state identifier of the state machine
+     *
+     * @return the current state identifier
+     * @since 2.0
+     */
+    virtual MonitoringState getMonitoringState() const final;
+
+    /**
+     * (package-private)<br>
+     * Gets the reader.
+     *
+     * @return A not null reference.
+     * @since 2.0
+     */
+    virtual std::shared_ptr<ObservableLocalReaderAdapter> getReader() const final;
+
+    /**
+     * (package-private)<br>
+     * Switch state in the parent reader
+     *
+     * @param stateId the new state
+     * @since 2.0
+     */
+    virtual void switchState(const MonitoringState stateId) final;
+
+    /**
+     * (package-private)<br>
+     * Invoked when activated, a custom behaviour can be added here.
+     *
+     * @since 2.0
+     * @throw IllegalStateException if a job is defined with a null executor service.
+     */
+    virtual void onActivate() final;
+
+    /**
+     * (package-private)<br>
+     * Invoked when deactivated.
+     *
+     * @since 2.0
+     */
+    virtual void onDeactivate() final;
+
+    /**
+     * (package-private)<br>
+     * Handle Internal Event.
+     *
+     * @param event internal event received by reader
+     * @since 2.0
+     */
+    virtual void onEvent(InternalEvent event) = 0;
+
+private:
+    /**
+     *
+     */
+    const std::shared_ptr<Logger> mLogger =
+        LoggerFactory::getLogger(typeid(AbstractObservableStateAdapter));
+
+    /**
+     * Identifier of the currentState
+     */
+    MonitoringState mMonitoringState;
+
+    /**
+     * Reference to Reader
+     */
+    std::shared_ptr<ObservableLocalReaderAdapter> mReader;
+
+    /**
+     * Background job definition if any
+     */
+    std::shared_ptr<AbstractMonitoringJobAdapter> mMonitoringJob;
+
+    /**
+     * Result of the background job if any
+     */
+    std::future mMonitoringEvent;
+
+    /**
+     * Executor service used to execute AbstractMonitoringJobAdapter
+     */
+    std::shared_ptr<ExecutorService> mExecutorService;
+};
+
+}
+}
+}
