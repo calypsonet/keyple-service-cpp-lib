@@ -125,6 +125,13 @@ void AbstractObservableLocalPluginAdapter::setEventNotificationExecutorService(
     mObservationManager->setEventNotificationExecutorService(eventNotificationExecutorService);
 }
 
+void AbstractObservableLocalPluginAdapter::setPluginObservationExceptionHandler(
+    std::shared_ptr<PluginObservationExceptionHandlerSpi> exceptionHandler)
+{
+    checkStatus();
+    mObservationManager->setObservationExceptionHandler(exceptionHandler);
+}
+
 }
 }
 }
