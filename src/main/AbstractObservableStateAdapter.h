@@ -21,13 +21,14 @@
 
 /* Keyple Core Service */
 #include "AbstractMonitoringJobAdapter.h"
+#include "MonitoringState.h"
 #include "ObservableLocalReaderAdapter.h"
-
 
 namespace keyple {
 namespace core {
 namespace service {
 
+using namespace keyple::core::service::cpp;
 using namespace keyple::core::util::cpp;
 
 using InternalEvent = ObservableLocalReaderAdapter::InternalEvent;
@@ -40,42 +41,6 @@ using InternalEvent = ObservableLocalReaderAdapter::InternalEvent;
  */
 class AbstractObservableStateAdapter {
 public:
-    /**
-     * (package-private)<br>
-     * The states that the reader monitoring state machine can have
-     *
-     * @since 2.0
-     */
-    enum class MonitoringState {
-        /**
-         * The reader is idle and waiting for a start signal to enter the card detection mode.
-         *
-         * @since 2.0
-         */
-        WAIT_FOR_START_DETECTION,
-
-        /**
-         * The reader is in card detection mode and is waiting for a card to be presented.
-         *
-         * @since 2.0
-         */
-        WAIT_FOR_CARD_INSERTION,
-
-        /**
-         * The reader waits for the application to finish processing the card.
-         *
-         * @since 2.0
-         */
-        WAIT_FOR_CARD_PROCESSING,
-
-        /**
-         * The reader waits for the removal of the card.
-         *
-         * @since 2.0
-         */
-        WAIT_FOR_CARD_REMOVAL
-    };
-
     /**
      * (package-private)<br>
      * Create a new state with a state identifier and a monitor job
@@ -182,7 +147,7 @@ private:
     /**
      * Result of the background job if any
      */
-    std::future mMonitoringEvent;
+    std::future<int> mMonitoringEvent;
 
     /**
      * Executor service used to execute AbstractMonitoringJobAdapter

@@ -12,72 +12,44 @@
 
 #pragma once
 
-#include <memory>
-
-/* Keyple Core Service */
-#include "AbstractObservableStateAdapter.h"
-#include "ObservableLocalReaderAdapter.h"
-
 namespace keyple {
 namespace core {
 namespace service {
 
-class AbstractObservableStateAdapter;
-
 /**
  * (package-private)<br>
- * Abstract class for all monitoring jobs.
+ * The states that the reader monitoring state machine can have
  *
  * @since 2.0
  */
-class AbstractMonitoringJobAdapter {
-public:
+enum class MonitoringState {
     /**
-     * (package-private)<br>
-     * Creates an instance.
-     *
-     * @param reader The reader.
-     * @since 2.0
-     */
-    AbstractMonitoringJobAdapter(const std::shared_ptr<ObservableLocalReaderAdapter> reader)
-    : mReader(reader) {}
-
-    /**
-     * (package-private)<br>
-     * Gets the reader.
-     *
-     * @return A not null reference.
-     * @since 2.0
-     */
-    virtual std::shared_ptr<ObservableLocalReaderAdapter> getReader() const final
-    {
-        return mReader;
-    }
-
-    /**
-     * (package-private)<br>
-     * Gets the task of the monitoring job.
-     *
-     * @param monitoringState reference to the state the monitoring job in running against.
-     * @return A not null reference.
-     * @since 2.0
-     */
-    virtual std::shared_ptr<AbstractMonitoringJobAdapter> getMonitoringJob(
-        const std::shared_ptr<AbstractObservableStateAdapter> monitoringState) = 0;
-
-    /**
-     * (package-private)<br>
-     * Stops/interrupts the monitoring job
+     * The reader is idle and waiting for a start signal to enter the card detection mode.
      *
      * @since 2.0
      */
-    virtual void stop() = 0;
+    WAIT_FOR_START_DETECTION,
 
-private:
     /**
+     * The reader is in card detection mode and is waiting for a card to be presented.
      *
+     * @since 2.0
      */
-    const std::shared_ptr<ObservableLocalReaderAdapter> mReader;
+    WAIT_FOR_CARD_INSERTION,
+
+    /**
+     * The reader waits for the application to finish processing the card.
+     *
+     * @since 2.0
+     */
+    WAIT_FOR_CARD_PROCESSING,
+
+    /**
+     * The reader waits for the removal of the card.
+     *
+     * @since 2.0
+     */
+    WAIT_FOR_CARD_REMOVAL
 };
 
 }

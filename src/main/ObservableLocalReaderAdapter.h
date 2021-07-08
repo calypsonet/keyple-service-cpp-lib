@@ -24,11 +24,15 @@
 
 /* Keyple Core Plugin */
 #include "ObservableReaderSpi.h"
+#include "WaitForCardInsertionAutonomousReaderApi.h"
+#include "WaitForCardRemovalAutonomousReaderApi.h"
 
 /* Keyple Core Service */
 #include "CardSelectionScenarioAdapter.h"
-#include "ObservableReaderStateServiceAdapter.h"
+#include "LocalReaderAdapter.h"
+#include "MonitoringState.h"
 #include "ObservationManagerAdapter.h"
+#include "ObservableReader.h"
 #include "ReaderEvent.h"
 
 /* Keyple Core Util */
@@ -40,11 +44,15 @@ namespace service {
 
 using namespace calypsonet::terminal::reader;
 using namespace calypsonet::terminal::reader::spi;
+using namespace keyple::core::plugin;
 using namespace keyple::core::plugin::spi::reader::observable;
+using namespace keyple::core::service;
 using namespace keyple::core::util::cpp;
 
+class AbstractObservableStateAdapter;
+class ObservableReaderStateServiceAdapter;
+
 using DetectionMode = ObservableCardReader::DetectionMode;
-using MonitoringState = AbstractObservableStateAdapter::MonitoringState;
 using NotificationMode = ObservableCardReader::NotificationMode;
 
 /**
@@ -54,8 +62,8 @@ using NotificationMode = ObservableCardReader::NotificationMode;
  *
  * @since 2.0
  */
-class ObservableLocalReaderAdapter final
-: public LocalReaderAdapter
+class ObservableLocalReaderAdapter //final
+: public LocalReaderAdapter,
   public ObservableReader,
   public WaitForCardInsertionAutonomousReaderApi,
   public WaitForCardRemovalAutonomousReaderApi {
@@ -208,20 +216,15 @@ public:
 
     /**
      * (package-private)<br>
-     * This method is invoked when a card is removed to notify the application of the {@link
-     * CardReaderEvent.Type#CARD_REMOVED} event.
+     * This method is invoked when a card is removed to notify the application of the
+     * CardReaderEvent::Type::CARD_REMOVED event.
      *
-     * <p>It will also be invoked if {@link #isCardPresent()} is called and at least one of the
+     * <p>It will also be invoked if isCardPresent() is called and at least one of the
      * physical or logical channels is still open.
      *
      * @since 2.0
      */
-    void processCardRemoved() {
-        closeLogicalAndPhysicalChannelsSilently();
-        notifyObservers(
-            new ReaderEventAdapter(
-                getPluginName(), getName(), CardReaderEvent.Type.CARD_REMOVED, null));
-    }
+    void processCardRemoved();
 
     /**
      * (package-private)<br>
@@ -230,73 +233,19 @@ public:
      * @param stateId new stateId
      * @since 2.0
      */
-    void switchState(AbstractObservableStateAdapter.MonitoringState stateId) {
-        stateService.switchState(stateId);
-    }
+    void switchState(MonitoringState stateId);
 
     /**
      * (package-private)<br>
-     * Notifies all registered observers with the provided {@link ReaderEvent}.
+     * Notifies all registered observers with the provided ReaderEvent.
      *
-     * <p>This method never throws an exception. Any errors at runtime are notified to the application
-     * using the exception handler.
+     * <p>This method never throws an exception. Any errors at runtime are notified to the
+     * application using the exception handler.
      *
      * @param event The reader event.
      * @since 2.0
      */
-    void notifyObservers(final ReaderEvent event) {
-
-        if (logger.isDebugEnabled()) {
-        logger.debug(
-            "The reader '{}' is notifying the reader event '{}' to {} observers.",
-            getName(),
-            event.getType().name(),
-            countObservers());
-        }
-
-        Set<CardReaderObserverSpi> observers = observationManager.getObservers();
-
-        if (observationManager.getEventNotificationExecutorService() == null) {
-        // synchronous notification
-        for (CardReaderObserverSpi observer : observers) {
-            notifyObserver(observer, event);
-        }
-        } else {
-        // asynchronous notification
-        for (final CardReaderObserverSpi observer : observers) {
-            observationManager
-                .getEventNotificationExecutorService()
-                .execute(
-                    new Runnable() {
-                    @Override
-                    public void run() {
-                        notifyObserver(observer, event);
-                    }
-                    });
-        }
-        }
-    }
-
-    /**
-     * Notifies a single observer of an event.
-     *
-     * @param observer The observer to notify.
-     * @param event The event.
-     */
-    private void notifyObserver(CardReaderObserverSpi observer, ReaderEvent event) {
-        try {
-        observer.onReaderEvent(event);
-        } catch (Exception e) {
-        try {
-            observationManager
-                .getObservationExceptionHandler()
-                .onReaderObservationError(getPluginName(), getName(), e);
-        } catch (Exception e2) {
-            logger.error("Exception during notification", e2);
-            logger.error("Original cause", e);
-        }
-        }
-    }
+    void notifyObservers(const std::shared_ptr<ReaderEvent> event);
 
     /**
      * (package-private)<br>
@@ -316,13 +265,9 @@ public:
      * @since 2.0
      */
     void scheduleCardSelectionScenario(
-        CardSelectionScenarioAdapter cardSelectionScenario,
-        NotificationMode notificationMode,
-        DetectionMode detectionMode) {
-        this.cardSelectionScenario = cardSelectionScenario;
-        this.notificationMode = notificationMode;
-        this.detectionMode = detectionMode;
-    }
+        std::shared_ptr<CardSelectionScenarioAdapter> cardSelectionScenario,
+        const NotificationMode notificationMode,
+        const DetectionMode detectionMode);
 
     /**
      * {@inheritDoc}
@@ -333,177 +278,93 @@ public:
      *
      * @since 2.0
      */
-    @Override
-    void unregister() {
-        super.unregister();
-        try {
-        notifyObservers(
-            new ReaderEventAdapter(
-                getPluginName(), getName(), CardReaderEvent.Type.UNAVAILABLE, null));
-        stopCardDetection();
-        } finally {
-        clearObservers();
-        stateService.shutdown();
-        }
-    }
+    virtual void doUnregister() override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    @Override
-    public boolean isCardPresent() {
-        checkStatus();
-        if (super.isCardPresent()) {
-        return true;
-        } else {
-        /*
-        * if the card is no longer present but one of the channels is still open, then the
-        * card removal sequence is initiated.
-        */
-        if (isLogicalChannelOpen() || observableReaderSpi.isPhysicalChannelOpen()) {
-            processCardRemoved();
-        }
-        return false;
-        }
-    }
+    virtual bool isCardPresent() override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    @Override
-    public void addObserver(CardReaderObserverSpi observer) {
-        checkStatus();
-        observationManager.addObserver(observer);
-    }
+    virtual void addObserver(std::shared_ptr<CardReaderObserverSpi> observer) override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    @Override
-    public void removeObserver(CardReaderObserverSpi observer) {
-        observationManager.removeObserver(observer);
-    }
+    virtual void removeObserver(std::shared_ptr<CardReaderObserverSpi> observer) override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    @Override
-    public int countObservers() {
-        return observationManager.countObservers();
-    }
+    virtual int countObservers() override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    @Override
-    public void clearObservers() {
-        observationManager.clearObservers();
-    }
+    virtual void clearObservers() override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    @Override
-    public void startCardDetection(DetectionMode detectionMode) {
-        checkStatus();
-        if (logger.isDebugEnabled()) {
-        logger.debug(
-            "The reader '{}' of plugin '{}' is starting the card detection with polling mode '{}'.",
-            getName(),
-            getPluginName(),
-            detectionMode);
-        }
-        Assert.getInstance().notNull(detectionMode, "detectionMode");
-        this.detectionMode = detectionMode;
-        stateService.onEvent(InternalEvent.START_DETECT);
-    }
+    virtual void startCardDetection(const DetectionMode detectionMode) override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    @Override
-    public void stopCardDetection() {
-        if (logger.isDebugEnabled()) {
-        logger.debug(
-            "The reader '{}' of plugin '{}' is stopping the card detection.",
-            getName(),
-            getPluginName());
-        }
-        stateService.onEvent(InternalEvent.STOP_DETECT);
-    }
+    virtual void stopCardDetection() override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    public void finalizeCardProcessing() {
-        if (logger.isDebugEnabled()) {
-        logger.debug(
-            "The reader '{}' of plugin '{}' is starting the removal sequence of the card.",
-            getName(),
-            getPluginName());
-        }
-        stateService.onEvent(InternalEvent.CARD_PROCESSED);
-    }
+    void finalizeCardProcessing() override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    @Override
-    public void setEventNotificationExecutorService(
-        ExecutorService eventNotificationExecutorService) {
-        checkStatus();
-        observationManager.setEventNotificationExecutorService(eventNotificationExecutorService);
-    }
+    //virtual void setEventNotificationExecutorService(
+    //    std::shared_ptr<ExecutorService> eventNotificationExecutorService) override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    @Override
-    public void setReaderObservationExceptionHandler(
-        CardReaderObservationExceptionHandlerSpi exceptionHandler) {
-        checkStatus();
-        observationManager.setObservationExceptionHandler(exceptionHandler);
-    }
+    virtual void setReaderObservationExceptionHandler(
+        std::shared_ptr<CardReaderObservationExceptionHandlerSpi> exceptionHandler) override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    @Override
-    public void onCardInserted() {
-        stateService.onEvent(InternalEvent.CARD_INSERTED);
-    }
+    virtual void onCardInserted() override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    @Override
-    public void onCardRemoved() {
-        stateService.onEvent(InternalEvent.CARD_REMOVED);
-    }
+    virtual void onCardRemoved() override;
 
 private:
     /**
@@ -531,7 +392,7 @@ private:
      *
      */
     std::shared_ptr<ObservationManagerAdapter<CardReaderObserverSpi,
-                                              CardReaderObservationExceptionHandlerSpi>
+                                              CardReaderObservationExceptionHandlerSpi>>
         mObservationManager;
 
     /**
@@ -548,6 +409,15 @@ private:
      *
      */
     DetectionMode mDetectionMode;
+
+    /**
+     * Notifies a single observer of an event.
+     *
+     * @param observer The observer to notify.
+     * @param event The event.
+     */
+    void notifyObserver(std::shared_ptr<CardReaderObserverSpi> observer,
+                        const std::shared_ptr<ReaderEvent> event);
 };
 
 }

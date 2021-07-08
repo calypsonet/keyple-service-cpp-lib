@@ -70,7 +70,7 @@ void AbstractObservableStateAdapter::onDeactivate()
         const bool canceled = mMonitoringEvent->cancel(false);
         mLogger->trace("[%] onDeactivate => cancel monitoring job % by thread interruption %\n",
                        mReader->getName(),
-                       mMonitoringJob.getClass().getSimpleName(),
+                       mMonitoringJob->getClass().getSimpleName(),
                        canceled);
     }
 }

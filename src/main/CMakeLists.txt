@@ -30,16 +30,33 @@ SET(LIBRARY_NAME keypleservicecpplib)
 
 SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DKEYPLESERVICE_EXPORT")
 
+SET(CALYPSONET_CARD_DIR    "../../../github.com.calypsonet.calypsonet-terminal-card-cpp-api")
+SET(CALYPSONET_READER_DIR  "../../../github.com.calypsonet.calypsonet-terminal-reader-cpp-api")
+SET(KEYPLE_COMMON_DIR      "../../../github.com.calypsonet.keyple-common-cpp-api")
+SET(KEYPLE_PLUGIN_DIR      "../../../github.com.calypsonet.keyple-plugin-cpp-api")
 SET(KEYPLE_UTIL_DIR        "../../../github.com.calypsonet.keyple-util-cpp-lib")
 SET(KEYPLE_UTIL_LIB        "keypleutilcpplib")
 
 INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/cpp/exception
+
+    ${CALYPSONET_CARD_DIR}/src/main
+    ${CALYPSONET_CARD_DIR}/src/main/spi
+
+    ${CALYPSONET_READER_DIR}/src/main
+    ${CALYPSONET_READER_DIR}/src/main/selection
+    ${CALYPSONET_READER_DIR}/src/main/spi
+
+    ${KEYPLE_COMMON_DIR}/src/main
+
+    ${KEYPLE_PLUGIN_DIR}/src/main
+    ${KEYPLE_PLUGIN_DIR}/src/main/spi/reader
+    ${KEYPLE_PLUGIN_DIR}/src/main/spi/reader/observable
 
     ${KEYPLE_UTIL_DIR}/src/main
     ${KEYPLE_UTIL_DIR}/src/main/cpp
+    ${KEYPLE_UTIL_DIR}/src/main/cpp/exception
 )
 
 ADD_LIBRARY(
@@ -49,10 +66,15 @@ ADD_LIBRARY(
 
     ${CMAKE_CURRENT_SOURCE_DIR}/AbstractMonitoringJobAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/AbstractPluginAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/AbstractReaderAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/AbstractObservableLocalPluginAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/AbstractObservableStateAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionScenarioAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalPluginAdapter.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/ObservalbleLocalReaderAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LocalReaderAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ObservableLocalReaderAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ObservableReaderStateServiceAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/cpp/ExecutorService.cpp
 )
 
 FIND_LIBRARY(UTIL ${KEYPLE_UTIL_LIB} HINTS ${KEYPLE_UTIL_DIR}/build/bin)

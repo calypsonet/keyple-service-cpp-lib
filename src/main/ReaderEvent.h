@@ -12,72 +12,58 @@
 
 #pragma once
 
-#include <memory>
+#include <typeinfo>
 
-/* Keyple Core Service */
-#include "AbstractObservableStateAdapter.h"
-#include "ObservableLocalReaderAdapter.h"
+/* Calypsonet Terminal Reader */
+#include "CardReaderEvent.h"
+#include "ScheduledCardSelectionsResponse.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
-class AbstractObservableStateAdapter;
+using namespace calypsonet::terminal::reader;
+using namespace calypsonet::terminal::reader::selection;
 
 /**
- * (package-private)<br>
- * Abstract class for all monitoring jobs.
+ * All information about a change of card state within an ObservableReader.
+ *
+ * <p>In the case of a card insertion, the responses received by the reader are included in the
+ * event.
  *
  * @since 2.0
  */
-class AbstractMonitoringJobAdapter {
+class ReaderEvent : public CardReaderEvent {
 public:
     /**
-     * (package-private)<br>
-     * Creates an instance.
+     * Gets the name of the plugin from which the reader that generated the event comes from.
      *
-     * @param reader The reader.
+     * @return A not empty string.
      * @since 2.0
      */
-    AbstractMonitoringJobAdapter(const std::shared_ptr<ObservableLocalReaderAdapter> reader)
-    : mReader(reader) {}
+    virtual const std::string& getPluginName() const = 0;
 
     /**
-     * (package-private)<br>
-     * Gets the reader.
-     *
-     * @return A not null reference.
-     * @since 2.0
-     */
-    virtual std::shared_ptr<ObservableLocalReaderAdapter> getReader() const final
-    {
-        return mReader;
-    }
-
-    /**
-     * (package-private)<br>
-     * Gets the task of the monitoring job.
-     *
-     * @param monitoringState reference to the state the monitoring job in running against.
-     * @return A not null reference.
-     * @since 2.0
-     */
-    virtual std::shared_ptr<AbstractMonitoringJobAdapter> getMonitoringJob(
-        const std::shared_ptr<AbstractObservableStateAdapter> monitoringState) = 0;
-
-    /**
-     * (package-private)<br>
-     * Stops/interrupts the monitoring job
+     * {@inheritDoc}
      *
      * @since 2.0
      */
-    virtual void stop() = 0;
+    virtual const std::string& getReaderName() const override = 0;
 
-private:
     /**
+     * {@inheritDoc}
      *
+     * @since 2.0
      */
-    const std::shared_ptr<ObservableLocalReaderAdapter> mReader;
+    virtual const std::type_info& getType() const override = 0;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.0
+     */
+    virtual const std::shared_ptr<ScheduledCardSelectionsResponse>
+        getScheduledCardSelectionsResponse() const override = 0;
 };
 
 }
