@@ -35,7 +35,7 @@ using namespace keyple::core::commons;
  *
  * @since 2.0
  */
-class AbstractPluginAdapter : public Plugin {
+class AbstractPluginAdapter : virtual public Plugin {
 public:
     /**
      * (package-private)<br>
@@ -64,7 +64,7 @@ public:
      * @throw PluginIOException If registration failed.
      * @since 2.0
      */
-    virtual void registert();
+    virtual void doRegister();
 
     /**
      * (package-private)<br>
@@ -72,7 +72,7 @@ public:
      *
      * @since 2.0
      */
-    virtual void unregister();
+    virtual void doUnregister();
 
     /**
      * {@inheritDoc}
@@ -95,7 +95,7 @@ public:
      *
      * @since 2.0
      */
-    virtual const std::map<const std::string, std::shared_ptr<Reader>> getReadersMap() const final;
+    virtual std::map<const std::string, std::shared_ptr<Reader>>& getReadersMap() final;
 
     /**
      * {@inheritDoc}

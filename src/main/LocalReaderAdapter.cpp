@@ -12,19 +12,28 @@
 
 #include "LocalReaderAdapter.h"
 
+#include <sstream>
+
 /* Keyple Core Util */
 #include "ByteArrayUtil.h"
 #include "IllegalStateException.h"
 #include "System.h"
 
-/**/
+/* Keyple Core Plugin */
+#include "AutonomousSelectionReaderSpi.h"
 #include "CardIOException.h"
 #include "ReaderIOException.h"
+
+/* Keyple Core Service */
+#include "ApduRequestAdapter.h"
+#include "ApduResponseAdapter.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
+using namespace keyple::core::plugin;
+using namespace keyple::core::plugin::spi::reader;
 using namespace keyple::core::util;
 using namespace keyple::core::util::cpp;
 using namespace keyple::core::util::cpp::exception;
@@ -36,13 +45,15 @@ const int LocalReaderAdapter::DEFAULT_SUCCESSFUL_CODE = 0x9000;
 
 LocalReaderAdapter::LocalReaderAdapter(std::shared_ptr<ReaderSpi> readerSpi,
                                        const std::string& pluginName)
-: AbstractReaderAdapter(readerSpi->getName(), readerSpi, pluginName),
+: AbstractReaderAdapter(readerSpi->getName(),
+                        std::dynamic_pointer_cast<KeypleReaderExtension>(readerSpi),
+                        pluginName),
   mReaderSpi(readerSpi),
-  mProtocolAssociations({}) {}}
+  mProtocolAssociations({}) {}
 
 void LocalReaderAdapter::computeCurrentProtocol()
 {
-    mPurrentProtocol = null;
+    mCurrentProtocol = nullptr;
 
     if (mProtocolAssociations.size() == 0) {
         mUseDefaultProtocol = true;
@@ -61,9 +72,10 @@ void LocalReaderAdapter::closeLogicalChannel()
 {
     mLogger->trace("[%] closeLogicalChannel => Closing of the logical channel\n", getName());
 
-    if (std::dynamic_pointer_cast<AutonomousSelectionReaderSpi>(mReaderSpi)) {
+    auto reader = std::dynamic_pointer_cast<AutonomousSelectionReaderSpi>(mReaderSpi);
+    if (reader) {
         /* AutonomousSelectionReader have an explicit method for closing channels */
-        mReaderSpi->closeLogicalChannel();
+        reader->closeLogicalChannel();
     }
 
     mLogicalChannelIsOpen = false;
@@ -75,37 +87,41 @@ uint8_t LocalReaderAdapter::computeSelectApplicationP2(
     uint8_t p2;
 
     switch (fileOccurrence) {
-    case FIRST:
+    case FileOccurrence::FIRST:
         p2 = 0x00;
         break;
-    case LAST:
+    case FileOccurrence::LAST:
         p2 = 0x01;
         break;
-    case NEXT:
+    case FileOccurrence::NEXT:
         p2 = 0x02;
         break;
-    case PREVIOUS:
+    case FileOccurrence::PREVIOUS:
         p2 = 0x03;
         break;
     default:
-        throw IllegalStateException("Unexpected value: " + fileOccurrence);
+        std::stringstream ss;
+        ss << fileOccurrence;
+        throw IllegalStateException("Unexpected value: " + ss.str());
     }
 
     switch (fileControlInformation) {
-    case FCI:
+    case FileControlInformation::FCI:
         p2 |= 0x00;
         break;
-    case FCP:
+    case FileControlInformation::FCP:
         p2 |= 0x04;
         break;
-    case FMD:
+    case FileControlInformation::FMD:
         p2 |= 0x08;
         break;
-    case NO_RESPONSE:
+    case FileControlInformation::NO_RESPONSE:
         p2 |= 0x0C;
         break;
     default:
-        throw IllegalStateException("Unexpected value: " + fileControlInformation);
+        std::stringstream ss;
+        ss << fileOccurrence;
+        throw IllegalStateException("Unexpected value: " + ss.str());
     }
 
     return p2;
@@ -124,7 +140,7 @@ std::shared_ptr<ApduResponseApi> LocalReaderAdapter::processExplicitAidSelection
      * Build a get response command the actual length expected by the card in the get response
      * command is handled in transmitApdu
      */
-    std::vector<uint8_t> selectApplicationCommand(6 + aid.length);
+    std::vector<uint8_t> selectApplicationCommand(6 + aid.size());
     selectApplicationCommand[0] = 0x00; /* CLA */
     selectApplicationCommand[1] = 0xA4; /* INS */
     selectApplicationCommand[2] = 0x04; /* P1: select by name */
@@ -134,9 +150,9 @@ std::shared_ptr<ApduResponseApi> LocalReaderAdapter::processExplicitAidSelection
      */
     selectApplicationCommand[3] = computeSelectApplicationP2(
                                       cardSelector->getFileOccurrence(),
-                                      cardSelector.getFileControlInformation());
-    selectApplicationCommand[4] = aid.size()); /* Lc */
-    System::arraycopy(aid, 0, selectApplicationCommand, 5, aid.length); /* Data */
+                                      cardSelector->getFileControlInformation());
+    selectApplicationCommand[4] = static_cast<uint8_t>(aid.size()); /* Lc */
+    System::arraycopy(aid, 0, selectApplicationCommand, 5, aid.size()); /* Data */
     selectApplicationCommand[5 + aid.size()] = 0x00; /* Le */
 
     auto apduRequest = std::make_shared<ApduRequestAdapter>(selectApplicationCommand);
@@ -154,7 +170,7 @@ std::shared_ptr<ApduResponseApi> LocalReaderAdapter::selectByAid(
         const std::vector<uint8_t>& aid = cardSelector->getAid();
         const uint8_t p2 = computeSelectApplicationP2(cardSelector->getFileOccurrence(),
                                                       cardSelector->getFileControlInformation());
-        const std::vector<uint8_t> selectionDataBytes = readerSpi->openChannelForAid(aid, p2);
+        const std::vector<uint8_t> selectionDataBytes = mReaderSpi->openChannelForAid(aid, p2);
         fciResponse = std::make_shared<ApduResponseAdapter>(selectionDataBytes);
     } else {
         fciResponse = processExplicitAidSelection(cardSelector);

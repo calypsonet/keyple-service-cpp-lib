@@ -12,25 +12,34 @@
 
 #pragma once
 
-/* Calypsonet Terminal Reader */
-#include "ObservableCardReader.h"
-
 /* Keyple Core Service */
-#include "Reader.h"
+#include "PluginEvent.h"
 
 namespace keyple {
 namespace core {
 namespace service {
+namespace spi {
 
-using namespace calypsonet::terminal::reader;
+using namespace keyple::core::service;
 
 /**
- * Keyple observable card reader.
+ * Plugin observer recipient of the {@link PluginEvent} from a {@link
+ * org.eclipse.keyple.core.service.ObservablePlugin}.
  *
  * @since 2.0
  */
-class ObservableReader : virtual public Reader, public ObservableCardReader {};
+class PluginObserverSpi {
+public:
+    /**
+     * Invoked when a plugin event occurs.
+     *
+     * @param pluginEvent The plugin event.
+     * @since 2.0
+     */
+    virtual void onPluginEvent(const std::shared_ptr<PluginEvent> pluginEvent) = 0;
+};
 
+}
 }
 }
 }

@@ -14,19 +14,24 @@
 
 #include <memory>
 
-/* Keyple Util */
+/* Keyple Core Util */
 #include "LoggerFactory.h"
 
-/* Keyple Service */
+/* Keyple Core Service */
 #include "LocalPluginAdapter.h"
 #include "PluginObserverSpi.h"
 #include "ObservationManagerAdapter.h"
+#include "ObservablePlugin.h"
 #include "PluginObservationExceptionHandlerSpi.h"
+
+/* Keyple Core Plugin */
+#include "PluginSpi.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
+using namespace keyple::core::plugin;
 using namespace keyple::core::util::cpp;
 using namespace keyple::core::service::spi;
 
@@ -45,7 +50,7 @@ public:
      * @param pluginSpi The associated plugin SPI.
      * @since 2.0
      */
-    AbstractObservableLocalPluginAdapter(std:shared_ptr<PluginSpi> pluginSpi);
+    AbstractObservableLocalPluginAdapter(std::shared_ptr<PluginSpi> pluginSpi);
 
     /**
      * (package-private)<br>
@@ -55,7 +60,7 @@ public:
      * @since 2.0
      */
     virtual std::shared_ptr<ObservationManagerAdapter<PluginObserverSpi,
-                                                      PluginObservationExceptionHandlerSpi>
+                                                      PluginObservationExceptionHandlerSpi>>
         getObservationManager() const final;
 
     /**
@@ -75,7 +80,7 @@ public:
      *
      * @since 2.0
      */
-    virtual void unregister() override final;
+    virtual void doUnregister() override final;
 
     /**
      * {@inheritDoc}
@@ -103,7 +108,7 @@ public:
      *
      * @since 2.0
      */
-    virtual int countObservers() override final;
+    virtual int countObservers() const override final;
 
     /**
      * {@inheritDoc}

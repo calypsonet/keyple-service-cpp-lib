@@ -15,7 +15,10 @@
 #include <string>
 #include <vector>
 
-/* Keyple Util */
+/* Keyple Core Plugin */
+#include "PluginEventAdapter.h"
+
+/* Keyple Core Util */
 #include "Exception.h"
 
 namespace keyple {
@@ -23,14 +26,14 @@ namespace core {
 namespace service {
 
 AbstractObservableLocalPluginAdapter::AbstractObservableLocalPluginAdapter(
-  std:shared_ptr<PluginSpi> pluginSpi)
+  std::shared_ptr<PluginSpi> pluginSpi)
 : LocalPluginAdapter(pluginSpi),
   mObservationManager(
       std::make_shared<
           ObservationManagerAdapter<PluginObserverSpi, PluginObservationExceptionHandlerSpi>>(
               getName(), nullptr)) {}
 
-std::shared_ptr<ObservationManagerAdapter<PluginObserverSpi, PluginObservationExceptionHandlerSpi>
+std::shared_ptr<ObservationManagerAdapter<PluginObserverSpi, PluginObservationExceptionHandlerSpi>>
     AbstractObservableLocalPluginAdapter::getObservationManager() const
 {
     return mObservationManager;
@@ -38,10 +41,10 @@ std::shared_ptr<ObservationManagerAdapter<PluginObserverSpi, PluginObservationEx
 
 void AbstractObservableLocalPluginAdapter::notifyObservers(const std::shared_ptr<PluginEvent> event)
 {
-    logger->debug("The plugin '%' is notifying the plugin event '%' to % observers\n",
-                  getName(),
-                  event->getType()->name(),
-                  countObservers());
+    mLogger->debug("The plugin '%' is notifying the plugin event '%' to % observers\n",
+                   getName(),
+                   event->getType(),
+                   countObservers());
 
     const std::vector<std::shared_ptr<PluginObserverSpi>>& observers =
         mObservationManager->getObservers();
@@ -54,19 +57,21 @@ void AbstractObservableLocalPluginAdapter::notifyObservers(const std::shared_ptr
     } else {
         /* Asynchronous notification */
         for (const auto& observer : observers) {
-            mObservationManager->getEventNotificationExecutorService()
-                               ->execute(
-                                    new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            notifyObserver(observer, event);
-                                        }
-                                    });
+            (void)observer;
+            // FIXME!!
+            // mObservationManager->getEventNotificationExecutorService()
+            //                    ->execute(
+            //                         new Runnable() {
+            //                             @Override
+            //                             public void run() {
+            //                                 notifyObserver(observer, event);
+            //                             }
+            //                         });
         }
     }
 }
 
-virtual void AbstractObservableLocalPluginAdapter::notifyObserver(
+void AbstractObservableLocalPluginAdapter::notifyObserver(
     std::shared_ptr<PluginObserverSpi> observer, const std::shared_ptr<PluginEvent> event)
 {
     try {
@@ -82,11 +87,11 @@ virtual void AbstractObservableLocalPluginAdapter::notifyObserver(
     }
 }
 
-void AbstractObservableLocalPluginAdapter::unregister()
+void AbstractObservableLocalPluginAdapter::doUnregister()
 {
     const std::vector<std::string>& unregisteredReaderNames = getReaderNames();
 
-    LocalPluginAdapter::unregister();
+    LocalPluginAdapter::doUnregister();
 
     notifyObservers(
         std::make_shared<PluginEventAdapter>(
@@ -113,7 +118,7 @@ void AbstractObservableLocalPluginAdapter::clearObservers()
     mObservationManager->clearObservers();
 }
 
-int AbstractObservableLocalPluginAdapter::countObservers()
+int AbstractObservableLocalPluginAdapter::countObservers() const
 {
     return mObservationManager->countObservers();
 }

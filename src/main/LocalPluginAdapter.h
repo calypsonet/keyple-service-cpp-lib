@@ -17,7 +17,7 @@
 /* Keyple Core Service */
 #include "AbstractPluginAdapter.h"
 
-/* */
+/* Keyple Core Plugin */
 #include "PluginSpi.h"
 
 namespace keyple {
@@ -50,7 +50,7 @@ public:
      *
      * @since 2.0
      */
-    virtual void register() override final;
+    virtual void doRegister() override final;
 
     /**
      * {@inheritDoc}
@@ -59,7 +59,7 @@ public:
      *
      * @since 2.0
      */
-    virtual void unregister() override;
+    virtual void doUnregister() override;
 
 private:
     /**

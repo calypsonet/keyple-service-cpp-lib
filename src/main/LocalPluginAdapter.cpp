@@ -12,16 +12,27 @@
 
 #include "LocalPluginAdapter.h"
 
+/* Keyple Core Plugin */
+#include "ObservableReaderSpi.h"
+
+/* Keyple Core Service */
+#include "LocalReaderAdapter.h"
+#include "ObservableLocalReaderAdapter.h"
+
 namespace keyple {
 namespace core {
 namespace service {
 
-LocalPluginAdapter::LocalPluginAdapter(std::shared_ptr<PluginSpi> pluginSpi)
-: AbstractPluginAdapter(pluginSpi->getName(), pluginSpi), mPluginSpi(pluginSpi) {}
+using namespace keyple::core::plugin::spi::reader::observable;
 
-void LocalPluginAdapter::register()
+LocalPluginAdapter::LocalPluginAdapter(std::shared_ptr<PluginSpi> pluginSpi)
+: AbstractPluginAdapter(pluginSpi->getName(),
+                        std::dynamic_pointer_cast<KeyplePluginExtension>(pluginSpi)),
+  mPluginSpi(pluginSpi) {}
+
+void LocalPluginAdapter::doRegister()
 {
-    AbstractPluginAdapter::register();
+    AbstractPluginAdapter::doRegister();
 
     const std::vector<std::shared_ptr<ReaderSpi>> readerSpiList =
         mPluginSpi->searchAvailableReaders();
@@ -30,20 +41,21 @@ void LocalPluginAdapter::register()
         std::shared_ptr<LocalReaderAdapter> localReaderAdapter;
 
         if (std::dynamic_pointer_cast<ObservableReaderSpi>(readerSpi)) {
-            localReaderAdapter = std::make_shared<ObservableLocalReaderAdapter>(readerSpi,
-                                                                                getName());
+            localReaderAdapter =
+                std::make_shared<ObservableLocalReaderAdapter>(
+                    std::dynamic_pointer_cast<ObservableReaderSpi>(readerSpi), getName());
         } else {
             localReaderAdapter = std::make_shared<LocalReaderAdapter>(readerSpi, getName());
         }
 
-        getReadersMap().push_back(readerSpi->getName(), localReaderAdapter);
-        localReaderAdapter->register();
+        getReadersMap().insert({readerSpi->getName(), localReaderAdapter});
+        localReaderAdapter->doRegister();
     }
 }
 
-void LocalPluginAdapter::unregister()
+void LocalPluginAdapter::doUnregister()
 {
-    AbstractPluginAdapter::unregister();
+    AbstractPluginAdapter::doUnregister();
     mPluginSpi->onUnregister();
 }
 

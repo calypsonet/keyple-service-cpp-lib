@@ -15,13 +15,17 @@
 /* Keyple Core Util */
 #include "IllegalStateException.h"
 
+/* Keyple Core Service */
+#include "AbstractReaderAdapter.h"
+
 namespace keyple {
 namespace core {
 namespace service {
 
 using namespace keyple::core::util::cpp::exception;
 
-AbstractPluginAdapter::AbstractPluginAdapter(const std::string& pluginName, Object pluginExtension)
+AbstractPluginAdapter::AbstractPluginAdapter(const std::string& pluginName,
+                                             std::shared_ptr<KeyplePluginExtension> pluginExtension)
 : mPluginName(pluginName), mPluginExtension(pluginExtension) {}
 
 void AbstractPluginAdapter::checkStatus() const
@@ -33,17 +37,17 @@ void AbstractPluginAdapter::checkStatus() const
     }
 }
 
-void AbstractPluginAdapter::register()
+void AbstractPluginAdapter::doRegister()
 {
     mIsRegistered = true;
 }
 
-void AbstractPluginAdapter::unregister()
+void AbstractPluginAdapter::doUnregister()
 {
     mIsRegistered = false;
 
     for (const auto& pair : mReaders) {
-        pair.second->unregister();
+        std::dynamic_pointer_cast<AbstractReaderAdapter>(pair.second)->doUnregister();
     }
 
     mReaders.clear();
@@ -57,13 +61,14 @@ const std::string& AbstractPluginAdapter::getName() const
 std::shared_ptr<KeyplePluginExtension> AbstractPluginAdapter::getExtension(
     const std::type_info& pluginExtensionClass) const
 {
+    (void)pluginExtensionClass;
+
     checkStatus();
 
     return mPluginExtension;
 }
 
-const std::map<const std::string, std::shared_ptr<Reader>> AbstractPluginAdapter::getReadersMap()
-    const
+std::map<const std::string, std::shared_ptr<Reader>>& AbstractPluginAdapter::getReadersMap()
 {
     return mReaders;
 }
@@ -77,7 +82,7 @@ const std::vector<std::string> AbstractPluginAdapter::getReaderNames() const
         readerNames.push_back(pair.first);
     }
 
-    return readers;
+    return readerNames;
 }
 
 const std::vector<std::shared_ptr<Reader>> AbstractPluginAdapter::getReaders() const
@@ -92,7 +97,7 @@ const std::vector<std::shared_ptr<Reader>> AbstractPluginAdapter::getReaders() c
     return readers;
 }
 
-std::shared_ptr<Reader> getReader(const std::string& name) const
+std::shared_ptr<Reader> AbstractPluginAdapter::getReader(const std::string& name) const
 {
     checkStatus();
 

@@ -12,6 +12,8 @@
 
 #pragma once
 
+#include <ostream>
+
 namespace keyple {
 namespace core {
 namespace service {
@@ -51,6 +53,26 @@ enum class MonitoringState {
      */
     WAIT_FOR_CARD_REMOVAL
 };
+
+std::ostream& operator<<(std::ostream& os, const MonitoringState ms)
+{
+    switch (ms) {
+    case MonitoringState::WAIT_FOR_START_DETECTION:
+        os << "MONITORING_STATE = WAIT_FOR_START_DETECTION";
+        break;
+    case MonitoringState::WAIT_FOR_CARD_PROCESSING:
+        os << "MONITORING_STATE = WAIT_FOR_CARD_PROCESSING";
+        break;
+    case MonitoringState::WAIT_FOR_CARD_REMOVAL:
+        os << "MONITORING_STATE = WAIT_FOR_CARD_REMOVAL";
+        break;
+    case MonitoringState::WAIT_FOR_CARD_INSERTION:
+        os << "MONITORING_STATE = WAIT_FOR_CARD_INSERTION";
+        break;
+    }
+
+    return os;
+}
 
 }
 }

@@ -12,6 +12,10 @@
 
 #include "CardSelectionScenarioAdapter.h"
 
+
+/* Calypsonet Terminal Card */
+#include "CardSelectionRequestSpi.h"
+
 /* Keyple Core Util */
 #include "KeypleAssert.h"
 
@@ -19,6 +23,8 @@ namespace keyple {
 namespace core {
 namespace service {
 
+using namespace calypsonet::terminal::card::spi;
+using namespace keyple::core::util;
 using namespace keyple::core::util::cpp;
 
 CardSelectionScenarioAdapter::CardSelectionScenarioAdapter(
@@ -29,9 +35,7 @@ CardSelectionScenarioAdapter::CardSelectionScenarioAdapter(
   mMultiSelectionProcessing(multiSelectionProcessing),
   mChannelControl(channelControl)
 {
-    Assert::getInstance().notEmpty(cardSelectionRequests, "cardSelectionRequests")
-                         .notNull(multiSelectionProcessing, "multiSelectionProcessing")
-                         .notNull(channelControl, "channelControl");}
+    Assert::getInstance().notEmpty(cardSelectionRequests, "cardSelectionRequests");
 }
 
 const std::vector<std::shared_ptr<CardSelectionRequestSpi>>&
@@ -53,6 +57,8 @@ ChannelControl CardSelectionScenarioAdapter::getChannelControl() const
 std::ostream& operator<<(std::ostream& os,
                          const std::shared_ptr<CardSelectionScenarioAdapter> sa)
 {
+    (void)sa;
+
     os << "CARD_SELECTION_SCENARIO : {"
         << "<TODO> CardSelectionRequest, "
         << "<TODO> MultiSelectionProcessing, "

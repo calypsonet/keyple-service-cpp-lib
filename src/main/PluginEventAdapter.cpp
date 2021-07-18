@@ -10,26 +10,36 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
-#pragma once
-
-/* Calypsonet Terminal Reader */
-#include "ObservableCardReader.h"
-
-/* Keyple Core Service */
-#include "Reader.h"
+#include "PluginEventAdapter.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
-using namespace calypsonet::terminal::reader;
+PluginEventAdapter::PluginEventAdapter(const std::string& pluginName,
+                                       const std::string& readerName,
+                                       const Type type)
+: mPluginName(pluginName), mReaderNames({readerName}), mType(type) {}
 
-/**
- * Keyple observable card reader.
- *
- * @since 2.0
- */
-class ObservableReader : virtual public Reader, public ObservableCardReader {};
+PluginEventAdapter::PluginEventAdapter(const std::string& pluginName,
+                                       const std::vector<std::string>& readerNames,
+                                       const Type type)
+: mPluginName(pluginName), mReaderNames(readerNames), mType(type) {}
+
+const std::string& PluginEventAdapter::getPluginName() const
+{
+    return mPluginName;
+}
+
+const std::vector<std::string> PluginEventAdapter::getReaderNames() const
+{
+    return mReaderNames;
+}
+
+Type PluginEventAdapter::getType() const
+{
+    return mType;
+}
 
 }
 }

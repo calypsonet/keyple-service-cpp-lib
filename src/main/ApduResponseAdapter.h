@@ -12,44 +12,78 @@
 
 #pragma once
 
+#include <cstdint>
 #include <memory>
-#include <string>
-#include <typeinfo>
+#include <ostream>
 #include <vector>
 
-/* Calypsonet Terminal Reader */
-#include "CardReader.h"
-
-/* Keyple Core Common */
-#include "KeypleReaderExtension.h"
+/* Calypsonet Terminal Card */
+#include "ApduResponseApi.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
-using namespace calypsonet::terminal::reader;
-using namespace keyple::core::commons;
+using namespace calypsonet::terminal::card;
 
 /**
- * Drives the underlying hardware to configure the search and check for the presence of cards.
+ * (package-private)<br>
+ * This POJO contains a set of data related to an ISO-7816 APDU response.
  *
  * @since 2.0
  */
-class Reader : virtual public CardReader {
+class ApduResponseAdapter final : public ApduResponseApi {
 public:
     /**
-     * Returns the {@link KeypleReaderExtension} that is reader-specific.
+     * (package-private)<br>
+     * Builds an APDU response from an array of bytes from the card, computes the status word.
      *
-     * <p>Note: the provided argument is used at compile time to check the type consistency.
-     *
-     * @param readerExtensionClass The specific class of the reader.
-     * @param <T> The type of the reader extension.
-     * @return A {@link KeypleReaderExtension}.
-     * @throws IllegalStateException If reader is no longer registered.
+     * @param apdu A array of at least 2 bytes.
      * @since 2.0
      */
-    virtual std::shared_ptr<KeypleReaderExtension> getExtension(
-        const std::type_info& readerExtensionClass) const = 0;
+    ApduResponseAdapter(const std::vector<uint8_t>& apdu);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.0
+     */
+    virtual const std::vector<uint8_t>& getApdu() const override;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.0
+     */
+    virtual const std::vector<uint8_t> getDataOut() const override;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.0
+     */
+    virtual int getStatusWord() const override;
+
+    /**
+     *
+     */
+    friend std::ostream& operator<<(std::ostream& os, const ApduResponseAdapter& ara);
+
+    /**
+     *
+     */
+    friend std::ostream& operator<<(std::ostream& os, const std::shared_ptr<ApduResponseAdapter> ara);
+
+private:
+    /**
+     *
+     */
+    const std::vector<uint8_t> mApdu;
+
+    /**
+     *
+     */
+    const int mStatusWord;
 };
 
 }

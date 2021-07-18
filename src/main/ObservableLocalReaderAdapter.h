@@ -62,7 +62,7 @@ using NotificationMode = ObservableCardReader::NotificationMode;
  *
  * @since 2.0
  */
-class ObservableLocalReaderAdapter //final
+class ObservableLocalReaderAdapter final
 : public LocalReaderAdapter,
   public ObservableReader,
   public WaitForCardInsertionAutonomousReaderApi,
@@ -306,7 +306,7 @@ public:
      *
      * @since 2.0
      */
-    virtual int countObservers() override;
+    virtual int countObservers() const override;
 
     /**
      * {@inheritDoc}

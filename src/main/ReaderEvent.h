@@ -12,8 +12,6 @@
 
 #pragma once
 
-#include <typeinfo>
-
 /* Calypsonet Terminal Reader */
 #include "CardReaderEvent.h"
 #include "ScheduledCardSelectionsResponse.h"
@@ -24,6 +22,8 @@ namespace service {
 
 using namespace calypsonet::terminal::reader;
 using namespace calypsonet::terminal::reader::selection;
+
+using Type = CardReaderEvent::Type;
 
 /**
  * All information about a change of card state within an ObservableReader.
@@ -55,7 +55,7 @@ public:
      *
      * @since 2.0
      */
-    virtual const std::type_info& getType() const override = 0;
+    virtual Type getType() const override = 0;
 
     /**
      * {@inheritDoc}

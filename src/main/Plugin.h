@@ -30,7 +30,7 @@ namespace service {
 using namespace keyple::core::commons;
 
 /**
- * Manager for one or more {@link Reader} from the same family.
+ * Manager for one or more Reader from the same family.
  *
  * <p>Provides the means to get the plugin name, enumerate and retrieve the readers.
  *
@@ -44,10 +44,10 @@ public:
      * @return A not empty string.
      * @since 2.0
      */
-    virtual const std::string& getName() = 0;
+    virtual const std::string& getName() const = 0;
 
     /**
-     * Returns the {@link KeyplePluginExtension} that is plugin-specific.
+     * Returns the KeyplePluginExtension that is plugin-specific.
      *
      * <p>Note: the provided argument is used at compile time to check the type consistency.
      *
@@ -78,7 +78,7 @@ public:
     virtual const std::vector<std::shared_ptr<Reader>> getReaders() const = 0;
 
     /**
-     * Gets the {@link Reader} whose name is provided.
+     * Gets the Reader whose name is provided.
      *
      * @param name The name of the reader.
      * @return Null if the reader has not been found.

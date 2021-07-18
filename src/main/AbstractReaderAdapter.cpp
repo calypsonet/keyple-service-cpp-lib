@@ -13,16 +13,25 @@
 #include "AbstractReaderAdapter.h"
 
 /* Calypsonet Terminal Card */
+#include "CardBrokenCommunicationException.h"
 #include "UnexpectedStatusWordException.h"
+
+/* Keyple Core Util */
+#include "IllegalStateException.h"
+#include "KeypleAssert.h"
+#include "System.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
 using namespace calypsonet::terminal::card;
+using namespace keyple::core::util;
+using namespace keyple::core::util::cpp;
+using namespace keyple::core::util::cpp::exception;
 
 AbstractReaderAdapter::AbstractReaderAdapter(const std::string& readerName,
-                                             std::shared_ptr<KeypleReaderExtention> readerExtension,
+                                             std::shared_ptr<KeypleReaderExtension> readerExtension,
                                              const std::string& pluginName)
 : mReaderName(readerName), mReaderExtension(readerExtension), mPluginName(pluginName) {}
 
@@ -33,13 +42,13 @@ const std::string& AbstractReaderAdapter::getPluginName() const
 
 const std::vector<std::shared_ptr<CardSelectionResponseApi>>
     AbstractReaderAdapter::transmitCardSelectionRequests(
-        const std::vector<CardSelectionRequestSpi>& cardSelectionRequests,
+        const std::vector<std::shared_ptr<CardSelectionRequestSpi>>& cardSelectionRequests,
         const MultiSelectionProcessing multiSelectionProcessing,
         const ChannelControl channelControl)
 {
     checkStatus();
 
-    std::vector<std::shared_ptr<CardSelectionResponseApi>> cardSelectionResponses = nullptr;
+    std::vector<std::shared_ptr<CardSelectionResponseApi>> cardSelectionResponses;
 
     long timeStamp = System::nanoTime();
     long elapsed10ms = (timeStamp - mBefore) / 100000;
@@ -82,12 +91,12 @@ void AbstractReaderAdapter::checkStatus() const
     }
 }
 
-void AbstractReaderAdapter::register()
+void AbstractReaderAdapter::doRegister()
 {
     mIsRegistered = true;
 }
 
-void AbstractReaderAdapter::unregister()
+void AbstractReaderAdapter::doUnregister()
 {
     mIsRegistered = false;
 }
@@ -100,19 +109,20 @@ const std::string& AbstractReaderAdapter::getName() const
 std::shared_ptr<KeypleReaderExtension> AbstractReaderAdapter::getExtension(
     const std::type_info& readerExtensionClass) const
 {
+    (void)readerExtensionClass;
+
     checkStatus();
 
     return mReaderExtension;
 }
 
-std::shared_ptr<CardResponseApi> AbstractReaderAdapter::transmitCardRequest(
+const std::shared_ptr<CardResponseApi> AbstractReaderAdapter::transmitCardRequest(
     const std::shared_ptr<CardRequestSpi> cardRequest,
     const ChannelControl channelControl)
 {
     checkStatus();
 
-    Assert::getInstance().notNull(cardRequest, "cardRequest")
-                         .notNull(channelControl, "channelControl");
+    Assert::getInstance().notNull(cardRequest, "cardRequest");
 
     std::shared_ptr<CardResponseApi> cardResponse = nullptr;
 

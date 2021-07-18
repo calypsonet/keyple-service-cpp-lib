@@ -47,7 +47,7 @@ void ExecutorService::run()
     while (mRunning) {
         if (mPool.size()) {
             /* Start first service and wait until completion */
-            std::future<void>& current = mPool[0];
+            std::future<int>& current = mPool[0];
             current.wait();
 
             /* Remove from vector */
@@ -60,7 +60,12 @@ void ExecutorService::run()
     mTerminated = true;
 }
 
-std::future<void>* ExecutorService::submit(std::shared_ptr<AbstractMonitoringJob> monitoringJob,
+void ExecutorService::execute(std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob)
+{
+    (void)monitoringJob;
+}
+
+std::future<int>* ExecutorService::submit(std::shared_ptr<AbstractMonitoringJob> monitoringJob,
                                            AbstractObservableState* state,
                                            std::atomic<bool>& cancellationFlag)
 {

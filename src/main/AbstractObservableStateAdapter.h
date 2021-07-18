@@ -13,6 +13,7 @@
 #pragma once
 
 #include <future>
+#include <memory>
 #include <typeinfo>
 
 /* Keyple Core Util */
@@ -21,6 +22,7 @@
 
 /* Keyple Core Service */
 #include "AbstractMonitoringJobAdapter.h"
+#include "Future.h"
 #include "MonitoringState.h"
 #include "ObservableLocalReaderAdapter.h"
 
@@ -39,7 +41,8 @@ using InternalEvent = ObservableLocalReaderAdapter::InternalEvent;
  *
  * @since 2.0
  */
-class AbstractObservableStateAdapter {
+class AbstractObservableStateAdapter
+: public std::enable_shared_from_this<AbstractObservableStateAdapter> {
 public:
     /**
      * (package-private)<br>
@@ -147,7 +150,7 @@ private:
     /**
      * Result of the background job if any
      */
-    std::future<int> mMonitoringEvent;
+    std::shared_ptr<Future> mMonitoringEvent;
 
     /**
      * Executor service used to execute AbstractMonitoringJobAdapter

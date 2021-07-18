@@ -12,6 +12,8 @@
 
 #include "AbstractObservableStateAdapter.h"
 
+#include <typeinfo>
+
 namespace keyple {
 namespace core {
 namespace service {
@@ -21,8 +23,8 @@ AbstractObservableStateAdapter::AbstractObservableStateAdapter(
   std::shared_ptr<ObservableLocalReaderAdapter> reader,
   std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob,
   std::shared_ptr<ExecutorService> executorService)
-: mReader(reader),
-  mMonitoringState(monitoringState),
+: mMonitoringState(monitoringState),
+  mReader(reader),
   mMonitoringJob(monitoringJob),
   mExecutorService(executorService) {}
 
@@ -37,7 +39,7 @@ MonitoringState AbstractObservableStateAdapter::getMonitoringState() const
 
 std::shared_ptr<ObservableLocalReaderAdapter> AbstractObservableStateAdapter::getReader() const
 {
-    return reader;
+    return mReader;
 }
 
 void AbstractObservableStateAdapter::switchState(const MonitoringState stateId)
@@ -45,7 +47,7 @@ void AbstractObservableStateAdapter::switchState(const MonitoringState stateId)
     mReader->switchState(stateId);
 }
 
-void AbstractObservableStateAdapter::onActivate() final
+void AbstractObservableStateAdapter::onActivate()
 {
     mLogger->trace("[%] onActivate => %\n", mReader->getName(), getMonitoringState());
 
@@ -55,7 +57,7 @@ void AbstractObservableStateAdapter::onActivate() final
             throw IllegalStateException("ExecutorService must be set");
         }
 
-        mMonitoringEvent = mExecutorService->submit(mMonitoringJob->getMonitoringJob(this));
+        mMonitoringEvent = mExecutorService->submit(mMonitoringJob->getMonitoringJob(shared_from_this()));
     }
 }
 
@@ -68,9 +70,10 @@ void AbstractObservableStateAdapter::onDeactivate()
         mMonitoringJob->stop();
 
         const bool canceled = mMonitoringEvent->cancel(false);
+        const auto& id = *mMonitoringJob.get();
         mLogger->trace("[%] onDeactivate => cancel monitoring job % by thread interruption %\n",
                        mReader->getName(),
-                       mMonitoringJob->getClass().getSimpleName(),
+                       typeid(id).name(),
                        canceled);
     }
 }

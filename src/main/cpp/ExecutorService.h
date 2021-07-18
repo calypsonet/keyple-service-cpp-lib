@@ -13,20 +13,25 @@
 
 #pragma once
 
-#include <future>
+#include <thread>
 #include <typeinfo>
 #include <vector>
 
+/* Keyple Core Service */
+#include "Future.h"
+
 /* Keyple Core Util */
 #include "LoggerFactory.h"
+
+namespace keyple { namespace core { namespace service {
+    class AbstractMonitoringJobAdapter;
+    class AbstractObservableStateAdapter;
+}}}
 
 namespace keyple {
 namespace core {
 namespace service {
 namespace cpp {
-
-class AbstractMonitoringJobAdapter;
-class AbstractObservableStateAdapter;
 
 using namespace keyple::core::service;
 using namespace keyple::core::util::cpp;
@@ -46,9 +51,12 @@ public:
     /**
      *
      */
-    std::future<void>* submit(std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob,
-                              AbstractObservableStateAdapter* state,
-                              std::atomic<bool>& cancellationFlag);
+    void execute(std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob);
+
+    /**
+     *
+     */
+    std::shared_ptr<Future> submit(std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob);
 
     /**
      * /!\ MSVC requires operator= to be deleted because of std::future
@@ -66,7 +74,7 @@ private:
     /**
      *
      */
-    std::vector<std::future<void>> mPool;
+    std::vector<std::future<int>> mPool;
 
     /**
      *

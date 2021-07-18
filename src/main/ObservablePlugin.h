@@ -35,7 +35,7 @@ using namespace keyple::core::service::spi;
  *
  * @since 2.0
  */
-class ObservablePlugin : public Plugin {
+class ObservablePlugin : virtual public Plugin {
 public:
     /**
      * Registers a new observer to be notified when a plugin event occurs.

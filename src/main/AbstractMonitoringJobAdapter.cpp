@@ -22,7 +22,7 @@ AbstractMonitoringJobAdapter::AbstractMonitoringJobAdapter(
   const std::shared_ptr<ObservableLocalReaderAdapter> reader)
 : mReader(reader) {}
 
-std::shared_ptr<ObservableLocalReaderAdapter> AbstractMonitoringJobAdapter::getReader()
+std::shared_ptr<ObservableLocalReaderAdapter> AbstractMonitoringJobAdapter::getReader() const
 {
     return mReader;
 }

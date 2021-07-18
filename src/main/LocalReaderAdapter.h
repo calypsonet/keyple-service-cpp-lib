@@ -49,7 +49,7 @@ using FileOccurrence = CardSelectorSpi::FileOccurrence;
  *
  * @since 2.0
  */
-class LocalReaderAdapter : public AbstractReaderAdapter {
+class LocalReaderAdapter : virtual public AbstractReaderAdapter {
 public:
     /**
      * (package-private)<br>
@@ -60,6 +60,11 @@ public:
      * @since 2.0
      */
     LocalReaderAdapter(std::shared_ptr<ReaderSpi> readerSpi, const std::string& pluginName);
+
+    /**
+     *
+     */
+    virtual ~LocalReaderAdapter() = default;
 
     /**
      * (package-private)<br>

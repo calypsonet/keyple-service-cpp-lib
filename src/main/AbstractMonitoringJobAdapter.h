@@ -39,8 +39,7 @@ public:
      * @param reader The reader.
      * @since 2.0
      */
-    AbstractMonitoringJobAdapter(const std::shared_ptr<ObservableLocalReaderAdapter> reader)
-    : mReader(reader) {}
+    AbstractMonitoringJobAdapter(const std::shared_ptr<ObservableLocalReaderAdapter> reader);
 
     /**
      * (package-private)<br>
@@ -49,10 +48,7 @@ public:
      * @return A not null reference.
      * @since 2.0
      */
-    virtual std::shared_ptr<ObservableLocalReaderAdapter> getReader() const final
-    {
-        return mReader;
-    }
+    virtual std::shared_ptr<ObservableLocalReaderAdapter> getReader() const final;
 
     /**
      * (package-private)<br>

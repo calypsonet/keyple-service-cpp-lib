@@ -10,26 +10,53 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
-#pragma once
+#include "ApduResponseAdapter.h"
 
-/* Calypsonet Terminal Reader */
-#include "ObservableCardReader.h"
-
-/* Keyple Core Service */
-#include "Reader.h"
+/* Keyple Core Util */
+#include "Arrays.h"
+#include "KeypleStd.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
-using namespace calypsonet::terminal::reader;
+using namespace keyple::core::util::cpp;
 
-/**
- * Keyple observable card reader.
- *
- * @since 2.0
- */
-class ObservableReader : virtual public Reader, public ObservableCardReader {};
+ApduResponseAdapter::ApduResponseAdapter(const std::vector<uint8_t>& apdu)
+: mApdu(apdu),
+  mStatusWord(((apdu[apdu.size() - 2] & 0x000000FF) << 8) + (apdu[apdu.size() - 1] & 0x000000FF)) {}
+
+const std::vector<uint8_t>& ApduResponseAdapter::getApdu() const
+{
+	return mApdu;
+}
+
+const std::vector<uint8_t> ApduResponseAdapter::getDataOut() const
+{
+	return Arrays::copyOfRange(mApdu, 0, mApdu.size() - 2);
+}
+
+int ApduResponseAdapter::getStatusWord() const
+{
+    return mStatusWord;
+}
+
+std::ostream& operator<<(std::ostream& os, const ApduResponseAdapter& ara)
+{
+	os << "APDU_RESPONSE_ADAPTER: {"
+       << "APDU = " << ara.mApdu << ", "
+	   << "STATUS_WORD = " << ara.mStatusWord
+	   << "}";
+
+	return os;
+}
+
+std::ostream& operator<<(std::ostream& os, const std::shared_ptr<ApduResponseAdapter> ara)
+{
+	os << *ara.get();
+
+	return os;
+}
 
 }
 }

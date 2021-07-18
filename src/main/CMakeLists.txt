@@ -40,6 +40,7 @@ SET(KEYPLE_UTIL_LIB        "keypleutilcpplib")
 INCLUDE_DIRECTORIES(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/spi
 
     ${CALYPSONET_CARD_DIR}/src/main
     ${CALYPSONET_CARD_DIR}/src/main/spi
@@ -51,6 +52,7 @@ INCLUDE_DIRECTORIES(
     ${KEYPLE_COMMON_DIR}/src/main
 
     ${KEYPLE_PLUGIN_DIR}/src/main
+    ${KEYPLE_PLUGIN_DIR}/src/main/spi
     ${KEYPLE_PLUGIN_DIR}/src/main/spi/reader
     ${KEYPLE_PLUGIN_DIR}/src/main/spi/reader/observable
 
@@ -69,12 +71,15 @@ ADD_LIBRARY(
     ${CMAKE_CURRENT_SOURCE_DIR}/AbstractReaderAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/AbstractObservableLocalPluginAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/AbstractObservableStateAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ApduRequestAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ApduResponseAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionScenarioAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalPluginAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalReaderAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ObservableLocalReaderAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ObservableReaderStateServiceAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/cpp/ExecutorService.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/cpp/Future.cpp
 )
 
 FIND_LIBRARY(UTIL ${KEYPLE_UTIL_LIB} HINTS ${KEYPLE_UTIL_DIR}/build/bin)

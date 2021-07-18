@@ -1,5 +1,6 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -12,31 +13,47 @@
 
 #pragma once
 
-/* Keyple Service */
-#include "PluginEvent.h"
+#include <atomic>
+#include <future>
+#include <thread>
 
 namespace keyple {
 namespace core {
 namespace service {
-namespace spi {
+namespace cpp {
 
-using namespace keyple::core::service;
-
-/**
- * Plugin observer recipient of the {@link PluginEvent} from a {@link
- * org.eclipse.keyple.core.service.ObservablePlugin}.
- *
- * @since 2.0
- */
-class PluginObserverSpi {
+class Future final {
 public:
     /**
-     * Invoked when a plugin event occurs.
      *
-     * @param pluginEvent The plugin event.
-     * @since 2.0
      */
-    virtual void onPluginEvent(const std::shared_ptr<PluginEvent> pluginEvent) = 0;
+    Future();
+
+    /**
+     *
+     */
+    bool cancel(const bool mayInterruptIfRunning);
+
+    /**
+     * Returns true if the task was cancelled
+     */
+    bool isCancelled() const;
+
+    /**
+     * Returns true if the task is completed
+     */
+    bool isDone() const;
+
+private:
+    /**
+     *
+     */
+    std::atomic<bool> mRunning;
+
+    /**
+     *
+     */
+    bool mCancelled;
 };
 
 }

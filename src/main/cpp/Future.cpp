@@ -1,5 +1,6 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -10,26 +11,37 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
-#pragma once
-
-/* Calypsonet Terminal Reader */
-#include "ObservableCardReader.h"
-
-/* Keyple Core Service */
-#include "Reader.h"
+#include "Future.h"
 
 namespace keyple {
 namespace core {
 namespace service {
+namespace cpp {
 
-using namespace calypsonet::terminal::reader;
+Future::Future() : mRunning(false), mCancelled(false) {}
 
-/**
- * Keyple observable card reader.
- *
- * @since 2.0
- */
-class ObservableReader : virtual public Reader, public ObservableCardReader {};
+bool Future::cancel(const bool mayInterruptIfRunning)
+{
+    if (!mRunning) {
+        return false;
+    }
+
+    mRunning = false;
+    mCancelled = true;
+
+    return true;
+}
+
+bool Future::isDone() const
+{
+    // mMonitoringEvent->wait_for(std::chrono::seconds(0)) != std::future_status::ready)
+    return !mRunning;
+}
+
+bool Future::isCancelled() const
+{
+    return mCancelled;
+}
 
 }
 }

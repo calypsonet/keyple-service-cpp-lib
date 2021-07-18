@@ -17,6 +17,7 @@
 #include <vector>
 
 /* Calypsonet Terminal Card */
+#include "CardSelectionRequestSpi.h"
 #include "CardSelectionResponseApi.h"
 #include "ProxyReaderApi.h"
 
@@ -27,6 +28,7 @@
 #include "LoggerFactory.h"
 
 /* Keyple Core Service */
+#include "MultiSelectionProcessing.h"
 #include "Reader.h"
 
 namespace keyple {
@@ -44,7 +46,7 @@ using namespace keyple::core::util::cpp;
  *
  * @since 2.0
  */
-class AbstractReaderAdapter : public Reader, public ProxyReaderApi {
+class AbstractReaderAdapter : virtual public Reader, public ProxyReaderApi {
 public:
     /**
      * (package-private)<br>
@@ -91,7 +93,7 @@ public:
      */
     virtual const std::vector<std::shared_ptr<CardSelectionResponseApi>>
         transmitCardSelectionRequests(
-            const std::vector<CardSelectionRequestSpi>& cardSelectionRequests,
+            const std::vector<std::shared_ptr<CardSelectionRequestSpi>>& cardSelectionRequests,
             const MultiSelectionProcessing multiSelectionProcessing,
             const ChannelControl channelControl) final;
 
