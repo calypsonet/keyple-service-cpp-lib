@@ -49,7 +49,7 @@ using FileOccurrence = CardSelectorSpi::FileOccurrence;
  *
  * @since 2.0
  */
-class LocalReaderAdapter : virtual public AbstractReaderAdapter {
+class LocalReaderAdapter : public AbstractReaderAdapter {
 public:
     /**
      * (package-private)<br>
@@ -101,7 +101,6 @@ public:
      *
      * @since 2.0
      */
-
     virtual void doUnregister() override;
 
     /**
@@ -207,6 +206,8 @@ private:
      */
     class SelectionStatus {
     public:
+        friend LocalReaderAdapter;
+
         /**
          * Constructor.
          *

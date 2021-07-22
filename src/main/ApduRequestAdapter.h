@@ -33,7 +33,7 @@ using namespace calypsonet::terminal::card::spi;
  *
  * @since 2.0
  */
-class ApduRequestAdapter : public ApduRequestSpi {
+class ApduRequestAdapter final : public ApduRequestSpi {
 public:
     /**
      * Builds an APDU request from a raw byte buffer.

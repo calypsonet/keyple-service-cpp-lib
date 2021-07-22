@@ -19,6 +19,7 @@
 
 /* Keyple Core Service */
 #include "Future.h"
+#include "Runnable.h"
 
 /* Keyple Core Util */
 #include "LoggerFactory.h"
@@ -56,7 +57,7 @@ public:
     /**
      *
      */
-    std::shared_ptr<Future> submit(std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob);
+    std::shared_ptr<Future> submit(std::shared_ptr<Runnable> monitoringJob);
 
     /**
      * /!\ MSVC requires operator= to be deleted because of std::future

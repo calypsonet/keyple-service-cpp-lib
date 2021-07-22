@@ -62,6 +62,11 @@ public:
                           const std::string& pluginName);
 
     /**
+     *
+     */
+    virtual ~AbstractReaderAdapter() = default;
+
+    /**
      * (package-private) <br>
      * Gets the plugin name.
      *
@@ -74,8 +79,8 @@ public:
      * (package-private)<br>
      * Performs a selection scenario following a card detection.
      *
-     * <p>Each scenario selection case consists in checking if the card matches the profile defined in
-     * the CardSelectionRequestSpi and possibly sending the optional commands provided.<br>
+     * <p>Each scenario selection case consists in checking if the card matches the profile defined
+     * in the CardSelectionRequestSpi and possibly sending the optional commands provided.<br>
      * The cases are processed sequentially in the order in which they are found in the list.<br>
      * Processing continues or stops after the first successful selection according to the policy
      * defined by MultiSelectionProcessing}.<br>

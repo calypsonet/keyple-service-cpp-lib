@@ -13,70 +13,78 @@
 #pragma once
 
 #include <memory>
+#include <typeinfo>
 
 /* Keyple Core Service */
 #include "AbstractObservableStateAdapter.h"
+#include "ExecutorService.h"
 #include "ObservableLocalReaderAdapter.h"
-#include "Runnable.h"
+
+/* Keyple Core Util */
+#include "LoggerFactory.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
-using namespace keyple::core::service::cpp;
+using namespace keyple::core::util::cpp;
 
-class AbstractObservableStateAdapter;
+using InternalEvent = ObservableLocalReaderAdapter::InternalEvent;
 
 /**
  * (package-private)<br>
- * Abstract class for all monitoring jobs.
+ * Wait for card insertion state implementation.
+ *
+ * <p>The state during which the insertion of a card is expected.
+ *
+ * <ul>
+ *   <li>Upon CARD_INSERTED event, the default selection is processed if required and if the
+ *       conditions are met (ALWAYS or CARD_MATCHED) the machine changes state for
+ *       WAIT_FOR_CARD_PROCESSING.
+ *   <li>Upon STOP_DETECT event, the machine changes state for WAIT_FOR_CARD_DETECTION.
+ *   <li>Upon CARD_REMOVED event, the machine changes state for WAIT_FOR_CARD_DETECTION.
+ * </ul>
  *
  * @since 2.0
  */
-class AbstractMonitoringJobAdapter {
+class WaitForCardInsertionStateAdapter final : public AbstractObservableStateAdapter {
 public:
     /**
      * (package-private)<br>
      * Creates an instance.
      *
-     * @param reader The reader.
+     * @param reader The observable local reader adapter.
+     * @param monitoringJob The monitoring job.
+     * @param executorService The executor service to use.
      * @since 2.0
      */
-    AbstractMonitoringJobAdapter(const std::shared_ptr<ObservableLocalReaderAdapter> reader);
+    WaitForCardInsertionStateAdapter(
+        std::shared_ptr<ObservableLocalReaderAdapter> reader,
+        std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob,
+        std::shared_ptr<ExecutorService> executorService);
 
     /**
      * (package-private)<br>
-     * Gets the reader.
+     * Creates an instance.
      *
-     * @return A not null reference.
+     * @param reader The observable local reader adapter.
      * @since 2.0
      */
-    virtual std::shared_ptr<ObservableLocalReaderAdapter> getReader() const final;
+    WaitForCardInsertionStateAdapter(std::shared_ptr<ObservableLocalReaderAdapter> reader);
 
     /**
-     * (package-private)<br>
-     * Gets the task of the monitoring job.
-     *
-     * @param monitoringState reference to the state the monitoring job in running against.
-     * @return A not null reference.
-     * @since 2.0
-     */
-    virtual std::shared_ptr<Runnable> getMonitoringJob(
-        const std::shared_ptr<AbstractObservableStateAdapter> monitoringState) = 0;
-
-    /**
-     * (package-private)<br>
-     * Stops/interrupts the monitoring job
+     * {@inheritDoc}
      *
      * @since 2.0
      */
-    virtual void stop() = 0;
+    virtual void onEvent(const InternalEvent event) override;
 
 private:
     /**
      *
      */
-    const std::shared_ptr<ObservableLocalReaderAdapter> mReader;
+    const std::unique_ptr<Logger> mLogger =
+        LoggerFactory::getLogger(typeid(WaitForCardInsertionStateAdapter));
 };
 
 }

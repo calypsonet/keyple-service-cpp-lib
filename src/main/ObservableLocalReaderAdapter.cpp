@@ -16,10 +16,19 @@
 #include "CardBrokenCommunicationException.h"
 #include "ReaderBrokenCommunicationException.h"
 
+/* Calypsonet Terminal Reader */
+#include "ReaderCommunicationException.h"
+
 /* Keyple Core Plugin */
 #include "CardIOException.h"
 #include "ObservableReaderStateServiceAdapter.h"
 #include "ReaderIOException.h"
+#include "WaitForCardInsertionAutonomousSpi.h"
+#include "WaitForCardRemovalAutonomousSpi.h"
+
+/* Keyple Core Service */
+#include "ReaderEventAdapter.h"
+#include "ScheduledCardSelectionsResponseAdapter.h"
 
 /* Keyple Core Util */
 #include "Exception.h"
@@ -30,7 +39,10 @@ namespace core {
 namespace service {
 
 using namespace calypsonet::terminal::card;
+using namespace calypsonet::terminal::reader;
 using namespace keyple::core::plugin;
+using namespace keyple::core::plugin::spi::reader::observable::state::insertion;
+using namespace keyple::core::plugin::spi::reader::observable::state::removal;
 using namespace keyple::core::util::cpp;
 using namespace keyple::core::util::cpp::exception;
 
@@ -41,20 +53,24 @@ const std::string ObservableLocalReaderAdapter::READER_MONITORING_ERROR =
 
 ObservableLocalReaderAdapter::ObservableLocalReaderAdapter(
   std::shared_ptr<ObservableReaderSpi> observableReaderSpi, const std::string& pluginName)
-: LocalReaderAdapter(observableReaderSpi),
+: LocalReaderAdapter(observableReaderSpi, pluginName),
   mObservableReaderSpi(observableReaderSpi),
-  mStateService(std::make_shared<ObservableReaderStateServiceAdapter>(this)),
+  mStateService(std::make_shared<ObservableReaderStateServiceAdapter>(shared_from_this())),
   mObservationManager(
       std::make_shared<ObservationManagerAdapter<CardReaderObserverSpi,
                                                  CardReaderObservationExceptionHandlerSpi>>(
-        pluginName, getName()))
+          pluginName, getName()))
 {
-    if (std::dynamic_pointer_cast<WaitForCardInsertionAutonomousSpi>observableReaderSpi) {
-        observableReaderSpi->connect(this);
+    auto insert = std::dynamic_pointer_cast<WaitForCardInsertionAutonomousSpi>(observableReaderSpi);
+    if (insert) {
+        insert->connect(
+            std::dynamic_pointer_cast<WaitForCardInsertionAutonomousReaderApi>(shared_from_this()));
     }
 
-    if (std::dynamic_pointer_cast<WaitForCardRemovalAutonomousSpi>(observableReaderSpi)) {
-        observableReaderSpi->connect(this);
+    auto remove = std::dynamic_pointer_cast<WaitForCardRemovalAutonomousSpi>(observableReaderSpi);
+    if (remove) {
+        remove->connect(
+            std::dynamic_pointer_cast<WaitForCardRemovalAutonomousReaderApi>(shared_from_this()));
     }
 }
 
@@ -88,11 +104,10 @@ bool ObservableLocalReaderAdapter::isCardPresentPing()
         mObservableReaderSpi->transmitApdu(APDU_PING_CARD_PRESENCE);
     } catch (const ReaderIOException& e) {
         /* Notify the reader communication failure with the exception handler */
-        getObservationExceptionHandler()
-            ->onReaderObservationError(
-                getPluginName(),
-                getName(),
-                std::make_shared<ReaderCommunicationException>(READER_MONITORING_ERROR, e));
+        const ReaderCommunicationException ex(READER_MONITORING_ERROR, e);
+        getObservationExceptionHandler()->onReaderObservationError(getPluginName(),
+                                                                   getName(),
+                                                                   ex);
     } catch (const CardIOException& e) {
         mLogger->trace("[%] Exception occurred in isCardPresentPing. Message: %\n",
                        getName(),
@@ -125,9 +140,9 @@ std::shared_ptr<ReaderEvent> ObservableLocalReaderAdapter::processCardInserted()
     try {
         const std::vector<std::shared_ptr<CardSelectionResponseApi>> cardSelectionResponses =
             transmitCardSelectionRequests(
-                mCardSelectionScenario.getCardSelectionRequests(),
-                mCardSelectionScenario.getMultiSelectionProcessing(),
-                mCardSelectionScenario.getChannelControl());
+                mCardSelectionScenario->getCardSelectionRequests(),
+                mCardSelectionScenario->getMultiSelectionProcessing(),
+                mCardSelectionScenario->getChannelControl());
 
         if (hasACardMatched(cardSelectionResponses)) {
             return std::make_shared<ReaderEventAdapter>(
@@ -161,11 +176,10 @@ std::shared_ptr<ReaderEvent> ObservableLocalReaderAdapter::processCardInserted()
 
     } catch (const ReaderBrokenCommunicationException& e) {
         /* Notify the reader communication failure with the exception handler */
-        getObservationExceptionHandler()
-            ->onReaderObservationError(
-                getPluginName(),
-                getName(),
-                std::make_shared<ReaderCommunicationException>(READER_MONITORING_ERROR, e));
+        const ReaderCommunicationException ex(READER_MONITORING_ERROR, e);
+        getObservationExceptionHandler()->onReaderObservationError(getPluginName(),
+                                                                   getName(),
+                                                                   ex);
 
     } catch (const CardBrokenCommunicationException& e) {
         /* The last transmission failed, close the logical and physical channels */
@@ -188,15 +202,27 @@ std::shared_ptr<ReaderEvent> ObservableLocalReaderAdapter::processCardInserted()
         mObservableReaderSpi->closePhysicalChannel();
     } catch (const ReaderIOException& e) {
         /* Notify the reader communication failure with the exception handler */
-        getObservationExceptionHandler()
-            ->onReaderObservationError(
-                getPluginName(),
-                getName(),
-                std::make_shared<ReaderCommunicationException>(READER_MONITORING_ERROR, e));
+        const ReaderCommunicationException ex(READER_MONITORING_ERROR, e);
+        getObservationExceptionHandler()->onReaderObservationError(getPluginName(),
+                                                                   getName(),
+                                                                   ex);
     }
 
     /* No event returned */
     return nullptr;
+}
+
+bool ObservableLocalReaderAdapter::hasACardMatched(
+        const std::vector<std::shared_ptr<CardSelectionResponseApi>>& cardSelectionResponses)
+{
+    for (const auto& cardSelectionResponse : cardSelectionResponses) {
+        if (cardSelectionResponse != nullptr && cardSelectionResponse->hasMatched()) {
+            mLogger->trace("[%] a default selection has matched\n", getName());
+            return true;
+        }
+    }
+
+    return false;
 }
 
 void ObservableLocalReaderAdapter::processCardRemoved()
@@ -218,7 +244,7 @@ void ObservableLocalReaderAdapter::notifyObservers(const std::shared_ptr<ReaderE
 {
     mLogger->debug("The reader '%' is notifying the reader event '%' to % observers\n",
                    getName(),
-                   event->getType()->name(),
+                   event->getType(),
                    countObservers());
 
     std::vector<std::shared_ptr<CardReaderObserverSpi>> observers =
@@ -232,19 +258,21 @@ void ObservableLocalReaderAdapter::notifyObservers(const std::shared_ptr<ReaderE
     } else {
         /* Asynchronous notification */
         for (const auto& observer : observers) {
-            mObservationManager->getEventNotificationExecutorService()
-                               ->execute(
-                                   new Runnable() {
-                                   @Override
-                                   public void run() {
-                                       notifyObserver(observer, event);
-                                   }
-                                   });
+            (void)observer;
+            // FIXME
+            // mObservationManager->getEventNotificationExecutorService()
+            //                    ->execute(
+            //                        new Runnable() {
+            //                        @Override
+            //                        public void run() {
+            //                            notifyObserver(observer, event);
+            //                        }
+            //                        });
         }
     }
 }
 
-void ObservableLocalReaderAdapter::notifyObserver(std::shared_ptr<CardReaderObserverSpi< observer,
+void ObservableLocalReaderAdapter::notifyObserver(std::shared_ptr<CardReaderObserverSpi> observer,
                                                   const std::shared_ptr<ReaderEvent> event)
 {
     try {
@@ -270,9 +298,9 @@ void ObservableLocalReaderAdapter::scheduleCardSelectionScenario(
     mDetectionMode = detectionMode;
 }
 
-void ObservableLocalReaderAdapter::unregister()
+void ObservableLocalReaderAdapter::doUnregister()
 {
-    LocalReaderAdapter::unregister();
+    LocalReaderAdapter::doUnregister();
 
     try {
         notifyObservers(
@@ -290,7 +318,7 @@ void ObservableLocalReaderAdapter::unregister()
     mStateService->shutdown();
 }
 
-virtual ObservableLocalReaderAdapter::isCardPresent() override
+bool ObservableLocalReaderAdapter::isCardPresent()
 {
     checkStatus();
 
@@ -320,7 +348,7 @@ void ObservableLocalReaderAdapter::removeObserver(std::shared_ptr<CardReaderObse
     mObservationManager->removeObserver(observer);
 }
 
-int ObservableLocalReaderAdapter::countObservers()
+int ObservableLocalReaderAdapter::countObservers() const
 {
     return mObservationManager->countObservers();
 }
@@ -340,7 +368,6 @@ void ObservableLocalReaderAdapter::startCardDetection(const DetectionMode detect
                    getPluginName(),
                    detectionMode);
 
-    Assert::getInstance().notNull(detectionMode, "detectionMode");
     mDetectionMode = detectionMode;
     mStateService->onEvent(InternalEvent::START_DETECT);
 }
@@ -363,13 +390,13 @@ void ObservableLocalReaderAdapter::finalizeCardProcessing()
     mStateService->onEvent(InternalEvent::CARD_PROCESSED);
 }
 
-void ObservableLocalReaderAdapter::setEventNotificationExecutorService(
-    std::shared_ptr<ExecutorService> eventNotificationExecutorService)
-{
-    checkStatus();
+// void ObservableLocalReaderAdapter::setEventNotificationExecutorService(
+//     std::shared_ptr<ExecutorService> eventNotificationExecutorService)
+// {
+//     checkStatus();
 
-    mObservationManager->setEventNotificationExecutorService(eventNotificationExecutorService);
-}
+//     mObservationManager->setEventNotificationExecutorService(eventNotificationExecutorService);
+// }
 
 void ObservableLocalReaderAdapter::setReaderObservationExceptionHandler(
     std::shared_ptr<CardReaderObservationExceptionHandlerSpi> exceptionHandler)

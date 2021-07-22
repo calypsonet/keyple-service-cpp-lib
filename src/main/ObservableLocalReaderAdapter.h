@@ -66,7 +66,8 @@ class ObservableLocalReaderAdapter final
 : public LocalReaderAdapter,
   public ObservableReader,
   public WaitForCardInsertionAutonomousReaderApi,
-  public WaitForCardRemovalAutonomousReaderApi {
+  public WaitForCardRemovalAutonomousReaderApi,
+  public std::enable_shared_from_this<ObservableLocalReaderAdapter> {
 public:
     /**
      *
@@ -418,6 +419,15 @@ private:
      */
     void notifyObserver(std::shared_ptr<CardReaderObserverSpi> observer,
                         const std::shared_ptr<ReaderEvent> event);
+
+    /**
+     * Check if a card has matched.
+     *
+     * @param cardSelectionResponses The responses received.
+     * @return True if a card has matched, false if not.
+     */
+    bool hasACardMatched(
+        const std::vector<std::shared_ptr<CardSelectionResponseApi>>& cardSelectionResponses);
 };
 
 }

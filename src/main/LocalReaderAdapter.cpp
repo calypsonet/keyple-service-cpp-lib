@@ -14,9 +14,22 @@
 
 #include <sstream>
 
+/* Calypsonet Terminal Card */
+#include "CardBrokenCommunicationException.h"
+#include "CardResponseApi.h"
+#include "ReaderBrokenCommunicationException.h"
+#include "UnexpectedStatusWordException.h"
+
+/* Calypsonet Terminal Reader */
+#include "ReaderCommunicationException.h"
+#include "ReaderProtocolNotSupportedException.h"
+
 /* Keyple Core Util */
+#include "ApduUtil.h"
 #include "ByteArrayUtil.h"
 #include "IllegalStateException.h"
+#include "KeypleAssert.h"
+#include "KeypleStd.h"
 #include "System.h"
 
 /* Keyple Core Plugin */
@@ -27,21 +40,25 @@
 /* Keyple Core Service */
 #include "ApduRequestAdapter.h"
 #include "ApduResponseAdapter.h"
+#include "CardResponseAdapter.h"
+#include "CardSelectionResponseAdapter.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
+using namespace calypsonet::terminal::card;
+using namespace calypsonet::terminal::reader;
 using namespace keyple::core::plugin;
 using namespace keyple::core::plugin::spi::reader;
 using namespace keyple::core::util;
 using namespace keyple::core::util::cpp;
 using namespace keyple::core::util::cpp::exception;
 
+/* LOCAL READER ADAPTER ------------------------------------------------------------------------- */
+
 const std::vector<uint8_t> LocalReaderAdapter::APDU_GET_RESPONSE = {0x00, 0xC0, 0x00, 0x00, 0x00};
 const int LocalReaderAdapter::DEFAULT_SUCCESSFUL_CODE = 0x9000;
-
-/* LOCAL READER ADAPTER ------------------------------------------------------------------------- */
 
 LocalReaderAdapter::LocalReaderAdapter(std::shared_ptr<ReaderSpi> readerSpi,
                                        const std::string& pluginName)
@@ -166,11 +183,12 @@ std::shared_ptr<ApduResponseApi> LocalReaderAdapter::selectByAid(
 {
     std::shared_ptr<ApduResponseApi> fciResponse = nullptr;
 
-    if (std::dynamic_pointer_cast<AutonomousSelectionReaderSpi>(mReaderSpi)) {
+    auto reader = std::dynamic_pointer_cast<AutonomousSelectionReaderSpi>(mReaderSpi);
+    if (reader) {
         const std::vector<uint8_t>& aid = cardSelector->getAid();
         const uint8_t p2 = computeSelectApplicationP2(cardSelector->getFileOccurrence(),
                                                       cardSelector->getFileControlInformation());
-        const std::vector<uint8_t> selectionDataBytes = mReaderSpi->openChannelForAid(aid, p2);
+        const std::vector<uint8_t> selectionDataBytes = reader->openChannelForAid(aid, p2);
         fciResponse = std::make_shared<ApduResponseAdapter>(selectionDataBytes);
     } else {
         fciResponse = processExplicitAidSelection(cardSelector);
@@ -184,10 +202,10 @@ bool LocalReaderAdapter::checkPowerOnData(const std::string& powerOnData,
 {
     mLogger->debug("[%] openLogicalChannel => PowerOnData = %\n", getName(), powerOnData);
 
-    const std::string powerOnDataRegex = cardSelector->getPowerOnDataRegex();
+    const std::regex powerOnDataRegex(cardSelector->getPowerOnDataRegex());
 
     /* Check the power-on data */
-    if (powerOnData != "" && powerOnDataRegex != "" && !powerOnData.matches(powerOnDataRegex)) {
+    if (powerOnData != "" && !std::regex_match(powerOnData, powerOnDataRegex)) {
         mLogger->info("[%] openLogicalChannel => Power-on data didn't match. PowerOnData = %, " \
                       "regex filter = %\n",
                       getName(),
@@ -202,22 +220,22 @@ bool LocalReaderAdapter::checkPowerOnData(const std::string& powerOnData,
     }
 }
 
-std::shared_ptr<SelectionStatus> LocalReaderAdapter::processSelection(
+std::shared_ptr<LocalReaderAdapter::SelectionStatus> LocalReaderAdapter::processSelection(
     std::shared_ptr<CardSelectorSpi> cardSelector)
 {
     std::string powerOnData = "";
     std::shared_ptr<ApduResponseApi> fciResponse = nullptr;
     bool hasMatched = true;
 
-    if (cardSelector->getCardProtocol() != nullptr && mUseDefaultProtocol) {
+    if (cardSelector->getCardProtocol() != "" && mUseDefaultProtocol) {
         throw IllegalStateException("Protocol " +
                                     cardSelector->getCardProtocol() +
                                     " not associated to a reader protocol.");
     }
 
     /* Check protocol if enabled */
-    if (cardSelector->getCardProtocol() == nullptr ||
-        cardSelector->getCardProtocol() == mCurrentProtocol)) {
+    if (cardSelector->getCardProtocol() == "" ||
+        cardSelector->getCardProtocol() == mCurrentProtocol) {
         /* Protocol check succeeded, check power-on data if enabled */
         powerOnData = mReaderSpi->getPowerOnData();
 
@@ -227,7 +245,9 @@ std::shared_ptr<SelectionStatus> LocalReaderAdapter::processSelection(
                 fciResponse = selectByAid(cardSelector);
                 const std::vector<int>& statusWords =
                     cardSelector->getSuccessfulSelectionStatusWords();
-                hasMatched = statusWords.find(fciResponse->getStatusWord()) != statusWords.end();
+                hasMatched = std::find(statusWords.begin(),
+                                       statusWords.end(),
+                                       fciResponse->getStatusWord()) != statusWords.end();
             } else {
                 fciResponse = nullptr;
             }
@@ -255,25 +275,28 @@ std::shared_ptr<CardSelectionResponseApi> LocalReaderAdapter::processCardSelecti
         selectionStatus = processSelection(cardSelectionRequest->getCardSelector());
     } catch (const ReaderIOException& e) {
         throw ReaderBrokenCommunicationException(
-                std::make_shared<CardResponseAdapter>({}, false),
+                std::make_shared<CardResponseAdapter>(
+                      std::vector<std::shared_ptr<ApduResponseApi>>({}), false),
                 false,
                 e.getMessage(),
                 e);
     } catch (const CardIOException& e) {
         throw CardBrokenCommunicationException(
-                  std::make_shared<CardResponseAdapter>({}, false),
+                  std::make_shared<CardResponseAdapter>(
+                      std::vector<std::shared_ptr<ApduResponseApi>>({}), false),
                   false,
                   e.getMessage(),
                   e);
     }
 
-    if (!selectionStatus.hasMatched) {
+    if (!selectionStatus->mHasMatched) {
         /* The selection failed, return an empty response having the selection status */
         return std::make_shared<CardSelectionResponseAdapter>(
-                   selectionStatus->powerOnData,
-                   selectionStatus->selectApplicationResponse,
+                   selectionStatus->mPowerOnData,
+                   selectionStatus->mSelectApplicationResponse,
                    false,
-                   std::make_shared<CardResponseAdapter({}, false));
+                   std::make_shared<CardResponseAdapter>(
+                      std::vector<std::shared_ptr<ApduResponseApi>>({}), false));
     }
 
     mLogicalChannelIsOpen = true;
@@ -286,10 +309,11 @@ std::shared_ptr<CardSelectionResponseApi> LocalReaderAdapter::processCardSelecti
         cardResponse = nullptr;
     }
 
-    return std::make_shared<CardSelectionResponseAdapter>(selectionStatus->powerOnData,
-                                                          selectionStatus->selectApplicationResponse,
-                                                          true,
-                                                          cardResponse);
+    return std::make_shared<CardSelectionResponseAdapter>(
+               selectionStatus->mPowerOnData,
+               selectionStatus->mSelectApplicationResponse,
+               true,
+               cardResponse);
 }
 
 std::shared_ptr<ApduResponseApi> LocalReaderAdapter::case4HackGetResponse()
@@ -311,7 +335,7 @@ std::shared_ptr<ApduResponseApi> LocalReaderAdapter::case4HackGetResponse()
         std::make_shared<ApduResponseAdapter>(getResponseHackResponseBytes);
 
     timeStamp = System::nanoTime();
-    elapsed10ms = (timeStamp - before) / 100000;
+    elapsed10ms = (timeStamp - mBefore) / 100000;
     mBefore = timeStamp;
 
     mLogger->debug("[%] case4HackGetResponse => Internal %, elapsed % ms\n",
@@ -354,7 +378,6 @@ std::shared_ptr<ApduResponseApi> LocalReaderAdapter::processApduRequest(
                    getName(),
                    apduResponse,
                    elapsed10ms / 10.0);
-    }
 
     return apduResponse;
 }
@@ -371,8 +394,11 @@ std::shared_ptr<CardResponseApi> LocalReaderAdapter::processCardRequest(
             const auto apduResponse = processApduRequest(apduRequest);
             apduResponses.push_back(apduResponse);
 
+            const std::vector<int>& successfulSW = apduRequest->getSuccessfulStatusWords();
             if (cardRequest->stopOnUnsuccessfulStatusWord() &&
-                apduRequest->getSuccessfulStatusWords().find(apduResponse->getStatusWord()) ==
+                std::find(successfulSW.begin(),
+                          successfulSW.end(),
+                          apduResponse->getStatusWord()) ==
                     apduRequest->getSuccessfulStatusWords().end()) {
                 throw UnexpectedStatusWordException(
                           std::make_shared<CardResponseAdapter>(apduResponses, false),
@@ -434,7 +460,7 @@ void LocalReaderAdapter::deactivateProtocol(const std::string& readerProtocol)
     checkStatus();
     Assert::getInstance().notEmpty(readerProtocol, "readerProtocol");
 
-    mProtocolAssociations->erase(readerProtocol);
+    mProtocolAssociations.erase(readerProtocol);
 
     if (!mReaderSpi->isProtocolSupported(readerProtocol)) {
         throw ReaderProtocolNotSupportedException(readerProtocol);
@@ -456,9 +482,7 @@ void LocalReaderAdapter::activateProtocol(const std::string& readerProtocol,
 
     mReaderSpi->activateProtocol(readerProtocol);
 
-    mProtocol
-
-    Associations.insert({readerProtocol, applicationProtocol});
+    mProtocolAssociations.insert({readerProtocol, applicationProtocol});
 }
 
 bool LocalReaderAdapter::isCardPresent()
@@ -501,7 +525,7 @@ std::vector<std::shared_ptr<CardSelectionResponseApi>>
     LocalReaderAdapter::processCardSelectionRequests(
         const std::vector<std::shared_ptr<CardSelectionRequestSpi>>& cardSelectionRequests,
         const MultiSelectionProcessing multiSelectionProcessing,
-        const ChannelControl channelControl) override final
+        const ChannelControl channelControl)
 {
     checkStatus();
 
@@ -554,13 +578,13 @@ std::vector<std::shared_ptr<CardSelectionResponseApi>>
     return cardSelectionResponses;
 }
 
-void LocalReaderAdapter::unregister() override
+void LocalReaderAdapter::doUnregister()
 {
-    AbstractReaderAdapter::unregister();
+    AbstractReaderAdapter::doUnregister();
     mReaderSpi->onUnregister();
 }
 
-virtual void LocalReaderAdapter::closeLogicalAndPhysicalChannelsSilently()
+void LocalReaderAdapter::closeLogicalAndPhysicalChannelsSilently()
 {
     closeLogicalChannel();
 
@@ -595,7 +619,7 @@ LocalReaderAdapter::SelectionStatus::SelectionStatus(
   const std::shared_ptr<ApduResponseApi> selectApplicationResponse,
   const bool hasMatched)
 : mPowerOnData(powerOnData),
-  mSelectApplicationResponse(selectApplicationResponse)
+  mSelectApplicationResponse(selectApplicationResponse),
   mHasMatched(hasMatched) {}
 
 }

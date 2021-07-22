@@ -16,25 +16,38 @@
 #include "IllegalStateException.h"
 
 /* Keyple Core Plugin */
-#include "CardRemovalPassiveMonitoringJobAdapter.h"
 #include "DontWaitForCardRemovalDuringProcessingSpi.h"
 #include "WaitForCardInsertionAutonomousSpi.h"
 #include "WaitForCardInsertionBlockingSpi.h"
 #include "WaitForCardInsertionNonBlockingSpi.h"
+#include "WaitForCardRemovalAutonomousSpi.h"
+#include "WaitForCardRemovalDuringProcessingSpi.h"
+#include "WaitForCardRemovalNonBlockingSpi.h"
+
+/* Keyple Core Service */
+#include "CardInsertionActiveMonitoringJobAdapter.h"
+#include "CardInsertionPassiveMonitoringJobAdapter.h"
+#include "CardRemovalActiveMonitoringJobAdapter.h"
+#include "CardRemovalPassiveMonitoringJobAdapter.h"
+#include "WaitForCardInsertionStateAdapter.h"
 #include "WaitForCardProcessingStateAdapter.h"
+#include "WaitForCardRemovalStateAdapter.h"
 #include "WaitForStartDetectStateAdapter.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
+using namespace keyple::core::plugin::spi::reader::observable::state::insertion;
+using namespace keyple::core::plugin::spi::reader::observable::state::processing;
+using namespace keyple::core::plugin::spi::reader::observable::state::removal;
 using namespace keyple::core::util::cpp::exception;
 
 ObservableReaderStateServiceAdapter::ObservableReaderStateServiceAdapter(
   std::shared_ptr<ObservableLocalReaderAdapter> reader)
 : mReader(reader),
   mReaderSpi(reader->getObservableReaderSpi()),
-  mExecutorService(std::make_shared<ExecutorService>)
+  mExecutorService(std::make_shared<ExecutorService>())
 {
     /* Wait for start */
     mStates.insert({MonitoringState::WAIT_FOR_START_DETECTION,

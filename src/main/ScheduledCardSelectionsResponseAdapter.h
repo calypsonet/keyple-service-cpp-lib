@@ -13,70 +13,53 @@
 #pragma once
 
 #include <memory>
+#include <vector>
 
-/* Keyple Core Service */
-#include "AbstractObservableStateAdapter.h"
-#include "ObservableLocalReaderAdapter.h"
-#include "Runnable.h"
+/* Calypsonet Terminal Card */
+#include "CardSelectionResponseApi.h"
+
+/* Calypsonet Terminal Reader */
+#include "ScheduledCardSelectionsResponse.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
-using namespace keyple::core::service::cpp;
-
-class AbstractObservableStateAdapter;
+using namespace calypsonet::terminal::card;
+using namespace calypsonet::terminal::reader::selection;
 
 /**
  * (package-private)<br>
- * Abstract class for all monitoring jobs.
+ * POJO containing the card selection responses received during the card selection process.
  *
  * @since 2.0
  */
-class AbstractMonitoringJobAdapter {
+class ScheduledCardSelectionsResponseAdapter : public ScheduledCardSelectionsResponse {
 public:
     /**
      * (package-private)<br>
-     * Creates an instance.
+     * Constructor
      *
-     * @param reader The reader.
+     * @param cardSelectionResponses The card selection responses.
      * @since 2.0
      */
-    AbstractMonitoringJobAdapter(const std::shared_ptr<ObservableLocalReaderAdapter> reader);
+    ScheduledCardSelectionsResponseAdapter(
+        const std::vector<std::shared_ptr<CardSelectionResponseApi>>& cardSelectionResponses);
 
     /**
      * (package-private)<br>
-     * Gets the reader.
+     * Gets the card responses.
      *
-     * @return A not null reference.
+     * @return A list of {@link CardSelectionResponseApi}.
      * @since 2.0
      */
-    virtual std::shared_ptr<ObservableLocalReaderAdapter> getReader() const final;
-
-    /**
-     * (package-private)<br>
-     * Gets the task of the monitoring job.
-     *
-     * @param monitoringState reference to the state the monitoring job in running against.
-     * @return A not null reference.
-     * @since 2.0
-     */
-    virtual std::shared_ptr<Runnable> getMonitoringJob(
-        const std::shared_ptr<AbstractObservableStateAdapter> monitoringState) = 0;
-
-    /**
-     * (package-private)<br>
-     * Stops/interrupts the monitoring job
-     *
-     * @since 2.0
-     */
-    virtual void stop() = 0;
+    const std::vector<std::shared_ptr<CardSelectionResponseApi>>& getCardSelectionResponses() const;
 
 private:
     /**
      *
      */
-    const std::shared_ptr<ObservableLocalReaderAdapter> mReader;
+    const std::vector<std::shared_ptr<CardSelectionResponseApi>> mCardSelectionResponses;
 };
 
 }

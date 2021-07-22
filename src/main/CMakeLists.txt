@@ -55,6 +55,9 @@ INCLUDE_DIRECTORIES(
     ${KEYPLE_PLUGIN_DIR}/src/main/spi
     ${KEYPLE_PLUGIN_DIR}/src/main/spi/reader
     ${KEYPLE_PLUGIN_DIR}/src/main/spi/reader/observable
+    ${KEYPLE_PLUGIN_DIR}/src/main/spi/reader/observable/state/insertion
+    ${KEYPLE_PLUGIN_DIR}/src/main/spi/reader/observable/state/processing
+    ${KEYPLE_PLUGIN_DIR}/src/main/spi/reader/observable/state/removal
 
     ${KEYPLE_UTIL_DIR}/src/main
     ${KEYPLE_UTIL_DIR}/src/main/cpp
@@ -73,11 +76,24 @@ ADD_LIBRARY(
     ${CMAKE_CURRENT_SOURCE_DIR}/AbstractObservableStateAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ApduRequestAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ApduResponseAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/CardInsertionActiveMonitoringJobAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/CardInsertionPassiveMonitoringJobAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/CardRemovalActiveMonitoringJobAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/CardRemovalPassiveMonitoringJobAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/CardResponseAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionResponseAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionScenarioAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalPluginAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalReaderAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ObservableLocalReaderAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ObservableReaderStateServiceAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/PluginEventAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ReaderEventAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ScheduledCardSelectionsResponseAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/WaitForCardInsertionStateAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/WaitForCardProcessingStateAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/WaitForCardRemovalStateAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/WaitForStartDetectStateAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/cpp/ExecutorService.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/cpp/Future.cpp
 )

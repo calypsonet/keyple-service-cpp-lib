@@ -23,6 +23,7 @@
 /* Keyple Core Service */
 #include "AbstractObservableStateAdapter.h"
 #include "ExecutorService.h"
+#include "MonitoringState.h"
 #include "ObservableLocalReaderAdapter.h"
 
 /* Keyple Core Plugin */
@@ -36,7 +37,6 @@ using namespace keyple::core::plugin::spi::reader::observable;
 using namespace keyple::core::service::cpp;
 using namespace keyple::core::util::cpp;
 
-using MonitoringState = AbstractObservableStateAdapter::MonitoringState;
 using InternalEvent = ObservableLocalReaderAdapter::InternalEvent;
 
 /**
@@ -104,9 +104,7 @@ public:
      *
      * @since 2.0
      */
-    void shutdown() {
-        executorService.shutdown();
-    }
+    void shutdown();
 
 private:
     /**
