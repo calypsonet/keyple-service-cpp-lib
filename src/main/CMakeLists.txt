@@ -85,6 +85,7 @@ ADD_LIBRARY(
     ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionScenarioAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalPluginAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalReaderAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/MonitoringState.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ObservableLocalReaderAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ObservableReaderStateServiceAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/PluginEventAdapter.cpp
@@ -95,7 +96,7 @@ ADD_LIBRARY(
     ${CMAKE_CURRENT_SOURCE_DIR}/WaitForCardRemovalStateAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WaitForStartDetectStateAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/cpp/ExecutorService.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/cpp/Future.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/cpp/Job.cpp
 )
 
 FIND_LIBRARY(UTIL ${KEYPLE_UTIL_LIB} HINTS ${KEYPLE_UTIL_DIR}/build/bin)

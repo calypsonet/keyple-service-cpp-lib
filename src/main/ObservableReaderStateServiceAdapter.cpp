@@ -127,15 +127,15 @@ void ObservableReaderStateServiceAdapter::onEvent(const InternalEvent event)
     std::lock_guard<std::mutex> lock(mMutex);
 
     switch (event) {
-    case CARD_INSERTED:
-    case CARD_REMOVED:
-    case CARD_PROCESSED:
-    case TIME_OUT:
+    case InternalEvent::CARD_INSERTED:
+    case InternalEvent::CARD_REMOVED:
+    case InternalEvent::CARD_PROCESSED:
+    case InternalEvent::TIME_OUT:
         break;
-    case START_DETECT:
+    case InternalEvent::START_DETECT:
         mReaderSpi->onStartDetection();
         break;
-    case STOP_DETECT:
+    case InternalEvent::STOP_DETECT:
         mReaderSpi->onStopDetection();
         break;
     }

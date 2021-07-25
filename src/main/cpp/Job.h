@@ -1,5 +1,6 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
+ * Copyright (c) 2020 Calypso Networks Association                                                *
+ * https://www.calypsonet-asso.org/                                                               *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -12,17 +13,52 @@
 
 #pragma once
 
+#include <atomic>
+#include <future>
+#include <thread>
+
 namespace keyple {
 namespace core {
 namespace service {
 namespace cpp {
 
-class Runnable {
+class Job {
 public:
     /**
      *
      */
+    Job();
+
+    /**
+     *
+     */
+    bool cancel(const bool mayInterruptIfRunning);
+
+    /**
+     * Returns true if the task was cancelled
+     */
+    bool isCancelled() const;
+
+    /**
+     * Returns true if the task is completed
+     */
+    bool isDone() const;
+
+    /**
+     *
+     */
     virtual void run() = 0;
+
+private:
+    /**
+     *
+     */
+    std::atomic<bool> mRunning;
+
+    /**
+     *
+     */
+    bool mCancelled;
 };
 
 }

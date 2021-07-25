@@ -13,6 +13,7 @@
 #include "CardRemovalActiveMonitoringJobAdapter.h"
 
 /* Keyple Core Util */
+#include "InterruptedException.h"
 #include "RuntimeException.h"
 
 /* Keyple Core Plugin */
@@ -90,13 +91,13 @@ CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJobAdapter(
   std::shared_ptr<ObservableLocalReaderAdapter> reader, const long cycleDurationMillis)
 : AbstractMonitoringJobAdapter(reader),
   mReaderSpi(
-      std::dynamic_pointer_cast<WaitForCardRemovalBlockingSpi>(reader->getObservableReaderSpi()))
+      std::dynamic_pointer_cast<WaitForCardRemovalBlockingSpi>(reader->getObservableReaderSpi())),
   mCycleDurationMillis(cycleDurationMillis) {}
 
-std::shared_ptr<Runnable> CardRemovalActiveMonitoringJobAdapter::getMonitoringJob(
+std::shared_ptr<Job> CardRemovalActiveMonitoringJobAdapter::getMonitoringJob(
     std::shared_ptr<AbstractObservableStateAdapter> monitoringState)
 {
-    return std::make_shared<CardRemovalPassiveMonitoringJob>(monitoringState, this);
+    return std::make_shared<CardRemovalActiveMonitoringJob>(monitoringState, this);
 }
 
 void CardRemovalActiveMonitoringJobAdapter::stop()

@@ -10,7 +10,7 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
-#pragma once
+#include "ReaderEventAdapter.h"
 
 namespace keyple {
 namespace core {
@@ -23,8 +23,8 @@ ReaderEventAdapter::ReaderEventAdapter(
   std::shared_ptr<ScheduledCardSelectionsResponse> scheduledCardSelectionsResponse)
 : mPluginName(pluginName),
   mReaderName(readerName),
-  mType(type),
-  mScheduledCardSelectionsResponse(cheduledCardSelectionsResponse) {}
+  mScheduledCardSelectionsResponse(scheduledCardSelectionsResponse),
+  mType(type) {}
 
 const std::string& ReaderEventAdapter::getPluginName() const
 {

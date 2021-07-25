@@ -69,7 +69,7 @@ CardInsertionPassiveMonitoringJobAdapter::CardInsertionPassiveMonitoringJobAdapt
       std::dynamic_pointer_cast<WaitForCardInsertionBlockingSpi>(reader->getObservableReaderSpi()))
 {}
 
-std::shared_ptr<Runnable> CardInsertionPassiveMonitoringJobAdapter::getMonitoringJob(
+std::shared_ptr<Job> CardInsertionPassiveMonitoringJobAdapter::getMonitoringJob(
     std::shared_ptr<AbstractObservableStateAdapter> monitoringState)
 {
     return std::make_shared<CardInsertionPassiveMonitoringJob>(monitoringState, this);

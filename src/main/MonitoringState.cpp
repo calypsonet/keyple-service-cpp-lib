@@ -1,6 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                                                *
- * https://www.calypsonet-asso.org/                                                               *
+ * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -11,36 +10,30 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
-#include "Future.h"
+#include "MonitoringState.h"
 
 namespace keyple {
 namespace core {
 namespace service {
-namespace cpp {
 
-Future::Future() : mRunning(false), mCancelled(false) {}
-
-bool Future::cancel(const bool mayInterruptIfRunning)
+std::ostream& operator<<(std::ostream& os, const MonitoringState ms)
 {
-    if (!mRunning) {
-        return false;
+    switch (ms) {
+    case MonitoringState::WAIT_FOR_START_DETECTION:
+        os << "MONITORING_STATE = WAIT_FOR_START_DETECTION";
+        break;
+    case MonitoringState::WAIT_FOR_CARD_PROCESSING:
+        os << "MONITORING_STATE = WAIT_FOR_CARD_PROCESSING";
+        break;
+    case MonitoringState::WAIT_FOR_CARD_REMOVAL:
+        os << "MONITORING_STATE = WAIT_FOR_CARD_REMOVAL";
+        break;
+    case MonitoringState::WAIT_FOR_CARD_INSERTION:
+        os << "MONITORING_STATE = WAIT_FOR_CARD_INSERTION";
+        break;
     }
 
-    mRunning = false;
-    mCancelled = true;
-
-    return true;
-}
-
-bool Future::isDone() const
-{
-    // mMonitoringEvent->wait_for(std::chrono::seconds(0)) != std::future_status::ready)
-    return !mRunning;
-}
-
-bool Future::isCancelled() const
-{
-    return mCancelled;
+    return os;
 }
 
 }

@@ -19,7 +19,7 @@ namespace service {
 WaitForCardInsertionStateAdapter::WaitForCardInsertionStateAdapter(
   std::shared_ptr<ObservableLocalReaderAdapter> reader,
   std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob,
-  std::shared_ptr<ExecutorService> executorService) {
+  std::shared_ptr<ExecutorService> executorService)
 : AbstractObservableStateAdapter(MonitoringState::WAIT_FOR_CARD_INSERTION,
                                  reader,
                                  monitoringJob,
@@ -29,7 +29,7 @@ WaitForCardInsertionStateAdapter::WaitForCardInsertionStateAdapter(
   std::shared_ptr<ObservableLocalReaderAdapter> reader)
 : WaitForCardInsertionStateAdapter(reader, nullptr, nullptr) {}
 
-void onEvent(const InternalEvent event)
+void WaitForCardInsertionStateAdapter::onEvent(const InternalEvent event)
 {
     mLogger->trace("[%] onInternalEvent => Event % received in currentState %\n",
                    getReader()->getName(),
@@ -39,6 +39,7 @@ void onEvent(const InternalEvent event)
     /* Process InternalEvent */
     switch (event) {
     case InternalEvent::CARD_INSERTED:
+    {
         /* Process default selection if any, return an event, can be null */
         const std::shared_ptr<ReaderEvent> cardEvent = getReader()->processCardInserted();
         if (cardEvent != nullptr) {
@@ -58,7 +59,7 @@ void onEvent(const InternalEvent event)
             switchState(MonitoringState::WAIT_FOR_CARD_REMOVAL);
         }
         break;
-
+    }
     case InternalEvent::STOP_DETECT:
         switchState(MonitoringState::WAIT_FOR_START_DETECTION);
         break;

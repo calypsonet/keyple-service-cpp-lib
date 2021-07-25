@@ -17,7 +17,7 @@
 
 /* Keyple Core Service */
 #include "AbstractMonitoringJobAdapter.h"
-#include "Runnable.h"
+#include "Job.h"
 
 /* Keyple Core Util */
 #include "LoggerFactory.h"
@@ -67,7 +67,7 @@ public:
      * @return A not null reference.
      * @since 2.0
      */
-    virtual std::shared_ptr<Runnable> getMonitoringJob(
+    virtual std::shared_ptr<Job> getMonitoringJob(
         std::shared_ptr<AbstractObservableStateAdapter> monitoringState) override;
 
     /**
@@ -93,7 +93,7 @@ private:
     /**
      *
      */
-    class CardInsertionPassiveMonitoringJob final : public Runnable {
+    class CardInsertionPassiveMonitoringJob final : public Job {
     public:
         /**
          *

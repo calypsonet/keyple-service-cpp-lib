@@ -17,7 +17,7 @@ namespace core {
 namespace service {
 
 ScheduledCardSelectionsResponseAdapter::ScheduledCardSelectionsResponseAdapter(
-  const std::vector<std::shared_ptr<CardSelectionResponseApi>>& cardSelectionResponses) {
+  const std::vector<std::shared_ptr<CardSelectionResponseApi>>& cardSelectionResponses)
 : mCardSelectionResponses(cardSelectionResponses) {}
 
 const std::vector<std::shared_ptr<CardSelectionResponseApi>>&

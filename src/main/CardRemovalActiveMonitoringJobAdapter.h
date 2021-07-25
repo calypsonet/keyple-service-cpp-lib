@@ -19,7 +19,7 @@
 /* Keyple Core Service */
 #include "AbstractMonitoringJobAdapter.h"
 #include "MonitoringState.h"
-#include "Runnable.h"
+#include "Job.h"
 
 /* Keyple Core Plugin */
 #include "WaitForCardRemovalBlockingSpi.h"
@@ -74,7 +74,7 @@ public:
      * @return A not null reference.
      * @since 2.0
      */
-    virtual std::shared_ptr<Runnable> getMonitoringJob(
+    virtual std::shared_ptr<Job> getMonitoringJob(
         std::shared_ptr<AbstractObservableStateAdapter> monitoringState) override;
 
     /**
@@ -90,7 +90,7 @@ private:
      *
      */
     const std::unique_ptr<Logger> mLogger =
-        LoggerFactory::getLogger(typeid(CardRemovalPassiveMonitoringJobAdapter));
+        LoggerFactory::getLogger(typeid(CardRemovalActiveMonitoringJobAdapter));
 
     /**
      *
@@ -110,7 +110,7 @@ private:
     /**
      *
      */
-    class CardRemovalActiveMonitoringJob final : public Runnable {
+    class CardRemovalActiveMonitoringJob final : public Job {
     public:
         /**
          *

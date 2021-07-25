@@ -17,8 +17,8 @@
 
 /* Keyple Core Service */
 #include "AbstractMonitoringJobAdapter.h"
+#include "Job.h"
 #include "MonitoringState.h"
-#include "Runnable.h"
 
 /* Keyple Core Plugin */
 #include "WaitForCardRemovalBlockingSpi.h"
@@ -74,7 +74,7 @@ public:
      * @return A not null reference.
      * @since 2.0
      */
-    virtual std::shared_ptr<Runnable> getMonitoringJob(
+    virtual std::shared_ptr<Job> getMonitoringJob(
         std::shared_ptr<AbstractObservableStateAdapter> monitoringState) override;
 
     /**
@@ -100,7 +100,7 @@ private:
     /**
      *
      */
-    class CardRemovalPassiveMonitoringJob final : public Runnable {
+    class CardRemovalPassiveMonitoringJob final : public Job {
     public:
         /**
          *

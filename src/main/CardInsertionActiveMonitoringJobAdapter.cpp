@@ -99,7 +99,7 @@ CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJobAdapter
   mMonitorInsertion(monitorInsertion),
   mReader(reader) {}
 
-std::shared_ptr<Runnable> CardInsertionActiveMonitoringJobAdapter::getMonitoringJob(
+std::shared_ptr<Job> CardInsertionActiveMonitoringJobAdapter::getMonitoringJob(
     const std::shared_ptr<AbstractObservableStateAdapter> monitoringState)
 {
     return std::make_shared<CardInsertionActiveMonitoringJob>(monitoringState, this);

@@ -47,8 +47,8 @@ void ExecutorService::run()
     while (mRunning) {
         if (mPool.size()) {
             /* Start first service and wait until completion */
-            std::future<int>& current = mPool[0];
-            current.wait();
+            std::shared_ptr<Job> job = mPool[0];
+            job->run();
 
             /* Remove from vector */
             mPool.erase(mPool.begin());
@@ -60,18 +60,25 @@ void ExecutorService::run()
     mTerminated = true;
 }
 
-void ExecutorService::execute(std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob)
+void ExecutorService::execute(std::shared_ptr<Job> job)
 {
-    (void)monitoringJob;
+    mPool.push_back(job);
 }
 
-std::future<int>* ExecutorService::submit(std::shared_ptr<AbstractMonitoringJob> monitoringJob,
-                                           AbstractObservableState* state,
-                                           std::atomic<bool>& cancellationFlag)
+std::shared_ptr<Job> ExecutorService::submit(std::shared_ptr<Job> job)
 {
-    mPool.push_back(monitoringJob->startMonitoring(state, cancellationFlag));
+    mPool.push_back(job);
 
-    return &mPool.back();
+    return mPool.back();
+}
+
+void ExecutorService::shutdown()
+{
+    // FIXME: is that correct?
+    mRunning = false;
+
+    while (!mTerminated)
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
 }
 
 }

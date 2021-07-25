@@ -11,50 +11,45 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
-#pragma once
+#include "Job.h"
 
-#include <atomic>
-#include <future>
-#include <thread>
+/* Keyple Core Util */
+#include "IllegalArgumentException.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 namespace cpp {
 
-class Future final {
-public:
-    /**
-     *
-     */
-    Future();
+using namespace keyple::core::util::cpp::exception;
 
-    /**
-     *
-     */
-    bool cancel(const bool mayInterruptIfRunning);
+Job::Job() : mRunning(false), mCancelled(false) {}
 
-    /**
-     * Returns true if the task was cancelled
-     */
-    bool isCancelled() const;
+bool Job::cancel(const bool mayInterruptIfRunning)
+{
+    if (mayInterruptIfRunning) {
+        throw IllegalArgumentException("Unsupported value for mayInterruptIfRunning (true)");
+    }
 
-    /**
-     * Returns true if the task is completed
-     */
-    bool isDone() const;
+    if (!mRunning) {
+        return false;
+    }
 
-private:
-    /**
-     *
-     */
-    std::atomic<bool> mRunning;
+    mRunning = false;
+    mCancelled = true;
 
-    /**
-     *
-     */
-    bool mCancelled;
-};
+    return true;
+}
+
+bool Job::isDone() const
+{
+    return !mRunning;
+}
+
+bool Job::isCancelled() const
+{
+    return mCancelled;
+}
 
 }
 }

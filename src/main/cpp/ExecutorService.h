@@ -18,23 +18,16 @@
 #include <vector>
 
 /* Keyple Core Service */
-#include "Future.h"
-#include "Runnable.h"
+#include "Job.h"
 
 /* Keyple Core Util */
 #include "LoggerFactory.h"
-
-namespace keyple { namespace core { namespace service {
-    class AbstractMonitoringJobAdapter;
-    class AbstractObservableStateAdapter;
-}}}
 
 namespace keyple {
 namespace core {
 namespace service {
 namespace cpp {
 
-using namespace keyple::core::service;
 using namespace keyple::core::util::cpp;
 
 class ExecutorService final {
@@ -52,12 +45,17 @@ public:
     /**
      *
      */
-    void execute(std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob);
+    void execute(std::shared_ptr<Job> job);
 
     /**
      *
      */
-    std::shared_ptr<Future> submit(std::shared_ptr<Runnable> monitoringJob);
+    std::shared_ptr<Job> submit(std::shared_ptr<Job> job);
+
+    /**
+     *
+     */
+    void shutdown();
 
     /**
      * /!\ MSVC requires operator= to be deleted because of std::future
@@ -75,12 +73,7 @@ private:
     /**
      *
      */
-    std::vector<std::future<int>> mPool;
-
-    /**
-     *
-     */
-    std::thread* mThread;
+    std::vector<std::shared_ptr<Job>> mPool;
 
     /**
      *
@@ -96,6 +89,11 @@ private:
      *
      */
     std::atomic<bool> mTerminated;
+
+    /**
+     *
+     */
+    std::thread *mThread;
 };
 
 }

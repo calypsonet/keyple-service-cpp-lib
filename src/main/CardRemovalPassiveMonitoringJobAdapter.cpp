@@ -76,7 +76,7 @@ CardRemovalPassiveMonitoringJobAdapter::CardRemovalPassiveMonitoringJobAdapter(
   mReaderSpi(
       std::dynamic_pointer_cast<WaitForCardRemovalBlockingSpi>(reader->getObservableReaderSpi())) {}
 
-std::shared_ptr<Runnable> CardRemovalPassiveMonitoringJobAdapter::getMonitoringJob(
+std::shared_ptr<Job> CardRemovalPassiveMonitoringJobAdapter::getMonitoringJob(
     std::shared_ptr<AbstractObservableStateAdapter> monitoringState)
 {
     return std::make_shared<CardRemovalPassiveMonitoringJob>(monitoringState, this);

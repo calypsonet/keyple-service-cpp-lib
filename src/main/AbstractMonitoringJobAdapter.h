@@ -16,16 +16,14 @@
 
 /* Keyple Core Service */
 #include "AbstractObservableStateAdapter.h"
+#include "Job.h"
 #include "ObservableLocalReaderAdapter.h"
-#include "Runnable.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
 using namespace keyple::core::service::cpp;
-
-class AbstractObservableStateAdapter;
 
 /**
  * (package-private)<br>
@@ -61,7 +59,7 @@ public:
      * @return A not null reference.
      * @since 2.0
      */
-    virtual std::shared_ptr<Runnable> getMonitoringJob(
+    virtual std::shared_ptr<Job> getMonitoringJob(
         const std::shared_ptr<AbstractObservableStateAdapter> monitoringState) = 0;
 
     /**

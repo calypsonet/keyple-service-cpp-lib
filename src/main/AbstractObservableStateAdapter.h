@@ -22,7 +22,7 @@
 
 /* Keyple Core Service */
 #include "AbstractMonitoringJobAdapter.h"
-#include "Future.h"
+#include "Job.h"
 #include "MonitoringState.h"
 #include "ObservableLocalReaderAdapter.h"
 
@@ -34,6 +34,8 @@ using namespace keyple::core::service::cpp;
 using namespace keyple::core::util::cpp;
 
 using InternalEvent = ObservableLocalReaderAdapter::InternalEvent;
+
+class AbstractMonitoringJobAdapter;
 
 /**
  * (package-private)<br>
@@ -51,7 +53,7 @@ public:
      * @param monitoringState the state identifier
      * @param reader the current reader
      * @param monitoringJob the job to be executed in background (may be null if no background job is
-     *     required)
+     *        required)
      * @param executorService the executor service
      * @since 2.0
      */
@@ -150,7 +152,7 @@ private:
     /**
      * Result of the background job if any
      */
-    std::shared_ptr<Future> mMonitoringEvent;
+    std::shared_ptr<Job> mMonitoringEvent;
 
     /**
      * Executor service used to execute AbstractMonitoringJobAdapter
