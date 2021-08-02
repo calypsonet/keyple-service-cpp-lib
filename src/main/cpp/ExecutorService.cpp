@@ -74,7 +74,6 @@ std::shared_ptr<Job> ExecutorService::submit(std::shared_ptr<Job> job)
 
 void ExecutorService::shutdown()
 {
-    // FIXME: is that correct?
     mRunning = false;
 
     while (!mTerminated)

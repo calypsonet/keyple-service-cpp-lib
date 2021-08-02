@@ -19,7 +19,7 @@ SET(VERSION_PATCH "0")
 
 SET(VERSION "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}")
 
-SET(PACKAGE_NAME "KeypleServiceCppLib")
+SET(PACKAGE_NAME "keyple-service-cpp-lib")
 SET(PACKAGE_VERSION ${VERSION})
 SET(PACKAGE_STRING "${PACKAGE_NAME} ${PACKAGE_VERSION}")
 
@@ -47,6 +47,7 @@ INCLUDE_DIRECTORIES(
 
     ${CALYPSONET_READER_DIR}/src/main
     ${CALYPSONET_READER_DIR}/src/main/selection
+    ${CALYPSONET_READER_DIR}/src/main/selection/spi
     ${CALYPSONET_READER_DIR}/src/main/spi
 
     ${KEYPLE_COMMON_DIR}/src/main
@@ -76,12 +77,14 @@ ADD_LIBRARY(
     ${CMAKE_CURRENT_SOURCE_DIR}/AbstractObservableStateAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ApduRequestAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ApduResponseAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/AutonomousObservableLocalPluginAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardInsertionActiveMonitoringJobAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardInsertionPassiveMonitoringJobAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardRemovalActiveMonitoringJobAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardRemovalPassiveMonitoringJobAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardResponseAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionResponseAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionResultAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionScenarioAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalPluginAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalReaderAdapter.cpp

@@ -56,8 +56,8 @@ public:
      */
     ObservationManagerAdapter(const std::string& pluginName, const std::string& readerName)
     : mOwnerComponent(readerName == "" ?
-                  "The plugin '" + pluginName + "'" :
-                  "The reader '" + readerName + "' of plugin '" + pluginName + "'") {}
+                      "The plugin '" + pluginName + "'" :
+                      "The reader '" + readerName + "' of plugin '" + pluginName + "'") {}
 
     /**
      * (package-private)<br>
@@ -71,8 +71,8 @@ public:
     void addObserver(std::shared_ptr<T> observer)
     {
         mLogger->debug("% is adding the observer '%'\n",
-                    mOwnerComponent,
-                    observer != nullptr ? typeid(*observer.get()).name() : "null");
+                       mOwnerComponent,
+                       observer != nullptr ? typeid(*observer.get()).name() : "null");
 
         Assert::getInstance().notNull(observer, "observer");
 
@@ -96,8 +96,8 @@ public:
     void removeObserver(std::shared_ptr<T> observer)
     {
         mLogger->debug("% is removing the observer '%'\n",
-                    mOwnerComponent,
-                    observer != nullptr ? typeid(*observer.get()).name() : "null");
+                       mOwnerComponent,
+                       observer != nullptr ? typeid(*observer.get()).name() : "null");
 
         Assert::getInstance().notNull(observer, "observer");
 
@@ -145,8 +145,8 @@ public:
     void setEventNotificationExecutorService(
         std::shared_ptr<ExecutorService> eventNotificationExecutorService)
     {
-        Assert::getInstance()
-            .notNull(eventNotificationExecutorService, "eventNotificationExecutorService");
+        Assert::getInstance().notNull(eventNotificationExecutorService,
+                                      "eventNotificationExecutorService");
 
         mEventNotificationExecutorService = eventNotificationExecutorService;
     }

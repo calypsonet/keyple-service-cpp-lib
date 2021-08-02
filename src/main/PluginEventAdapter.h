@@ -22,8 +22,6 @@ namespace keyple {
 namespace core {
 namespace service {
 
-using Type = PluginEvent::Type;
-
 /**
  * (package-private)<br>
  * This POJO contains all information about a change of reader state within an ObservablePlugin.
@@ -53,7 +51,7 @@ public:
      */
     PluginEventAdapter(const std::string& pluginName,
                        const std::string& readerName,
-                       const Type type);
+                       const PluginEvent::Type type);
 
     /**
      * (package-private)<br>
@@ -71,7 +69,7 @@ public:
      */
     PluginEventAdapter(const std::string& pluginName,
                        const std::vector<std::string>& readerNames,
-                       const Type type);
+                       const PluginEvent::Type type);
 
     /**
      * {@inheritDoc}
@@ -108,7 +106,7 @@ private:
     /**
      *
      */
-    const Type mType;
+    const PluginEvent::Type mType;
 };
 
 }

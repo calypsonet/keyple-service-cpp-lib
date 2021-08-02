@@ -46,6 +46,21 @@ using namespace keyple::core::plugin::spi::reader::observable::state::removal;
 using namespace keyple::core::util::cpp;
 using namespace keyple::core::util::cpp::exception;
 
+/* OBSERVABLE LOCAL READER ADAPTER JOB ---------------------------------------------------------- */
+
+ObservableLocalReaderAdapter::ObservableLocalReaderAdapterJob::ObservableLocalReaderAdapterJob(
+  std::shared_ptr<CardReaderObserverSpi> observer,
+  const std::shared_ptr<ReaderEvent> event,
+  ObservableLocalReaderAdapter* parent)
+: mObserver(observer), mEvent(event), mParent(parent) {}
+
+void ObservableLocalReaderAdapter::ObservableLocalReaderAdapterJob::run()
+{
+    mParent->notifyObserver(mObserver, mEvent);
+}
+
+/* OBSERVABLE LOCAL READER ADAPTER -------------------------------------------------------------- */
+
 const std::vector<uint8_t> ObservableLocalReaderAdapter::APDU_PING_CARD_PRESENCE = {
     0x00, 0xC0, 0x00, 0x00, 0x00};
 const std::string ObservableLocalReaderAdapter::READER_MONITORING_ERROR =
@@ -258,16 +273,8 @@ void ObservableLocalReaderAdapter::notifyObservers(const std::shared_ptr<ReaderE
     } else {
         /* Asynchronous notification */
         for (const auto& observer : observers) {
-            (void)observer;
-            // FIXME
-            // mObservationManager->getEventNotificationExecutorService()
-            //                    ->execute(
-            //                        new Runnable() {
-            //                        @Override
-            //                        public void run() {
-            //                            notifyObserver(observer, event);
-            //                        }
-            //                        });
+            auto job = std::make_shared<ObservableLocalReaderAdapterJob>(observer, event, this);
+            mObservationManager->getEventNotificationExecutorService()->execute(job);
         }
     }
 }

@@ -25,13 +25,27 @@ namespace keyple {
 namespace core {
 namespace service {
 
+/* ABSTRACT OBSERVABLE LOCAL PLUGIN ADAPTER JOB ------------------------------------------------- */
+
+AbstractObservableLocalPluginAdapter::ObservableLocalPluginAdapterJob
+    ::ObservableLocalPluginAdapterJob(std::shared_ptr<PluginObserverSpi> observer,
+                                      const std::shared_ptr<PluginEvent> event,
+                                      AbstractObservableLocalPluginAdapter* parent)
+: mObserver(observer), mEvent(event), mParent(parent) {}
+
+void AbstractObservableLocalPluginAdapter::ObservableLocalPluginAdapterJob::run()
+{
+    mParent->notifyObserver(mObserver, mEvent);
+}
+
+/* ABSTRACT OBSERVABLE LOCAL PLUGIN ADAPTER ----------------------------------------------------- */
+
 AbstractObservableLocalPluginAdapter::AbstractObservableLocalPluginAdapter(
   std::shared_ptr<PluginSpi> pluginSpi)
 : LocalPluginAdapter(pluginSpi),
   mObservationManager(
-      std::make_shared<
-          ObservationManagerAdapter<PluginObserverSpi, PluginObservationExceptionHandlerSpi>>(
-              getName(), nullptr)) {}
+      std::make_shared<ObservationManagerAdapter<PluginObserverSpi,
+                                                 PluginObservationExceptionHandlerSpi>>("", "")) {}
 
 std::shared_ptr<ObservationManagerAdapter<PluginObserverSpi, PluginObservationExceptionHandlerSpi>>
     AbstractObservableLocalPluginAdapter::getObservationManager() const
@@ -57,16 +71,8 @@ void AbstractObservableLocalPluginAdapter::notifyObservers(const std::shared_ptr
     } else {
         /* Asynchronous notification */
         for (const auto& observer : observers) {
-            (void)observer;
-            // FIXME!!
-            // mObservationManager->getEventNotificationExecutorService()
-            //                    ->execute(
-            //                         new Runnable() {
-            //                             @Override
-            //                             public void run() {
-            //                                 notifyObserver(observer, event);
-            //                             }
-            //                         });
+            auto job = std::make_shared<ObservableLocalPluginAdapterJob>(observer, event, this);
+            mObservationManager->getEventNotificationExecutorService()->execute(job);
         }
     }
 }

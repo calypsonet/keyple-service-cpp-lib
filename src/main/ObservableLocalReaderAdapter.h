@@ -29,6 +29,7 @@
 
 /* Keyple Core Service */
 #include "CardSelectionScenarioAdapter.h"
+#include "Job.h"
 #include "LocalReaderAdapter.h"
 #include "MonitoringState.h"
 #include "ObservationManagerAdapter.h"
@@ -368,6 +369,40 @@ public:
     virtual void onCardRemoved() override;
 
 private:
+    /**
+     *
+     */
+    class ObservableLocalReaderAdapterJob final : public Job {
+    public:
+        /**
+         *
+         */
+        ObservableLocalReaderAdapterJob(std::shared_ptr<CardReaderObserverSpi> observer,
+                                        const std::shared_ptr<ReaderEvent> event,
+                                        ObservableLocalReaderAdapter* parent);
+
+        /**
+         *
+         */
+        virtual void run() override final;
+
+    private:
+        /**
+         *
+         */
+        std::shared_ptr<CardReaderObserverSpi> mObserver;
+
+        /**
+         *
+         */
+        const std::shared_ptr<ReaderEvent> mEvent;
+
+        /**
+         *
+         */
+        ObservableLocalReaderAdapter* mParent;
+    };
+
     /**
      *
      */

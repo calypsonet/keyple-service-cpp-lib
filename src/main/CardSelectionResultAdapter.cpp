@@ -10,37 +10,46 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
-#include "PluginEventAdapter.h"
+#include "CardSelectionResultAdapter.h"
+
+/* Keyple Core Util */
+#include "IllegalStateException.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
-using Type = PluginEvent::Type;
+using namespace keyple::core::util::cpp::exception;
 
-PluginEventAdapter::PluginEventAdapter(const std::string& pluginName,
-                                       const std::string& readerName,
-                                       const Type type)
-: mPluginName(pluginName), mReaderNames({readerName}), mType(type) {}
+CardSelectionResultAdapter::CardSelectionResultAdapter() : mActiveSelectionIndex(-1) {}
 
-PluginEventAdapter::PluginEventAdapter(const std::string& pluginName,
-                                       const std::vector<std::string>& readerNames,
-                                       const Type type)
-: mPluginName(pluginName), mReaderNames(readerNames), mType(type) {}
-
-const std::string& PluginEventAdapter::getPluginName() const
+void CardSelectionResultAdapter::addSmartCard(const int selectionIndex,
+                                              std::shared_ptr<SmartCard> smartCard)
 {
-    return mPluginName;
+    mSmartCardMap.insert({selectionIndex, smartCard});
+
+    /* Keep the current selection index */
+    mActiveSelectionIndex = selectionIndex;
 }
 
-const std::vector<std::string> PluginEventAdapter::getReaderNames() const
+const std::map<int, std::shared_ptr<SmartCard>>& CardSelectionResultAdapter::getSmartCards() const
 {
-    return mReaderNames;
+    return mSmartCardMap;
 }
 
-Type PluginEventAdapter::getType() const
+const std::shared_ptr<SmartCard> CardSelectionResultAdapter::getActiveSmartCard() const
 {
-    return mType;
+    const auto& it = mSmartCardMap.find(mActiveSelectionIndex);
+    if (it == mSmartCardMap.end()) {
+        throw IllegalStateException("No active matching card is available");
+    }
+
+    return it->second;
+}
+
+int CardSelectionResultAdapter::getActiveSelectionIndex() const
+{
+    return mActiveSelectionIndex;
 }
 
 }

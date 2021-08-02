@@ -18,6 +18,7 @@
 #include "LoggerFactory.h"
 
 /* Keyple Core Service */
+#include "Job.h"
 #include "LocalPluginAdapter.h"
 #include "PluginObserverSpi.h"
 #include "ObservationManagerAdapter.h"
@@ -33,6 +34,7 @@ namespace service {
 
 using namespace keyple::core::plugin;
 using namespace keyple::core::util::cpp;
+using namespace keyple::core::service::cpp;
 using namespace keyple::core::service::spi;
 
 /**
@@ -127,6 +129,40 @@ public:
         std::shared_ptr<PluginObservationExceptionHandlerSpi> exceptionHandler) override final;
 
 private:
+    /**
+     *
+     */
+    class ObservableLocalPluginAdapterJob final : public Job {
+    public:
+        /**
+         *
+         */
+        ObservableLocalPluginAdapterJob(std::shared_ptr<PluginObserverSpi> observer,
+                                        const std::shared_ptr<PluginEvent> event,
+                                        AbstractObservableLocalPluginAdapter* parent);
+
+        /**
+         *
+         */
+        virtual void run() override final;
+
+    private:
+        /**
+         *
+         */
+        std::shared_ptr<PluginObserverSpi> mObserver;
+
+        /**
+         *
+         */
+        const std::shared_ptr<PluginEvent> mEvent;
+
+        /**
+         *
+         */
+        AbstractObservableLocalPluginAdapter* mParent;
+    };
+
     /**
      *
      */

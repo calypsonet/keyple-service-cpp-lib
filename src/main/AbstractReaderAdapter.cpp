@@ -33,7 +33,11 @@ using namespace keyple::core::util::cpp::exception;
 AbstractReaderAdapter::AbstractReaderAdapter(const std::string& readerName,
                                              std::shared_ptr<KeypleReaderExtension> readerExtension,
                                              const std::string& pluginName)
-: mReaderName(readerName), mReaderExtension(readerExtension), mPluginName(pluginName) {}
+: mReaderName(readerName),
+  mReaderExtension(readerExtension),
+  mPluginName(pluginName),
+  mIsRegistered(false),
+  mBefore(0) {}
 
 const std::string& AbstractReaderAdapter::getPluginName() const
 {
@@ -86,6 +90,8 @@ const std::vector<std::shared_ptr<CardSelectionResponseApi>>
 
 void AbstractReaderAdapter::checkStatus() const
 {
+    mLogger->trace("mIsRegistered: %\n", mIsRegistered);
+
     if (!mIsRegistered) {
         throw IllegalStateException("This reader, " + getName() + " is not registered");
     }
