@@ -44,7 +44,7 @@ using namespace keyple::core::plugin::spi::reader::observable::state::removal;
 using namespace keyple::core::util::cpp::exception;
 
 ObservableReaderStateServiceAdapter::ObservableReaderStateServiceAdapter(
-  std::shared_ptr<ObservableLocalReaderAdapter> reader)
+  ObservableLocalReaderAdapter* reader)
 : mReader(reader),
   mReaderSpi(reader->getObservableReaderSpi()),
   mExecutorService(std::make_shared<ExecutorService>())

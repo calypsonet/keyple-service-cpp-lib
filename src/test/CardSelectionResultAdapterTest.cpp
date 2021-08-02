@@ -50,7 +50,7 @@ private:
     const std::vector<uint8_t> mApplicationResponse;
 };
 
-std::shared_ptr<CSRAT_SmartCardMock> smartCard;
+static std::shared_ptr<SmartCard> smartCard;
 
 static void setUp()
 {

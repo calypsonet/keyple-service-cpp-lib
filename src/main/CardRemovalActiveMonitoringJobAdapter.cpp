@@ -88,7 +88,7 @@ void CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJob::run(
 /* CARD REMOVAL ACTIVE MONITORING JOB ADAPTER --------------------------------------------------- */
 
 CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJobAdapter(
-  std::shared_ptr<ObservableLocalReaderAdapter> reader, const long cycleDurationMillis)
+  ObservableLocalReaderAdapter* reader, const long cycleDurationMillis)
 : AbstractMonitoringJobAdapter(reader),
   mReaderSpi(
       std::dynamic_pointer_cast<WaitForCardRemovalBlockingSpi>(reader->getObservableReaderSpi())),

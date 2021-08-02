@@ -55,10 +55,12 @@ public:
      * (package-private)<br>
      * Constructor.
      *
+     * /!\ C++: cannot use a shared_ptr for reader as this is called from constructors
+     *
      * @param reader The reader.
      * @since 2.0
      */
-    CardInsertionPassiveMonitoringJobAdapter(std::shared_ptr<ObservableLocalReaderAdapter> reader);
+    CardInsertionPassiveMonitoringJobAdapter(ObservableLocalReaderAdapter* reader);
 
     /**
      * (package-private)<br>

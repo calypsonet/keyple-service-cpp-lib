@@ -60,11 +60,13 @@ public:
      * (package-private)<br>
      * Create a job monitor job that ping the card with the method isCardPresentPing()
      *
+     * /!\ C++: cannot use a shared_ptr for reader as this is called from constructors
+     *
      * @param reader reference to the reader
      * @param cycleDurationMillis delay between between each APDU sending
      * @since 2.0
      */
-    CardRemovalActiveMonitoringJobAdapter(std::shared_ptr<ObservableLocalReaderAdapter> reader,
+    CardRemovalActiveMonitoringJobAdapter(ObservableLocalReaderAdapter* reader,
                                           const long cycleDurationMillis);
 
     /**

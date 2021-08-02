@@ -17,7 +17,7 @@ namespace core {
 namespace service {
 
 WaitForStartDetectStateAdapter::WaitForStartDetectStateAdapter(
-  std::shared_ptr<ObservableLocalReaderAdapter> reader,
+  ObservableLocalReaderAdapter* reader,
   std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob,
   std::shared_ptr<ExecutorService> executorService)
 : AbstractObservableStateAdapter(MonitoringState::WAIT_FOR_START_DETECTION,
@@ -26,7 +26,7 @@ WaitForStartDetectStateAdapter::WaitForStartDetectStateAdapter(
                                  executorService) {}
 
 WaitForStartDetectStateAdapter::WaitForStartDetectStateAdapter(
-  std::shared_ptr<ObservableLocalReaderAdapter> reader)
+  ObservableLocalReaderAdapter* reader)
 : WaitForStartDetectStateAdapter(reader, nullptr, nullptr) {}
 
 void WaitForStartDetectStateAdapter::onEvent(const InternalEvent event)

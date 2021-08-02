@@ -50,6 +50,8 @@ public:
      * (package-private)<br>
      * Create a new state with a state identifier and a monitor job
      *
+     * /!\ C++: cannot use a shared_ptr for reader as this is called from constructors
+     *
      * @param monitoringState the state identifier
      * @param reader the current reader
      * @param monitoringJob the job to be executed in background (may be null if no background job is
@@ -59,7 +61,7 @@ public:
      */
     AbstractObservableStateAdapter(
         const MonitoringState monitoringState,
-        std::shared_ptr<ObservableLocalReaderAdapter> reader,
+        ObservableLocalReaderAdapter* reader,
         std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob,
         std::shared_ptr<ExecutorService> executorService);
 
@@ -67,12 +69,14 @@ public:
      * (package-private)<br>
      * Create a new state with a state identifier without monitoring job.
      *
+     * /!\ C++: cannot use a shared_ptr for reader as this is called from constructors
+     *
      * @param reader observable reader this currentState is attached to
      * @param monitoringState name of the currentState
      * @since 2.0
      */
     AbstractObservableStateAdapter(const MonitoringState monitoringState,
-                                   std::shared_ptr<ObservableLocalReaderAdapter> reader);
+                                   ObservableLocalReaderAdapter* reader);
 
     /**
      * (package-private)<br>
@@ -90,7 +94,7 @@ public:
      * @return A not null reference.
      * @since 2.0
      */
-    virtual std::shared_ptr<ObservableLocalReaderAdapter> getReader() const final;
+    virtual ObservableLocalReaderAdapter* getReader() const final;
 
     /**
      * (package-private)<br>
@@ -142,7 +146,7 @@ private:
     /**
      * Reference to Reader
      */
-    std::shared_ptr<ObservableLocalReaderAdapter> mReader;
+    ObservableLocalReaderAdapter* mReader;
 
     /**
      * Background job definition if any

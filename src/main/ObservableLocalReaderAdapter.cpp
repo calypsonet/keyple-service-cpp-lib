@@ -70,7 +70,7 @@ ObservableLocalReaderAdapter::ObservableLocalReaderAdapter(
   std::shared_ptr<ObservableReaderSpi> observableReaderSpi, const std::string& pluginName)
 : LocalReaderAdapter(observableReaderSpi, pluginName),
   mObservableReaderSpi(observableReaderSpi),
-  mStateService(std::make_shared<ObservableReaderStateServiceAdapter>(shared_from_this())),
+  mStateService(std::make_shared<ObservableReaderStateServiceAdapter>(this)),
   mObservationManager(
       std::make_shared<ObservationManagerAdapter<CardReaderObserverSpi,
                                                  CardReaderObservationExceptionHandlerSpi>>(
@@ -79,13 +79,13 @@ ObservableLocalReaderAdapter::ObservableLocalReaderAdapter(
     auto insert = std::dynamic_pointer_cast<WaitForCardInsertionAutonomousSpi>(observableReaderSpi);
     if (insert) {
         insert->connect(
-            std::dynamic_pointer_cast<WaitForCardInsertionAutonomousReaderApi>(shared_from_this()));
+            dynamic_cast<WaitForCardInsertionAutonomousReaderApi*>(this));
     }
 
     auto remove = std::dynamic_pointer_cast<WaitForCardRemovalAutonomousSpi>(observableReaderSpi);
     if (remove) {
         remove->connect(
-            std::dynamic_pointer_cast<WaitForCardRemovalAutonomousReaderApi>(shared_from_this()));
+            dynamic_cast<WaitForCardRemovalAutonomousReaderApi*>(this));
     }
 }
 

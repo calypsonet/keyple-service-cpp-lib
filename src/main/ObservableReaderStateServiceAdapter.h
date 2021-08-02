@@ -52,10 +52,12 @@ public:
      * (package-private)<br>
      * Initializes the states according to the interfaces implemented by the provided reader.
      *
+     * /!\ C++: cannot use a shared_ptr for reader as this is called from constructors
+     *
      * @param reader The observable local reader adapter.
      * @since 2.0
      */
-    ObservableReaderStateServiceAdapter(std::shared_ptr<ObservableLocalReaderAdapter> reader);
+    ObservableReaderStateServiceAdapter(ObservableLocalReaderAdapter* reader);
 
     /**
      * (package-private)<br>
@@ -116,7 +118,7 @@ private:
     /**
      * ObservableLocalReaderAdapter to manage event and states
      */
-    std::shared_ptr<ObservableLocalReaderAdapter> mReader;
+    ObservableLocalReaderAdapter* mReader;
 
     /**
      *

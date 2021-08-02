@@ -59,6 +59,10 @@ INCLUDE_DIRECTORIES(
     ${KEYPLE_PLUGIN_DIR}/src/main
     ${KEYPLE_PLUGIN_DIR}/src/main/spi
     ${KEYPLE_PLUGIN_DIR}/src/main/spi/reader
+    ${KEYPLE_PLUGIN_DIR}/src/main/spi/reader/observable/
+    ${KEYPLE_PLUGIN_DIR}/src/main/spi/reader/observable/state/insertion
+    ${KEYPLE_PLUGIN_DIR}/src/main/spi/reader/observable/state/processing
+    ${KEYPLE_PLUGIN_DIR}/src/main/spi/reader/observable/state/removal
 
     ${KEYPLE_UTIL_DIR}/src/main
     ${KEYPLE_UTIL_DIR}/src/main/cpp
@@ -71,6 +75,7 @@ ADD_EXECUTABLE(
     ${CMAKE_CURRENT_SOURCE_DIR}/AbstractReaderAdapterTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/AutonomousObservableLocalPluginAdapterTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionResultAdapterTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LocalPluginAdapterTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
 )
 

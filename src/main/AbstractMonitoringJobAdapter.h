@@ -37,10 +37,12 @@ public:
      * (package-private)<br>
      * Creates an instance.
      *
+     * /!\ C++: cannot use a shared_ptr for reader as this is called from constructors
+     *
      * @param reader The reader.
      * @since 2.0
      */
-    AbstractMonitoringJobAdapter(const std::shared_ptr<ObservableLocalReaderAdapter> reader);
+    AbstractMonitoringJobAdapter(ObservableLocalReaderAdapter* reader);
 
     /**
      * (package-private)<br>
@@ -49,7 +51,7 @@ public:
      * @return A not null reference.
      * @since 2.0
      */
-    virtual std::shared_ptr<ObservableLocalReaderAdapter> getReader() const final;
+    virtual ObservableLocalReaderAdapter* getReader() const final;
 
     /**
      * (package-private)<br>
@@ -74,7 +76,7 @@ private:
     /**
      *
      */
-    const std::shared_ptr<ObservableLocalReaderAdapter> mReader;
+    ObservableLocalReaderAdapter* mReader;
 };
 
 }

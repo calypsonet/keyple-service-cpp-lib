@@ -91,7 +91,7 @@ void CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob::
 /* CARD INSERTION ACTIVE MONITORING JOB ADAPTER ------------------------------------------------- */
 
 CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJobAdapter(
-  std::shared_ptr<ObservableLocalReaderAdapter> reader,
+  ObservableLocalReaderAdapter* reader,
   const long cycleDurationMillis,
   const bool monitorInsertion)
 : AbstractMonitoringJobAdapter(reader),

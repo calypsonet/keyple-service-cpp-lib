@@ -61,7 +61,7 @@ public:
      * @since 2.0
      */
     WaitForCardProcessingStateAdapter(
-        std::shared_ptr<ObservableLocalReaderAdapter> reader,
+        ObservableLocalReaderAdapter* reader,
         std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob,
         std::shared_ptr<ExecutorService> executorService);
 
@@ -72,7 +72,7 @@ public:
      * @param reader The observable local reader adapter.
      * @since 2.0
      */
-    WaitForCardProcessingStateAdapter(std::shared_ptr<ObservableLocalReaderAdapter> reader);
+    WaitForCardProcessingStateAdapter(ObservableLocalReaderAdapter* reader);
 
 
     /**

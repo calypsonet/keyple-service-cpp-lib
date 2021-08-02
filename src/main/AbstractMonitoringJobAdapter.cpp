@@ -18,11 +18,10 @@ namespace service {
 
 using namespace keyple::core::service;
 
-AbstractMonitoringJobAdapter::AbstractMonitoringJobAdapter(
-  const std::shared_ptr<ObservableLocalReaderAdapter> reader)
+AbstractMonitoringJobAdapter::AbstractMonitoringJobAdapter(ObservableLocalReaderAdapter* reader)
 : mReader(reader) {}
 
-std::shared_ptr<ObservableLocalReaderAdapter> AbstractMonitoringJobAdapter::getReader() const
+ObservableLocalReaderAdapter* AbstractMonitoringJobAdapter::getReader() const
 {
     return mReader;
 }

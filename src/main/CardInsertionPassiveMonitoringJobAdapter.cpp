@@ -63,7 +63,7 @@ void CardInsertionPassiveMonitoringJobAdapter::CardInsertionPassiveMonitoringJob
 /* CARD INSERTION PASSIVE MONITORING JOB ADAPTER ------------------------------------------------ */
 
 CardInsertionPassiveMonitoringJobAdapter::CardInsertionPassiveMonitoringJobAdapter(
-  std::shared_ptr<ObservableLocalReaderAdapter> reader)
+  ObservableLocalReaderAdapter* reader)
 : AbstractMonitoringJobAdapter(reader),
   mReaderSpi(
       std::dynamic_pointer_cast<WaitForCardInsertionBlockingSpi>(reader->getObservableReaderSpi()))

@@ -183,19 +183,21 @@ public:
     }
 };
 
-const std::string PLUGIN_NAME = "plugin";
-const std::string READER_NAME = "reader";
-std::shared_ptr<ARAT_ReaderSpiMock> readerSpi;
-std::shared_ptr<ARAT_CardRequestApiMock> cardRequestSpi;
-std::shared_ptr<ARAT_DefaultAbstractReaderAdapterMock> readerAdapter;
+static const std::string PLUGIN_NAME = "plugin";
+static const std::string READER_NAME = "reader";
+static std::shared_ptr<ReaderSpi> readerSpi;
+static std::shared_ptr<CardRequestSpi> cardRequestSpi;
+static std::shared_ptr<AbstractReaderAdapter> readerAdapter;
 
 static void setUp()
 {
     readerSpi = std::make_shared<ARAT_ReaderSpiMock>();
     cardRequestSpi = std::make_shared<ARAT_CardRequestApiMock>();
-    readerAdapter = std::make_shared<ARAT_DefaultAbstractReaderAdapterMock>(READER_NAME,
-                                                                            readerSpi,
-                                                                            PLUGIN_NAME);
+    readerAdapter =
+        std::make_shared<ARAT_DefaultAbstractReaderAdapterMock>(
+            READER_NAME,
+            std::dynamic_pointer_cast<KeypleReaderExtension>(readerSpi),
+            PLUGIN_NAME);
 }
 
 TEST(AbstractReaderAdapterTest, getPluginName_shouldReturnPluginName)
@@ -220,7 +222,8 @@ TEST(AbstractReaderAdapterTest, getExtension_whenReaderIsRegistered_shouldReturn
 
     const std::type_info& classInfo = typeid(ARAT_ReaderSpiMock);
 
-    ASSERT_EQ(readerAdapter->getExtension(classInfo), readerSpi);
+    ASSERT_EQ(readerAdapter->getExtension(classInfo),
+              std::dynamic_pointer_cast<KeypleReaderExtension>(readerSpi));
 }
 
 TEST(AbstractReaderAdapterTest, getExtension_whenReaderIsNotRegistered_shouldISE)
@@ -236,7 +239,8 @@ TEST(AbstractReaderAdapterTest, transmitCardRequest_whenReaderIsNotRegistered_sh
 {
     setUp();
 
-    EXPECT_CALL(*readerAdapter, processCardRequest(_,_))
+    auto reader = std::dynamic_pointer_cast<ARAT_DefaultAbstractReaderAdapterMock>(readerAdapter);
+    EXPECT_CALL(*reader.get(), processCardRequest(_,_))
         .Times(AtMost(1));
 
     EXPECT_THROW(readerAdapter->transmitCardRequest(cardRequestSpi, ChannelControl::KEEP_OPEN),
@@ -249,7 +253,8 @@ TEST(AbstractReaderAdapterTest, transmitCardRequest_shouldInvoke_processCardRequ
 
     readerAdapter->doRegister();
 
-    EXPECT_CALL(*readerAdapter, processCardRequest(_,_))
+    auto reader = std::dynamic_pointer_cast<ARAT_DefaultAbstractReaderAdapterMock>(readerAdapter);
+    EXPECT_CALL(*reader.get(), processCardRequest(_,_))
         .Times(1)
         .WillOnce(Return(std::make_shared<ARAT_CardResponseApiMock>()));
 

@@ -47,12 +47,14 @@ public:
      * (package-private)<br>
      * Build a monitoring job to detect the card insertion
      *
+     * /!\ C++: cannot use a shared_ptr for reader as this is called from constructors
+     *
      * @param reader reader that will be polled with the method isCardPresent()
      * @param cycleDurationMillis time interval between two presence polls.
      * @param monitorInsertion if true, polls for CARD_INSERTED, else CARD_REMOVED
      * @since 2.0
      */
-    CardInsertionActiveMonitoringJobAdapter(std::shared_ptr<ObservableLocalReaderAdapter> reader,
+    CardInsertionActiveMonitoringJobAdapter(ObservableLocalReaderAdapter* reader,
                                             const long cycleDurationMillis,
                                             const bool monitorInsertion);
 

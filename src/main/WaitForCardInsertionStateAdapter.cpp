@@ -17,7 +17,7 @@ namespace core {
 namespace service {
 
 WaitForCardInsertionStateAdapter::WaitForCardInsertionStateAdapter(
-  std::shared_ptr<ObservableLocalReaderAdapter> reader,
+  ObservableLocalReaderAdapter* reader,
   std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob,
   std::shared_ptr<ExecutorService> executorService)
 : AbstractObservableStateAdapter(MonitoringState::WAIT_FOR_CARD_INSERTION,
@@ -26,7 +26,7 @@ WaitForCardInsertionStateAdapter::WaitForCardInsertionStateAdapter(
                                  executorService) {}
 
 WaitForCardInsertionStateAdapter::WaitForCardInsertionStateAdapter(
-  std::shared_ptr<ObservableLocalReaderAdapter> reader)
+  ObservableLocalReaderAdapter* reader)
 : WaitForCardInsertionStateAdapter(reader, nullptr, nullptr) {}
 
 void WaitForCardInsertionStateAdapter::onEvent(const InternalEvent event)

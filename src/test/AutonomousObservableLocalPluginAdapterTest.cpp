@@ -190,11 +190,11 @@ public:
     virtual void onUnregister() override final {}
 };
 
-std::shared_ptr<AOLPAT_AutonomousObservablePluginSpiMock> pluginSpi;
-std::shared_ptr<AutonomousObservableLocalPluginAdapter> plugin;
-std::shared_ptr<AOLPAT_PluginObserverSpiMock> observer;
-std::shared_ptr<AOLPAT_PluginExceptionHandlerMock> exceptionHandler;
-std::shared_ptr<AOLPAT_ReaderSpiMock> readerSpi1;
+static std::shared_ptr<AutonomousObservablePluginSpi> pluginSpi;
+static std::shared_ptr<AutonomousObservableLocalPluginAdapter> plugin;
+static std::shared_ptr<AOLPAT_PluginObserverSpiMock> observer;
+static std::shared_ptr<PluginObservationExceptionHandlerSpi> exceptionHandler;
+static std::shared_ptr<ReaderSpi> readerSpi1;
 
 static void setUp()
 {

@@ -19,7 +19,7 @@ namespace service {
 using DetectionMode = ObservableCardReader::DetectionMode;
 
 WaitForCardProcessingStateAdapter::WaitForCardProcessingStateAdapter(
-  std::shared_ptr<ObservableLocalReaderAdapter> reader,
+  ObservableLocalReaderAdapter* reader,
   std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob,
   std::shared_ptr<ExecutorService> executorService)
 : AbstractObservableStateAdapter(MonitoringState::WAIT_FOR_CARD_PROCESSING,
@@ -28,7 +28,7 @@ WaitForCardProcessingStateAdapter::WaitForCardProcessingStateAdapter(
                                  executorService) {}
 
 WaitForCardProcessingStateAdapter::WaitForCardProcessingStateAdapter(
-  std::shared_ptr<ObservableLocalReaderAdapter> reader)
+  ObservableLocalReaderAdapter* reader)
 : WaitForCardProcessingStateAdapter(reader, nullptr, nullptr) {}
 
 void WaitForCardProcessingStateAdapter::onEvent(const InternalEvent event)

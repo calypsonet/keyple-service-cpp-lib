@@ -50,13 +50,15 @@ public:
      * (package-private)<br>
      * Creates an instance.
      *
+     * /!\ C++: cannot use a shared_ptr for reader as this is called from constructors
+     *
      * @param reader The observable local reader adapter.
      * @param monitoringJob The monitoring job.
      * @param executorService The executor service to use.
      * @since 2.0
      */
     WaitForStartDetectStateAdapter(
-        std::shared_ptr<ObservableLocalReaderAdapter> reader,
+        ObservableLocalReaderAdapter* reader,
         std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob,
         std::shared_ptr<ExecutorService> executorService);
 
@@ -64,10 +66,12 @@ public:
      * (package-private)<br>
      * Creates an instance.
      *
+     * /!\ C++: cannot use a shared_ptr for reader as this is called from constructors
+     *
      * @param reader The observable local reader adapter.
      * @since 2.0
      */
-    WaitForStartDetectStateAdapter(std::shared_ptr<ObservableLocalReaderAdapter> reader);
+    WaitForStartDetectStateAdapter(ObservableLocalReaderAdapter* reader);
 
     /**
      * {@inheritDoc}

@@ -20,7 +20,7 @@ namespace service {
 
 AbstractObservableStateAdapter::AbstractObservableStateAdapter(
   const MonitoringState monitoringState,
-  std::shared_ptr<ObservableLocalReaderAdapter> reader,
+  ObservableLocalReaderAdapter* reader,
   std::shared_ptr<AbstractMonitoringJobAdapter> monitoringJob,
   std::shared_ptr<ExecutorService> executorService)
 : mMonitoringState(monitoringState),
@@ -29,7 +29,7 @@ AbstractObservableStateAdapter::AbstractObservableStateAdapter(
   mExecutorService(executorService) {}
 
 AbstractObservableStateAdapter::AbstractObservableStateAdapter(
-  const MonitoringState monitoringState, std::shared_ptr<ObservableLocalReaderAdapter> reader)
+  const MonitoringState monitoringState, ObservableLocalReaderAdapter* reader)
 : AbstractObservableStateAdapter(monitoringState, reader, nullptr, nullptr) {}
 
 MonitoringState AbstractObservableStateAdapter::getMonitoringState() const
@@ -37,7 +37,7 @@ MonitoringState AbstractObservableStateAdapter::getMonitoringState() const
     return mMonitoringState;
 }
 
-std::shared_ptr<ObservableLocalReaderAdapter> AbstractObservableStateAdapter::getReader() const
+ObservableLocalReaderAdapter* AbstractObservableStateAdapter::getReader() const
 {
     return mReader;
 }
