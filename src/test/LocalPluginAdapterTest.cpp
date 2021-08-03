@@ -217,7 +217,7 @@ private:
 static std::shared_ptr<PluginSpi> pluginSpi;
 static std::shared_ptr<ReaderSpi> readerSpi1;
 static std::shared_ptr<ReaderSpi> readerSpi2;
-static std::shared_ptr<ObservableReaderSpi> observableReader;
+static std::shared_ptr<LPAT_ObservableReaderSpiMock> observableReader;
 
 static void setUp()
 {

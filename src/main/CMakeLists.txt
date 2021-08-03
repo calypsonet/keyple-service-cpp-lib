@@ -87,6 +87,7 @@ ADD_LIBRARY(
     ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionResultAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionScenarioAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalPluginAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LocalPoolPluginAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalReaderAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MonitoringState.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ObservableLocalReaderAdapter.cpp

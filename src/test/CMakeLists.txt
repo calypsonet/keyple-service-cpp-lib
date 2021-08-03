@@ -76,6 +76,7 @@ ADD_EXECUTABLE(
     ${CMAKE_CURRENT_SOURCE_DIR}/AutonomousObservableLocalPluginAdapterTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionResultAdapterTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalPluginAdapterTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/LocalPoolPluginAdapterTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
 )
 
