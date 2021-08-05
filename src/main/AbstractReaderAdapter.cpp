@@ -64,10 +64,9 @@ const std::vector<std::shared_ptr<CardSelectionResponseApi>>
                    elapsed10ms / 10.0);
 
     try {
-        cardSelectionResponses = processCardSelectionRequests(
-                                     cardSelectionRequests,
-                                     multiSelectionProcessing,
-                                     channelControl);
+        cardSelectionResponses = processCardSelectionRequests(cardSelectionRequests,
+                                                              multiSelectionProcessing,
+                                                              channelControl);
     } catch (const UnexpectedStatusWordException& e) {
         throw CardBrokenCommunicationException(e.getCardResponse(),
                                                false,

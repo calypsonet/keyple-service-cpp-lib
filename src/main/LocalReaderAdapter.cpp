@@ -66,11 +66,15 @@ LocalReaderAdapter::LocalReaderAdapter(std::shared_ptr<ReaderSpi> readerSpi,
                         std::dynamic_pointer_cast<KeypleReaderExtension>(readerSpi),
                         pluginName),
   mReaderSpi(readerSpi),
+  mBefore(0),
+  mLogicalChannelIsOpen(false),
+  mUseDefaultProtocol(false),
+  mCurrentProtocol(""),
   mProtocolAssociations({}) {}
 
 void LocalReaderAdapter::computeCurrentProtocol()
 {
-    mCurrentProtocol = nullptr;
+    mCurrentProtocol = "";
 
     if (mProtocolAssociations.size() == 0) {
         mUseDefaultProtocol = true;
@@ -202,10 +206,12 @@ bool LocalReaderAdapter::checkPowerOnData(const std::string& powerOnData,
 {
     mLogger->debug("[%] openLogicalChannel => PowerOnData = %\n", getName(), powerOnData);
 
-    const std::regex powerOnDataRegex(cardSelector->getPowerOnDataRegex());
+    const std::string& powerOnDataRegex = cardSelector->getPowerOnDataRegex();
 
     /* Check the power-on data */
-    if (powerOnData != "" && !std::regex_match(powerOnData, powerOnDataRegex)) {
+    if (powerOnData != "" &&
+        powerOnDataRegex != "" &&
+        !std::regex_match(powerOnData, std::regex(powerOnDataRegex))) {
         mLogger->info("[%] openLogicalChannel => Power-on data didn't match. PowerOnData = %, " \
                       "regex filter = %\n",
                       getName(),

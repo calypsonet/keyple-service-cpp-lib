@@ -1,6 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2021 Calypso Networks Association                                                *
- * https://www.calypsonet-asso.org/                                                               *
+ * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -265,6 +264,12 @@ static void setUp()
         .WillRepeatedly(Return());
 }
 
+static void tearDown()
+{
+    /* Force count down to force pointer deletion and expectations check */
+    poolPluginSpi.reset();
+}
+
 TEST(LocalPoolPluginAdapterTest, getReaderGroupReferences_whenGettingReferencesFails_shouldKPE)
 {
     setUp();
@@ -278,8 +283,7 @@ TEST(LocalPoolPluginAdapterTest, getReaderGroupReferences_whenGettingReferencesF
 
     EXPECT_THROW(localPluginAdapter.getReaderGroupReferences(), KeyplePluginException);
 
-    /* Force count down to force pointer deletion and expectations check */
-    poolPluginSpi.reset();
+    tearDown();
 }
 
 TEST(LocalPoolPluginAdapterTest, getReaderGroupReferences_whenNotRegistered_shouldISE)
@@ -307,8 +311,7 @@ TEST(LocalPoolPluginAdapterTest, getReaderGroupReferences_whenSucceeds_shouldRet
                            groupReferences.end(),
                            GROUP_2));
 
-    /* Force count down to force pointer deletion and expectations check */
-    poolPluginSpi.reset();
+    tearDown();
 }
 
 TEST(LocalPoolPluginAdapterTest, allocateReader_whenNotRegistered_shouldISE)
@@ -316,7 +319,10 @@ TEST(LocalPoolPluginAdapterTest, allocateReader_whenNotRegistered_shouldISE)
     setUp();
 
     LocalPoolPluginAdapter localPluginAdapter(poolPluginSpi);
+
     EXPECT_THROW(localPluginAdapter.allocateReader(GROUP_1), IllegalStateException);
+
+    tearDown();
 }
 
 TEST(LocalPoolPluginAdapterTest, allocateReader_whenAllocatingReaderFails_shouldKPE)
@@ -332,8 +338,7 @@ TEST(LocalPoolPluginAdapterTest, allocateReader_whenAllocatingReaderFails_should
 
     EXPECT_THROW(localPluginAdapter.allocateReader(GROUP_1), KeyplePluginException);
 
-    /* Force count down to force pointer deletion and expectations check */
-    poolPluginSpi.reset();
+    tearDown();
 }
 
 TEST(LocalPoolPluginAdapterTest, allocateReader_whenSucceeds_shouldReturnReader)
@@ -360,8 +365,7 @@ TEST(LocalPoolPluginAdapterTest, allocateReader_whenSucceeds_shouldReturnReader)
                            readers.end(),
                            localPluginAdapter.getReader(READER_NAME_1)));
 
-    /* Force count down to force pointer deletion and expectations check */
-    poolPluginSpi.reset();
+    tearDown();
 }
 
 TEST(LocalPoolPluginAdapterTest, allocateReader_whenReaderIsObservable_shouldReturnObservableReader)
@@ -385,8 +389,7 @@ TEST(LocalPoolPluginAdapterTest, allocateReader_whenReaderIsObservable_shouldRet
                            readers.end(),
                            localPluginAdapter.getReader(OBSERVABLE_READER_NAME)));
 
-    /* Force count down to force pointer deletion and expectations check */
-    poolPluginSpi.reset();
+    tearDown();
 }
 
 TEST(LocalPoolPluginAdapterTest, releaseReader_whenNotRegistered_shouldISE)
@@ -401,8 +404,7 @@ TEST(LocalPoolPluginAdapterTest, releaseReader_whenNotRegistered_shouldISE)
 
     EXPECT_THROW(localPluginAdapter.releaseReader(reader), IllegalStateException);
 
-    /* Force count down to force pointer deletion and expectations check */
-    poolPluginSpi.reset();
+    tearDown();
 }
 
 TEST(LocalPoolPluginAdapterTest, releaseReader_whenSucceeds_shouldRemoveReader)
@@ -418,8 +420,7 @@ TEST(LocalPoolPluginAdapterTest, releaseReader_whenSucceeds_shouldRemoveReader)
     ASSERT_EQ(localPluginAdapter.getReaderNames().size(), 0);
     ASSERT_EQ(localPluginAdapter.getReaders().size(), 0);
 
-    /* Force count down to force pointer deletion and expectations check */
-    poolPluginSpi.reset();
+    tearDown();
 }
 
 TEST(LocalPoolPluginAdapterTest, releaseReader_whenReleaseReaderFails_shouldKPE_and_RemoveReader)
@@ -439,6 +440,5 @@ TEST(LocalPoolPluginAdapterTest, releaseReader_whenReleaseReaderFails_shouldKPE_
     ASSERT_EQ(localPluginAdapter.getReaderNames().size(), 0);
     ASSERT_EQ(localPluginAdapter.getReaders().size(), 0);
 
-    /* Force count down to force pointer deletion and expectations check */
-    poolPluginSpi.reset();
+    tearDown();
 }
