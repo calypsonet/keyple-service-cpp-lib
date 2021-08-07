@@ -78,6 +78,7 @@ ADD_EXECUTABLE(
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalPluginAdapterTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalPoolPluginAdapterTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/LocalReaderAdapterTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ObservableLocalPluginAdapterTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
 )
 

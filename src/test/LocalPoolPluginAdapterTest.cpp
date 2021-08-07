@@ -88,7 +88,7 @@ public:
     MOCK_METHOD((const std::vector<std::shared_ptr<ReaderSpi>>),
                 searchAvailableReaders,
                 (),
-                (override, final));
+                (const, override, final));
 
     virtual void onUnregister() override final {}
 };

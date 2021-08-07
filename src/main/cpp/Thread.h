@@ -21,6 +21,14 @@ namespace service {
 namespace cpp {
 
 class Thread {
+private:
+    /**
+     *
+     */
+    class UncaughtExceptionHandler {
+
+    };
+
 public:
     /**
      * Constructor
@@ -53,6 +61,14 @@ public:
         if (mAlive == 1 && mDetached == 0) {
             mThread->detach();
         }
+    }
+
+    /**
+     *
+     */
+    void setName(const std::string& name)
+    {
+        mName = name;
     }
 
     /**
@@ -124,6 +140,14 @@ public:
         }
 
         return result;
+    }
+
+    /**
+     *
+     */
+    bool isAlive() const
+    {
+        return mAlive;
     }
 
     /**
@@ -237,13 +261,21 @@ public:
     /**
      *
      */
-    int mAlive;
+    void setUncaughtExceptionHandler(std::shared_ptr<UncaughtExceptionHandler> eh)
+    {
+        mUncaughtExceptionHandler = eh;
+    }
 
-    private:
+private:
     /**
      *
      */
-    const std::string mName;
+    int mAlive;
+
+    /**
+     *
+     */
+    std::string mName;
 
     /**
      *
@@ -259,6 +291,11 @@ public:
      *
      */
     int mDetached;
+
+    /**
+     *
+     */
+    std::shared_ptr<UncaughtExceptionHandler> mUncaughtExceptionHandler;
 };
 
 }

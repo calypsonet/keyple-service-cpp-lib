@@ -50,7 +50,7 @@ public:
         return PLUGIN_NAME;
     }
 
-    virtual const std::vector<std::shared_ptr<ReaderSpi>> searchAvailableReaders() override final
+    virtual const std::vector<std::shared_ptr<ReaderSpi>> searchAvailableReaders() const override final
     {
         return {};
     }

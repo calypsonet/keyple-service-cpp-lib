@@ -41,10 +41,10 @@ using namespace keyple::core::plugin::spi::reader::observable::state::processing
 using namespace keyple::core::plugin::spi::reader::observable::state::removal;
 using namespace keyple::core::service;
 
-const std::string PLUGIN_NAME = "plugin";
-const std::string READER_NAME_1 = "reader1";
-const std::string READER_NAME_2 = "reader2";
-const std::string OBSERVABLE_READER_NAME = "observableReader";
+static const std::string PLUGIN_NAME = "plugin";
+static const std::string READER_NAME_1 = "reader1";
+static const std::string READER_NAME_2 = "reader2";
+static const std::string OBSERVABLE_READER_NAME = "observableReader";
 
 class LPAT_PluginSpiMock final : public KeyplePluginExtension, public PluginSpi {
 public:
@@ -56,7 +56,7 @@ public:
     MOCK_METHOD((const std::vector<std::shared_ptr<ReaderSpi>>),
                 searchAvailableReaders,
                 (),
-                (override, final));
+                (const, override, final));
 
     virtual void onUnregister() override final {}
 };
