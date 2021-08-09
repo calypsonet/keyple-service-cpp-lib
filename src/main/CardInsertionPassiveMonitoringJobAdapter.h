@@ -113,7 +113,7 @@ private:
          *
          * <p>Any exceptions are notified to the application using the exception handler.
          */
-        virtual void run() override final;
+        virtual void* run() override final;
 
     private:
         /**

@@ -34,7 +34,7 @@ CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob
       CardInsertionActiveMonitoringJobAdapter* parent)
 : mMonitoringState(monitoringState), mParent(parent) {}
 
-void CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob::run()
+void* CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob::run()
 {
     try {
         mParent->mLogger->debug("[%] Polling from isCardPresent\n", mParent->mReader->getName());
@@ -47,7 +47,7 @@ void CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob::
             if (mParent->mMonitorInsertion && mParent->mReader->isCardPresent()) {
                 mParent->mLogger->debug("[%] The card is present\n", mParent->mReader->getName());
                 mMonitoringState->onEvent(InternalEvent::CARD_INSERTED);
-                return;
+                return nullptr;
             }
 
             /* Polls for CARD_REMOVED */
@@ -56,7 +56,7 @@ void CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob::
                                         mParent->mReader->getName());
                 mParent->mLoop = false;
                 mMonitoringState->onEvent(InternalEvent::CARD_REMOVED);
-                return;
+                return nullptr;
             }
 
             mRetries++;
@@ -70,7 +70,7 @@ void CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob::
                 Thread::sleep(mParent->mCycleDurationMillis);
             } catch (const InterruptedException& ignored) {
                 /* Restore interrupted state... */
-                // FIXME Thread.currentThread().interrupt();
+                interrupt();
                 mParent->mLoop = false;
             }
         }
@@ -84,8 +84,10 @@ void CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob::
                 std::dynamic_pointer_cast<ObservableLocalReaderAdapter>(mParent->mReader)
                     ->getPluginName(),
                 mParent->mReader->getName(),
-                e);
+                std::make_shared<RuntimeException>(e));
     }
+
+    return nullptr;
 }
 
 /* CARD INSERTION ACTIVE MONITORING JOB ADAPTER ------------------------------------------------- */

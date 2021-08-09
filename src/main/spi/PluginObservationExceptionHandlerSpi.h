@@ -12,13 +12,17 @@
 
 #pragma once
 
-#include <exception>
 #include <string>
+
+/* Keyple Core Util */
+#include "Exception.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 namespace spi {
+
+using namespace keyple::core::util::cpp::exception;
 
 /**
  * Plugin observation error handler to be notified of exceptions that may occur during operations
@@ -38,8 +42,8 @@ public:
      * @param e The original exception
      * @since 2.0
      */
-    virtual void onPluginObservationError(const std::string& pluginName, const std::exception& e)
-        = 0;
+    virtual void onPluginObservationError(const std::string& pluginName,
+                                          const std::shared_ptr<Exception> e) = 0;
 };
 
 }

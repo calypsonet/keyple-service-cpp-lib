@@ -21,7 +21,7 @@ namespace service {
 namespace cpp {
 
 class Thread {
-private:
+public:
     /**
      *
      */
@@ -29,7 +29,6 @@ private:
 
     };
 
-public:
     /**
      * Constructor
      *

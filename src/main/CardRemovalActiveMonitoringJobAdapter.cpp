@@ -41,7 +41,7 @@ CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJob
                                    CardRemovalActiveMonitoringJobAdapter* parent)
 : mMonitoringState(monitoringState), mParent(parent) {}
 
-void CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJob::run()
+void* CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJob::run()
 {
     try {
         mParent->mLogger->debug("[%] Polling from isCardPresentPing\n",
@@ -55,7 +55,7 @@ void CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJob::run(
                 mParent->mLogger->debug("[%] the card stopped responding\n",
                                         mParent->getReader()->getName());
                 mMonitoringState->onEvent(InternalEvent::CARD_REMOVED);
-                return;
+                return nullptr;
             }
 
             mRetries++;
@@ -70,7 +70,7 @@ void CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJob::run(
             } catch (const InterruptedException& ignored) {
                 (void)ignored;
                 /* Restore interrupted state... */
-                // FIXME Thread.currentThread().interrupt();
+                interrupt();
                 mParent->mLoop = false;
             }
         }
@@ -81,8 +81,10 @@ void CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJob::run(
         mParent->getReader()->getObservationExceptionHandler()
                             ->onReaderObservationError(mParent->getReader()->getPluginName(),
                                                        mParent->getReader()->getName(),
-                                                       e);
+                                                       std::make_shared<RuntimeException>(e));
     }
+
+    return nullptr;
 }
 
 /* CARD REMOVAL ACTIVE MONITORING JOB ADAPTER --------------------------------------------------- */

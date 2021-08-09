@@ -93,7 +93,8 @@ class AOLPAT_PluginExceptionHandlerMock final : public PluginObservationExceptio
     AOLPAT_PluginExceptionHandlerMock(const std::shared_ptr<RuntimeException> throwEx)
     : mInvoked(true), mThrowEx(throwEx) {}
 
-    virtual void onPluginObservationError(const std::string& pluginName, const std::exception& e)
+    virtual void onPluginObservationError(const std::string& pluginName,
+                                          const std::shared_ptr<Exception> e)
         override final
     {
         mInvoked = true;
@@ -114,7 +115,7 @@ class AOLPAT_PluginExceptionHandlerMock final : public PluginObservationExceptio
         return mPluginName;
     }
 
-    const std::exception& getE() const
+    const std::shared_ptr<std::exception> getE() const
     {
         return mE;
     }
@@ -122,7 +123,7 @@ class AOLPAT_PluginExceptionHandlerMock final : public PluginObservationExceptio
 private:
     bool mInvoked = false;
     std::string mPluginName;
-    std::exception mE;
+    std::shared_ptr<Exception> mE;
     const std::shared_ptr<RuntimeException> mThrowEx;
 };
 

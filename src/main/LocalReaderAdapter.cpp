@@ -285,14 +285,14 @@ std::shared_ptr<CardSelectionResponseApi> LocalReaderAdapter::processCardSelecti
                       std::vector<std::shared_ptr<ApduResponseApi>>({}), false),
                 false,
                 e.getMessage(),
-                e);
+                std::make_shared<ReaderIOException>(e));
     } catch (const CardIOException& e) {
         throw CardBrokenCommunicationException(
                   std::make_shared<CardResponseAdapter>(
                       std::vector<std::shared_ptr<ApduResponseApi>>({}), false),
                   false,
                   e.getMessage(),
-                  e);
+                  std::make_shared<CardIOException>(e));
     }
 
     if (!selectionStatus->mHasMatched) {
@@ -422,7 +422,7 @@ std::shared_ptr<CardResponseApi> LocalReaderAdapter::processCardRequest(
                       std::make_shared<CardResponseAdapter>(apduResponses, false),
                       false,
                       "Reader communication failure while transmitting a card request.",
-                      e);
+                      std::make_shared<ReaderIOException>(e));
         } catch (const CardIOException& e) {
             /*
              * The process has been interrupted. We close the logical channel and launch a
@@ -434,7 +434,7 @@ std::shared_ptr<CardResponseApi> LocalReaderAdapter::processCardRequest(
                       std::make_shared<CardResponseAdapter>(apduResponses, false),
                       false,
                       "Card communication failure while transmitting a card request.",
-                      e);
+                      std::make_shared<CardIOException>(e));
         }
     }
 
@@ -457,7 +457,7 @@ void LocalReaderAdapter::releaseChannel()
         throw ReaderBrokenCommunicationException(nullptr,
                                                  false,
                                                  "Failed to release the physical channel",
-                                                 e);
+                                                 std::make_shared<ReaderIOException>(e));
     }
 }
 
@@ -480,7 +480,7 @@ void LocalReaderAdapter::activateProtocol(const std::string& readerProtocol,
 {
     checkStatus();
     Assert::getInstance().notEmpty(readerProtocol, "readerProtocol")
-                            .notEmpty(applicationProtocol, "applicationProtocol");
+                         .notEmpty(applicationProtocol, "applicationProtocol");
 
     if (!mReaderSpi->isProtocolSupported(readerProtocol)) {
         throw ReaderProtocolNotSupportedException(readerProtocol);
@@ -499,7 +499,8 @@ bool LocalReaderAdapter::isCardPresent()
         return mReaderSpi->checkCardPresence();
     } catch (const ReaderIOException& e) {
         throw ReaderCommunicationException(
-                  "An exception occurred while checking the card presence.", e);
+                  "An exception occurred while checking the card presence.",
+                  std::make_shared<ReaderIOException>(e));
     }
 }
 
@@ -546,13 +547,13 @@ std::vector<std::shared_ptr<CardSelectionResponseApi>>
                       nullptr,
                       false,
                       "Reader communication failure while opening physical channel",
-                      e);
+                      std::make_shared<ReaderIOException>(e));
         } catch (const CardIOException& e) {
             throw CardBrokenCommunicationException(
                       nullptr,
                       false,
                       "Card communication failure while opening physical channel",
-                      e);
+                      std::make_shared<CardIOException>(e));
         }
     }
 

@@ -54,9 +54,11 @@ ObservableLocalReaderAdapter::ObservableLocalReaderAdapterJob::ObservableLocalRe
   ObservableLocalReaderAdapter* parent)
 : mObserver(observer), mEvent(event), mParent(parent) {}
 
-void ObservableLocalReaderAdapter::ObservableLocalReaderAdapterJob::run()
+void* ObservableLocalReaderAdapter::ObservableLocalReaderAdapterJob::run()
 {
     mParent->notifyObserver(mObserver, mEvent);
+
+    return nullptr;
 }
 
 /* OBSERVABLE LOCAL READER ADAPTER -------------------------------------------------------------- */
@@ -119,10 +121,11 @@ bool ObservableLocalReaderAdapter::isCardPresentPing()
         mObservableReaderSpi->transmitApdu(APDU_PING_CARD_PRESENCE);
     } catch (const ReaderIOException& e) {
         /* Notify the reader communication failure with the exception handler */
-        const ReaderCommunicationException ex(READER_MONITORING_ERROR, e);
+        const auto rioe = std::make_shared<ReaderIOException>(e);
+        const auto rce = std::make_shared<ReaderCommunicationException>(READER_MONITORING_ERROR, rioe);
         getObservationExceptionHandler()->onReaderObservationError(getPluginName(),
                                                                    getName(),
-                                                                   ex);
+                                                                   rce);
     } catch (const CardIOException& e) {
         mLogger->trace("[%] Exception occurred in isCardPresentPing. Message: %\n",
                        getName(),
@@ -191,10 +194,12 @@ std::shared_ptr<ReaderEvent> ObservableLocalReaderAdapter::processCardInserted()
 
     } catch (const ReaderBrokenCommunicationException& e) {
         /* Notify the reader communication failure with the exception handler */
-        const ReaderCommunicationException ex(READER_MONITORING_ERROR, e);
+        const auto rbce = std::make_shared<ReaderBrokenCommunicationException>(e);
+        const auto rce = std::make_shared<ReaderCommunicationException>(READER_MONITORING_ERROR,
+                                                                        rbce);
         getObservationExceptionHandler()->onReaderObservationError(getPluginName(),
                                                                    getName(),
-                                                                   ex);
+                                                                   rce);
 
     } catch (const CardBrokenCommunicationException& e) {
         /* The last transmission failed, close the logical and physical channels */
@@ -217,10 +222,12 @@ std::shared_ptr<ReaderEvent> ObservableLocalReaderAdapter::processCardInserted()
         mObservableReaderSpi->closePhysicalChannel();
     } catch (const ReaderIOException& e) {
         /* Notify the reader communication failure with the exception handler */
-        const ReaderCommunicationException ex(READER_MONITORING_ERROR, e);
+        const auto rioe = std::make_shared<ReaderIOException>(e);
+        const auto rce = std::make_shared<ReaderCommunicationException>(READER_MONITORING_ERROR,
+                                                                        rioe);
         getObservationExceptionHandler()->onReaderObservationError(getPluginName(),
                                                                    getName(),
-                                                                   ex);
+                                                                   rce);
     }
 
     /* No event returned */
@@ -287,7 +294,9 @@ void ObservableLocalReaderAdapter::notifyObserver(std::shared_ptr<CardReaderObse
     } catch (const Exception& e) {
         try {
             mObservationManager->getObservationExceptionHandler()
-                               ->onReaderObservationError(getPluginName(), getName(), e);
+                               ->onReaderObservationError(getPluginName(),
+                                                          getName(),
+                                                          std::make_shared<Exception>(e));
         } catch (const Exception& e2) {
             mLogger->error("Exception during notification", e2);
             mLogger->error("Original cause", e);

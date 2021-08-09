@@ -55,7 +55,7 @@ const std::vector<std::string>& LocalPoolPluginAdapter::getReaderGroupReferences
                                     getName() +
                                     " is unable to get reader group references : " +
                                     e.getMessage(),
-                                    e);
+                                    std::make_shared<PluginIOException>(e));
     }
 }
 
@@ -82,7 +82,7 @@ std::shared_ptr<Reader> LocalPoolPluginAdapter::allocateReader(
                                     readerGroupReference +
                                     " : " +
                                     e.getMessage(),
-                                    e);
+                                    std::make_shared<PluginIOException>(e));
     }
 
     std::shared_ptr<LocalReaderAdapter> localReaderAdapter = nullptr;
@@ -128,7 +128,7 @@ void LocalPoolPluginAdapter::releaseReader(std::shared_ptr<Reader> reader)
                                     reader->getName() +
                                     "' : " +
                                     e.getMessage(),
-                                    e);
+                                    std::make_shared<PluginIOException>(e));
     }
 }
 

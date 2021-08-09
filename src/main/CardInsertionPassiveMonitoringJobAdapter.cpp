@@ -33,10 +33,10 @@ CardInsertionPassiveMonitoringJobAdapter::CardInsertionPassiveMonitoringJob
       CardInsertionPassiveMonitoringJobAdapter* parent)
 : mMonitoringState(monitoringState), mParent(parent) {}
 
-void CardInsertionPassiveMonitoringJobAdapter::CardInsertionPassiveMonitoringJob::run()
+void* CardInsertionPassiveMonitoringJobAdapter::CardInsertionPassiveMonitoringJob::run()
 {
     try {
-        while (true) { // FIXME !Thread.currentThread().isInterrupted()) {
+        while (!isInterrupted()) {
             try {
                 mParent->mReaderSpi->waitForCardInsertion();
                 mMonitoringState->onEvent(InternalEvent::CARD_INSERTED);
@@ -56,8 +56,10 @@ void CardInsertionPassiveMonitoringJobAdapter::CardInsertionPassiveMonitoringJob
         mParent->getReader()->getObservationExceptionHandler()
                             ->onReaderObservationError(mParent->getReader()->getPluginName(),
                                                        mParent->getReader()->getName(),
-                                                       e);
+                                                       std::make_shared<RuntimeException>(e));
     }
+
+    return nullptr;
 }
 
 /* CARD INSERTION PASSIVE MONITORING JOB ADAPTER ------------------------------------------------ */

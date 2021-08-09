@@ -15,14 +15,16 @@
 
 #include <atomic>
 #include <future>
-#include <thread>
+
+/* Keyple Core Service */
+#include "Thread.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 namespace cpp {
 
-class Job {
+class Job : public Thread {
 public:
     /**
      *
@@ -43,11 +45,6 @@ public:
      * Returns true if the task is completed
      */
     bool isDone() const;
-
-    /**
-     *
-     */
-    virtual void run() = 0;
 
 private:
     /**

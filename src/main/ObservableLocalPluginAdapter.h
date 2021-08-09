@@ -53,6 +53,17 @@ public:
     ObservableLocalPluginAdapter(std::shared_ptr<ObservablePluginSpi> observablePluginSpi);
 
     /**
+     *
+     */
+    ~ObservableLocalPluginAdapter()
+    {
+        if (mThread) {
+            mThread->mRunning = false;
+            while(!mThread->mTerminated);
+        }
+    }
+
+    /**
      * (package-private)<br>
      * Checks whether the background job is monitoring for new readers.
      *
@@ -88,6 +99,8 @@ private:
      */
     class EventThread : public Thread {
     public:
+        friend ObservableLocalPluginAdapter;
+
         /**
          *
          */
@@ -119,6 +132,11 @@ private:
          *
          */
         bool mRunning;
+
+        /**
+         *
+         */
+        bool mTerminated;
 
         /**
          *

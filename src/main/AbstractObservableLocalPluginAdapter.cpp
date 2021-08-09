@@ -33,9 +33,11 @@ AbstractObservableLocalPluginAdapter::ObservableLocalPluginAdapterJob
                                       AbstractObservableLocalPluginAdapter* parent)
 : mObserver(observer), mEvent(event), mParent(parent) {}
 
-void AbstractObservableLocalPluginAdapter::ObservableLocalPluginAdapterJob::run()
+void* AbstractObservableLocalPluginAdapter::ObservableLocalPluginAdapterJob::run()
 {
     mParent->notifyObserver(mObserver, mEvent);
+
+    return nullptr;
 }
 
 /* ABSTRACT OBSERVABLE LOCAL PLUGIN ADAPTER ----------------------------------------------------- */
@@ -85,7 +87,8 @@ void AbstractObservableLocalPluginAdapter::notifyObserver(
     } catch (const Exception& e) {
         try {
             mObservationManager->getObservationExceptionHandler()
-                               ->onPluginObservationError(getName(), e);
+                               ->onPluginObservationError(getName(),
+                                                          std::make_shared<Exception>(e));
         } catch (const Exception& e2) {
             mLogger->error("Exception during notification: %\n", e2);
             mLogger->error("Original cause: %\n", e);

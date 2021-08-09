@@ -17,6 +17,7 @@
 #include "LocalReaderAdapter.h"
 #include "ObservableLocalReaderAdapter.h"
 #include "PluginEventAdapter.h"
+#include "Thread.h"
 
 /* Keyple Core Util */
 #include "Arrays.h"
@@ -33,6 +34,7 @@ namespace service {
 
 using namespace keyple::core::plugin;
 using namespace keyple::core::plugin::spi::reader::observable;
+using namespace keyple::core::service::cpp;
 using namespace keyple::core::util::cpp;
 using namespace keyple::core::util::cpp::exception;
 
@@ -59,8 +61,10 @@ void ObservableLocalPluginAdapter::addObserver(std::shared_ptr<PluginObserverSpi
 
         mThread = std::make_shared<EventThread>(getName(), this);
         mThread->setName("PluginEventMonitoringThread");
-        mThread->setUncaughtExceptionHandler(nullptr); // FIXME
-            // new Thread.UncaughtExceptionHandler() {
+        mThread->setUncaughtExceptionHandler(
+            std::make_shared<Thread::UncaughtExceptionHandler>());
+            // FIXME
+            //    {
             //     public void uncaughtException(Thread t, Throwable e) {
             //     getObservationManager()
             //         .getObservationExceptionHandler()
@@ -206,6 +210,8 @@ void ObservableLocalPluginAdapter::EventThread::processChanges(
 
 void* ObservableLocalPluginAdapter::EventThread::run()
 {
+    mTerminated = false;
+
     try {
         while (mRunning) {
             /* Retrieves the current readers names list */
@@ -229,14 +235,16 @@ void* ObservableLocalPluginAdapter::EventThread::run()
                                mPluginName);
 
         /* Restore interrupted state... */
-        // FIXME: Thread::currentThread().interrupt();
+        interrupt();
     } catch (const PluginIOException& e) {
-        KeyplePluginException ex("An error occurred while monitoring the readers.", e);
+        const auto pioe = std::make_shared<PluginIOException>(e);
+        const auto kpe = std::make_shared<KeyplePluginException>(
+                             "An error occurred while monitoring the readers.", pioe);
         mParent->getObservationManager()->getObservationExceptionHandler()
-                                        ->onPluginObservationError(
-                                            mPluginName,
-                                            e);
+                                        ->onPluginObservationError(mPluginName, kpe);
     }
+
+    mTerminated = true;
 
     return nullptr;
 }

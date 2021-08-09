@@ -71,7 +71,7 @@ const std::vector<std::shared_ptr<CardSelectionResponseApi>>
         throw CardBrokenCommunicationException(e.getCardResponse(),
                                                false,
                                                "An unexpected status word was received.",
-                                               e);
+                                               std::make_shared<UnexpectedStatusWordException>(e));
     }
 
     timeStamp = System::nanoTime();

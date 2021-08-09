@@ -144,7 +144,7 @@ private:
         /**
          *
          */
-        virtual void run() override final;
+        virtual void* run() override final;
 
     private:
         /**

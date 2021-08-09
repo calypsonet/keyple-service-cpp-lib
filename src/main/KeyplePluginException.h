@@ -39,7 +39,7 @@ public:
      * @param cause the cause
      * @since 2.0
      */
-    KeyplePluginException(const std::string& message, const std::exception cause)
+    KeyplePluginException(const std::string& message, const std::shared_ptr<Exception> cause)
     : RuntimeException(message, cause) {}
 };
 
