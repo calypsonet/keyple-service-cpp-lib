@@ -127,7 +127,7 @@ public:
      *
      * @since 2.0
      */
-    virtual bool isContactless() const override final;
+    virtual bool isContactless() override final;
 
     /**
      * {@inheritDoc}

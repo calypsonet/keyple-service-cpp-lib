@@ -13,47 +13,33 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-/* Calypsonet Terminal Reader */
-#include "SmartCard.h"
-
-/* Calypsonet Terminal Card */
-#include "SmartCardSpi.h"
-
 /* Keyple Core Service */
 #include "CardSelectionResultAdapter.h"
 
 /* Keyple Core Util */
 #include "IllegalStateException.h"
 
+/* Mock */
+#include "SmartCardMock.h"
+
 using namespace testing;
 
-using namespace calypsonet::terminal::card::spi;
-using namespace calypsonet::terminal::reader::selection::spi;
 using namespace keyple::core::service;
 using namespace keyple::core::util::cpp::exception;
 
-class CSRAT_SmartCardMock final : public SmartCard, public SmartCardSpi {
-public:
-    virtual const std::string& getPowerOnData() const override final
-    {
-        return mPowerOnData;
-    }
+static const std::string POWER_ON_DATA = "12345678";
 
-    virtual const std::vector<uint8_t>& getSelectApplicationResponse() const override final
-    {
-        return mApplicationResponse;
-    }
-
-private:
-    const std::string mPowerOnData = "12345678";
-    const std::vector<uint8_t> mApplicationResponse;
-};
-
-static std::shared_ptr<SmartCard> smartCard;
+static std::shared_ptr<SmartCardMock> smartCard;
 
 static void setUp()
 {
-    smartCard = std::make_shared<CSRAT_SmartCardMock>();
+    smartCard = std::make_shared<SmartCardMock>();
+    EXPECT_CALL(*smartCard.get(), getPowerOnData()).WillRepeatedly(ReturnRef(POWER_ON_DATA));
+}
+
+static void tearDown()
+{
+    smartCard.reset();
 }
 
 TEST(CardSelectionResultAdapterTest, getActiveSelectionIndex_whenNoSmartCard_shouldReturnMinusOne)
@@ -63,6 +49,8 @@ TEST(CardSelectionResultAdapterTest, getActiveSelectionIndex_whenNoSmartCard_sho
     CardSelectionResultAdapter cardSelectionResult;
 
     ASSERT_EQ(cardSelectionResult.getActiveSelectionIndex(), -1);
+
+    tearDown();
 }
 
 TEST(CardSelectionResultAdapterTest,
@@ -74,6 +62,8 @@ TEST(CardSelectionResultAdapterTest,
     cardSelectionResult.addSmartCard(0, nullptr);
 
     ASSERT_EQ(cardSelectionResult.getActiveSelectionIndex(), 0);
+
+    tearDown();
 }
 
 TEST(CardSelectionResultAdapterTest,
@@ -85,6 +75,8 @@ TEST(CardSelectionResultAdapterTest,
     cardSelectionResult.addSmartCard(0, smartCard);
 
     ASSERT_EQ(cardSelectionResult.getActiveSelectionIndex(), 0);
+
+    tearDown();
 }
 
 TEST(CardSelectionResultAdapterTest, getSmartCards_whenNoSmartCard_shouldReturnEmptyMap)
@@ -94,6 +86,8 @@ TEST(CardSelectionResultAdapterTest, getSmartCards_whenNoSmartCard_shouldReturnE
     CardSelectionResultAdapter cardSelectionResult;
 
     ASSERT_EQ(cardSelectionResult.getSmartCards().size(), 0);
+
+    tearDown();
 }
 
 TEST(CardSelectionResultAdapterTest, getSmartCards_whenNotNullSmartCard_shouldReturnNotEmptyMap)
@@ -112,6 +106,8 @@ TEST(CardSelectionResultAdapterTest, getSmartCards_whenNotNullSmartCard_shouldRe
             break;
     }
     ASSERT_NE(it, smartCards.end());
+
+    tearDown();
 }
 
 TEST(CardSelectionResultAdapterTest, getSmartCards_whenNoSmartCard_shouldReturnNull)
@@ -122,6 +118,8 @@ TEST(CardSelectionResultAdapterTest, getSmartCards_whenNoSmartCard_shouldReturnN
 
     const auto& smartCards = cardSelectionResult.getSmartCards();
     ASSERT_EQ(smartCards.find(0), smartCards.end());
+
+    tearDown();
 }
 
 TEST(CardSelectionResultAdapterTest, getSmartCards_whenNotNullSmartCard_shouldReturnSmartCard)
@@ -135,6 +133,8 @@ TEST(CardSelectionResultAdapterTest, getSmartCards_whenNotNullSmartCard_shouldRe
     const auto& it = smartCards.find(0);
     ASSERT_NE(it, smartCards.end());
     ASSERT_EQ(it->second, smartCard);
+
+    tearDown();
 }
 
 TEST(CardSelectionResultAdapterTest, getActiveSmartCard_whenNoSmartCard_shouldISE)
@@ -144,6 +144,8 @@ TEST(CardSelectionResultAdapterTest, getActiveSmartCard_whenNoSmartCard_shouldIS
     CardSelectionResultAdapter cardSelectionResult;
 
     EXPECT_THROW(cardSelectionResult.getActiveSmartCard(), IllegalStateException);
+
+    tearDown();
 }
 
 TEST(CardSelectionResultAdapterTest, getActiveSmartCard_whenNotSmartCard_shouldReturnSmartcard)
@@ -154,4 +156,6 @@ TEST(CardSelectionResultAdapterTest, getActiveSmartCard_whenNotSmartCard_shouldR
     cardSelectionResult.addSmartCard(0, smartCard);
 
     ASSERT_EQ(cardSelectionResult.getActiveSmartCard(), smartCard);
+
+    tearDown();
 }

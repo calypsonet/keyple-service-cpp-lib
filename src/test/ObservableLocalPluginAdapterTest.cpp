@@ -26,6 +26,9 @@
 #include "IllegalStateException.h"
 #include "RuntimeException.h"
 
+/* Mock */
+#include "ReaderSpiMock.h"
+
 using namespace testing;
 
 using namespace keyple::core::plugin;
@@ -37,68 +40,7 @@ using namespace keyple::core::util::cpp::exception;
 static const std::string PLUGIN_NAME = "plugin";
 static const std::string READER_NAME_1 = "reader1";
 
-class OLPAT_ReaderSpiMock final : public ReaderSpi {
-public:
-    MOCK_METHOD((const std::string&),
-                getName,
-                (),
-                (const, override, final));
 
-    virtual bool isProtocolSupported(const std::string& readerProtocol) const override final
-    {
-        (void)readerProtocol;
-        return true;
-    }
-
-    virtual void activateProtocol(const std::string& readerProtocol) override final
-    {
-        (void)readerProtocol;
-    }
-
-    virtual void deactivateProtocol(const std::string& readerProtocol) override final
-    {
-        (void)readerProtocol;
-    }
-
-    virtual bool isCurrentProtocol(const std::string& readerProtocol) const override final
-    {
-        (void)readerProtocol;
-        return true;
-    }
-
-    virtual void openPhysicalChannel() override final {}
-
-    virtual void closePhysicalChannel() override final {}
-
-    virtual bool isPhysicalChannelOpen() const override final
-    {
-        return true;
-    }
-
-    virtual bool checkCardPresence() override final
-    {
-        return true;
-    }
-
-    virtual const std::string getPowerOnData() const override final
-    {
-        return "";
-    }
-
-    virtual const std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn) override
-        final
-    {
-        (void)apduIn;
-        return std::vector<uint8_t>();
-    }
-
-    virtual bool isContactless() override final
-    {
-        return true;
-    }
-
-    virtual void onUnregister() override final {}
-};
 
 class OLPAT_ObservableLocalPluginSpiMock final : public ObservablePluginSpi {
 public:
@@ -159,7 +101,7 @@ public:
     void addReaderName(const std::vector<std::string>& names)
     {
         for (const auto& readerName : names) {
-            auto readerSpi = std::make_shared<OLPAT_ReaderSpiMock>();
+            auto readerSpi = std::make_shared<ReaderSpiMock>();
             EXPECT_CALL(*readerSpi.get(), getName())
                 .WillRepeatedly(ReturnRef(readerName));
             mStubReaders.insert({readerName, readerSpi});

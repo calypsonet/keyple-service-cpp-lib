@@ -30,6 +30,9 @@
 #include "ObservableReader.h"
 #include "ObservableLocalReaderAdapter.h"
 
+/* Mock */
+#include "PluginSpiMock.h"
+
 using namespace testing;
 
 using namespace keyple::core::commons;
@@ -45,21 +48,6 @@ static const std::string PLUGIN_NAME = "plugin";
 static const std::string READER_NAME_1 = "reader1";
 static const std::string READER_NAME_2 = "reader2";
 static const std::string OBSERVABLE_READER_NAME = "observableReader";
-
-class LPAT_PluginSpiMock final : public KeyplePluginExtension, public PluginSpi {
-public:
-    virtual const std::string& getName() const override final
-    {
-        return PLUGIN_NAME;
-    }
-
-    MOCK_METHOD((const std::vector<std::shared_ptr<ReaderSpi>>),
-                searchAvailableReaders,
-                (),
-                (const, override, final));
-
-    virtual void onUnregister() override final {}
-};
 
 class LPAT_ObservableReaderSpiMock final
 : public ObservableReaderSpi,
@@ -213,25 +201,31 @@ private:
     const std::string mName;
 };
 
-static std::shared_ptr<PluginSpi> pluginSpi;
+static std::shared_ptr<PluginSpiMock> pluginSpi;
 static std::shared_ptr<ReaderSpi> readerSpi1;
 static std::shared_ptr<ReaderSpi> readerSpi2;
 static std::shared_ptr<LPAT_ObservableReaderSpiMock> observableReader;
 
 static void setUp()
 {
-    pluginSpi = std::make_shared<LPAT_PluginSpiMock>();
+    pluginSpi = std::make_shared<PluginSpiMock>();
+    EXPECT_CALL(*pluginSpi.get(), getName()).WillRepeatedly(ReturnRef(PLUGIN_NAME));
+
     readerSpi1 = std::make_shared<LPAT_ReaderSpiMock>(READER_NAME_1);
     readerSpi2 = std::make_shared<LPAT_ReaderSpiMock>(READER_NAME_2);
     observableReader = std::make_shared<LPAT_ObservableReaderSpiMock>(OBSERVABLE_READER_NAME);
+}
+
+static void tearDown()
+{
+    pluginSpi.reset();
 }
 
 TEST(LocalPluginAdapterTest, register_whenSearchReaderFails_shouldPIO)
 {
     setUp();
 
-    auto plugin = std::dynamic_pointer_cast<LPAT_PluginSpiMock>(pluginSpi);
-    EXPECT_CALL(*plugin.get(), searchAvailableReaders())
+    EXPECT_CALL(*pluginSpi.get(), searchAvailableReaders())
         .Times(1)
         .WillOnce(Throw(PluginIOException("Plugin IO Exception")));
 
@@ -239,8 +233,7 @@ TEST(LocalPluginAdapterTest, register_whenSearchReaderFails_shouldPIO)
 
     EXPECT_THROW(localPluginAdapter.doRegister(), PluginIOException);
 
-    /* Force count down to force pointer deletion and expectations check */
-    pluginSpi.reset();
+    tearDown();
 }
 
 TEST(LocalPluginAdapterTest, register_whenSearchReaderReturnsReader_shouldRegisterReader)
@@ -251,8 +244,7 @@ TEST(LocalPluginAdapterTest, register_whenSearchReaderReturnsReader_shouldRegist
     readerSpis.push_back(readerSpi1);
     readerSpis.push_back(readerSpi2);
 
-    auto plugin = std::dynamic_pointer_cast<LPAT_PluginSpiMock>(pluginSpi);
-    EXPECT_CALL(*plugin.get(), searchAvailableReaders())
+    EXPECT_CALL(*pluginSpi.get(), searchAvailableReaders())
         .WillRepeatedly(Return(readerSpis));
 
     LocalPluginAdapter localPluginAdapter(pluginSpi);
@@ -290,8 +282,7 @@ TEST(LocalPluginAdapterTest, register_whenSearchReaderReturnsReader_shouldRegist
 
     ASSERT_NE(reader1, reader2);
 
-    /* Force count down to force pointer deletion and expectations check */
-    pluginSpi.reset();
+    tearDown();
 }
 
 TEST(LocalPluginAdapterTest,
@@ -302,8 +293,7 @@ TEST(LocalPluginAdapterTest,
     std::vector<std::shared_ptr<ReaderSpi>> readerSpis;
     readerSpis.push_back(observableReader);
 
-    auto plugin = std::dynamic_pointer_cast<LPAT_PluginSpiMock>(pluginSpi);
-    EXPECT_CALL(*plugin.get(), searchAvailableReaders())
+    EXPECT_CALL(*pluginSpi.get(), searchAvailableReaders())
         .WillRepeatedly(Return(readerSpis));
 
     LocalPluginAdapter localPluginAdapter(pluginSpi);
@@ -323,8 +313,7 @@ TEST(LocalPluginAdapterTest,
     const auto localReaderClass = std::dynamic_pointer_cast<ObservableLocalReaderAdapter>(reader);
     ASSERT_NE(localReaderClass, nullptr);
 
-    /* Force count down to force pointer deletion and expectations check */
-    pluginSpi.reset();
+    tearDown();
 }
 
 TEST(LocalPluginAdapterTest, getReaders_whenNotRegistered_shouldISE)
@@ -334,6 +323,8 @@ TEST(LocalPluginAdapterTest, getReaders_whenNotRegistered_shouldISE)
     LocalPluginAdapter localPluginAdapter(pluginSpi);
 
     EXPECT_THROW(localPluginAdapter.getReaders(), IllegalStateException);
+
+    tearDown();
 }
 
 TEST(LocalPluginAdapterTest, getReader_whenNotRegistered_shouldISE)
@@ -343,6 +334,8 @@ TEST(LocalPluginAdapterTest, getReader_whenNotRegistered_shouldISE)
     LocalPluginAdapter localPluginAdapter(pluginSpi);
 
     EXPECT_THROW(localPluginAdapter.getReader(READER_NAME_1), IllegalStateException);
+
+    tearDown();
 }
 
 TEST(LocalPluginAdapterTest, getReaderNames_whenNotRegistered_shouldISE)
@@ -352,6 +345,8 @@ TEST(LocalPluginAdapterTest, getReaderNames_whenNotRegistered_shouldISE)
     LocalPluginAdapter localPluginAdapter(pluginSpi);
 
     EXPECT_THROW(localPluginAdapter.getReaderNames(), IllegalStateException);
+
+    tearDown();
 }
 
 TEST(LocalPluginAdapterTest, unregister_shouldDisableMethodsWithISE)
@@ -361,8 +356,7 @@ TEST(LocalPluginAdapterTest, unregister_shouldDisableMethodsWithISE)
     std::vector<std::shared_ptr<ReaderSpi>> readerSpis;
     readerSpis.push_back(readerSpi1);
 
-    auto plugin = std::dynamic_pointer_cast<LPAT_PluginSpiMock>(pluginSpi);
-    EXPECT_CALL(*plugin.get(), searchAvailableReaders())
+    EXPECT_CALL(*pluginSpi.get(), searchAvailableReaders())
         .WillRepeatedly(Return(readerSpis));
 
     LocalPluginAdapter localPluginAdapter(pluginSpi);
@@ -371,8 +365,7 @@ TEST(LocalPluginAdapterTest, unregister_shouldDisableMethodsWithISE)
 
     EXPECT_THROW(localPluginAdapter.getReaders(), IllegalStateException);
 
-    /* Force count down to force pointer deletion and expectations check */
-    pluginSpi.reset();
+    tearDown();
 }
 
 TEST(LocalPluginAdapterTest, getExtension_whenNotRegistered_shouldISE)
@@ -381,8 +374,10 @@ TEST(LocalPluginAdapterTest, getExtension_whenNotRegistered_shouldISE)
 
     LocalPluginAdapter localPluginAdapter(pluginSpi);
 
-    EXPECT_THROW(localPluginAdapter.getExtension(typeid(LPAT_PluginSpiMock)),
+    EXPECT_THROW(localPluginAdapter.getExtension(typeid(PluginSpiMock)),
                  IllegalStateException);
+
+    tearDown();
 }
 
 TEST(LocalPluginAdapterTest, getExtension_whenRegistered_shouldReturnExtension)
@@ -390,17 +385,15 @@ TEST(LocalPluginAdapterTest, getExtension_whenRegistered_shouldReturnExtension)
     setUp();
 
     std::vector<std::shared_ptr<ReaderSpi>> readerSpis;
-    auto plugin = std::dynamic_pointer_cast<LPAT_PluginSpiMock>(pluginSpi);
-    EXPECT_CALL(*plugin.get(), searchAvailableReaders())
+    EXPECT_CALL(*pluginSpi.get(), searchAvailableReaders())
         .WillRepeatedly(Return(readerSpis));
 
     LocalPluginAdapter localPluginAdapter(pluginSpi);
     localPluginAdapter.doRegister();
 
-    const auto extension = localPluginAdapter.getExtension(typeid(LPAT_PluginSpiMock));
-    const auto pluginMock = std::static_pointer_cast<LPAT_PluginSpiMock>(extension);
+    const auto extension = localPluginAdapter.getExtension(typeid(PluginSpiMock));
+    const auto pluginMock = std::static_pointer_cast<PluginSpiMock>(extension);
     ASSERT_NE(pluginMock, nullptr);
 
-    /* Force count down to force pointer deletion and expectations check */
-    pluginSpi.reset();
+    tearDown();
 }

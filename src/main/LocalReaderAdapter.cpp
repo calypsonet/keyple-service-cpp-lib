@@ -504,7 +504,7 @@ bool LocalReaderAdapter::isCardPresent()
     }
 }
 
-bool LocalReaderAdapter::isContactless() const
+bool LocalReaderAdapter::isContactless()
 {
     return mReaderSpi->isContactless();
 }

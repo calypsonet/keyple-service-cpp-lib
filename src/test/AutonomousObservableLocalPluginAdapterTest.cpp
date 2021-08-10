@@ -16,16 +16,17 @@
 #include <chrono>
 #include <thread>
 
-/* Keyple Core Plugin */
-#include "AutonomousObservablePluginSpi.h"
-
 /* Keyple Core Service */
 #include "AutonomousObservableLocalPluginAdapter.h"
-#include "PluginObserverSpi.h"
-#include "PluginObservationExceptionHandlerSpi.h"
 
 /* Keyple Core Util */
 #include "RuntimeException.h"
+
+/* Mock */
+#include "AutonomousObservablePluginSpiMock.h"
+#include "PluginObservationExceptionHandlerMock.h"
+#include "PluginObserverSpiMock.h"
+#include "ReaderSpiMock.h"
 
 using namespace testing;
 
@@ -37,176 +38,38 @@ using namespace keyple::core::util::cpp::exception;
 const std::string PLUGIN_NAME = "plugin";
 const std::string READER_NAME_1 = "reader1";
 
-class AOLPAT_AutonomousObservablePluginSpiMock final : public AutonomousObservablePluginSpi {
-public:
-    virtual void connect(AutonomousObservablePluginApi* autonomousObservablePluginSpi) override
-        final
-    {
-        (void)autonomousObservablePluginSpi;
-    }
-
-    virtual const std::string& getName() const override final
-    {
-        return PLUGIN_NAME;
-    }
-
-    virtual const std::vector<std::shared_ptr<ReaderSpi>> searchAvailableReaders() const override final
-    {
-        return {};
-    }
-
-    virtual void onUnregister() override final {}
-};
-
-
-class AOLPAT_PluginObserverSpiMock final : public PluginObserverSpi {
-public:
-    AOLPAT_PluginObserverSpiMock(const std::shared_ptr<RuntimeException> e) : mThrowEx(e) {}
-
-    virtual void onPluginEvent(const std::shared_ptr<PluginEvent> pluginEvent) override final
-    {
-        mEventTypeReceived.insert({pluginEvent->getType(), pluginEvent});
-        if (mThrowEx) {
-            throw mThrowEx;
-        }
-    }
-
-    bool hasReceived(const PluginEvent::Type eventType) const
-    {
-        const auto it = mEventTypeReceived.find(eventType);
-
-        return it != mEventTypeReceived.end();
-    }
-
-    const std::shared_ptr<PluginEvent> getLastEventOfType(const PluginEvent::Type eventType) const
-    {
-        return mEventTypeReceived.at(eventType);
-    }
-
-private:
-    std::map<PluginEvent::Type, std::shared_ptr<PluginEvent>> mEventTypeReceived;
-    const std::shared_ptr<RuntimeException> mThrowEx;
-};
-
-class AOLPAT_PluginExceptionHandlerMock final : public PluginObservationExceptionHandlerSpi {
- public:
-    AOLPAT_PluginExceptionHandlerMock(const std::shared_ptr<RuntimeException> throwEx)
-    : mInvoked(true), mThrowEx(throwEx) {}
-
-    virtual void onPluginObservationError(const std::string& pluginName,
-                                          const std::shared_ptr<Exception> e)
-        override final
-    {
-        mInvoked = true;
-        if (mThrowEx) {
-            throw mThrowEx;
-        }
-        mPluginName = pluginName;
-        mE = e;
-    }
-
-    bool isInvoked() const
-    {
-        return mInvoked;
-    }
-
-    const std::string& getPluginName() const
-    {
-        return mPluginName;
-    }
-
-    const std::shared_ptr<std::exception> getE() const
-    {
-        return mE;
-    }
-
-private:
-    bool mInvoked = false;
-    std::string mPluginName;
-    std::shared_ptr<Exception> mE;
-    const std::shared_ptr<RuntimeException> mThrowEx;
-};
-
-class AOLPAT_ReaderSpiMock final : public KeypleReaderExtension, public ReaderSpi {
-public:
-    virtual const std::string& getName() const override final
-    {
-        return READER_NAME_1;
-    }
-
-    virtual bool isProtocolSupported(const std::string& readerProtocol) const override final
-    {
-        (void)readerProtocol;
-        return true;
-    }
-
-    virtual void activateProtocol(const std::string& readerProtocol) override final
-    {
-        (void)readerProtocol;
-    }
-
-    virtual void deactivateProtocol(const std::string& readerProtocol) override final
-    {
-        (void)readerProtocol;
-    }
-
-    virtual bool isCurrentProtocol(const std::string& readerProtocol) const override final
-    {
-        (void)readerProtocol;
-        return true;
-    }
-
-    virtual void openPhysicalChannel() override final {}
-
-    virtual void closePhysicalChannel() override final {}
-
-    virtual bool isPhysicalChannelOpen() const override final
-    {
-        return true;
-    }
-
-    virtual bool checkCardPresence() override final
-    {
-        return true;
-    }
-
-    virtual const std::string getPowerOnData() const override final
-    {
-        return "";
-    }
-
-    virtual const std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn) override
-        final
-    {
-        (void)apduIn;
-        return {};
-    }
-
-    virtual bool isContactless() override final
-    {
-        return true;
-    }
-
-    virtual void onUnregister() override final {}
-};
-
-static std::shared_ptr<AutonomousObservablePluginSpi> pluginSpi;
+static std::shared_ptr<AutonomousObservablePluginSpiMock> pluginSpi;
 static std::shared_ptr<AutonomousObservableLocalPluginAdapter> plugin;
-static std::shared_ptr<AOLPAT_PluginObserverSpiMock> observer;
-static std::shared_ptr<PluginObservationExceptionHandlerSpi> exceptionHandler;
-static std::shared_ptr<ReaderSpi> readerSpi1;
+static std::shared_ptr<PluginObserverSpiMock> observer;
+static std::shared_ptr<PluginObservationExceptionHandlerMock> exceptionHandler;
+static std::shared_ptr<ReaderSpiMock> readerSpi1;
 
 static void setUp()
 {
-    pluginSpi = std::make_shared<AOLPAT_AutonomousObservablePluginSpiMock>();
+    pluginSpi = std::make_shared<AutonomousObservablePluginSpiMock>();
+    EXPECT_CALL(*pluginSpi.get(), getName()).WillRepeatedly(ReturnRef(PLUGIN_NAME));
+    EXPECT_CALL(*pluginSpi.get(), connect(_)).WillRepeatedly(Return());
+    EXPECT_CALL(*pluginSpi.get(), searchAvailableReaders())
+        .WillRepeatedly(Return(std::vector<std::shared_ptr<ReaderSpi>>()));
+
     plugin = std::make_shared<AutonomousObservableLocalPluginAdapter>(pluginSpi);
-    observer = std::make_shared<AOLPAT_PluginObserverSpiMock>(nullptr);
-    exceptionHandler = std::make_shared<AOLPAT_PluginExceptionHandlerMock>(nullptr);
-    readerSpi1 = std::make_shared<AOLPAT_ReaderSpiMock>();
+    observer = std::make_shared<PluginObserverSpiMock>(nullptr);
+    exceptionHandler = std::make_shared<PluginObservationExceptionHandlerMock>(nullptr);
+
+    readerSpi1 = std::make_shared<ReaderSpiMock>();
+    EXPECT_CALL(*readerSpi1.get(), getName()).WillRepeatedly(ReturnRef(READER_NAME_1));
+    EXPECT_CALL(*readerSpi1.get(), onUnregister()).WillRepeatedly(Return());
 
     plugin->doRegister();
     plugin->setPluginObservationExceptionHandler(exceptionHandler);
     plugin->addObserver(observer);
+}
+
+static void tearDown()
+{
+    plugin.reset();
+    pluginSpi.reset();
+    readerSpi1.reset();
 }
 
 TEST(AutonomousObservableLocalPluginAdapterTest, onReaderConnected_shouldNotify_andCreateReaders)
@@ -238,6 +101,8 @@ TEST(AutonomousObservableLocalPluginAdapterTest, onReaderConnected_shouldNotify_
     ASSERT_TRUE(std::count(pluginReaderNames.begin(),
                            pluginReaderNames.end(),
                            READER_NAME_1));
+
+    tearDown();
 }
 
 TEST(AutonomousObservableLocalPluginAdapterTest, onReaderDisconnected_shouldNotify_andRemoveReaders)
@@ -276,4 +141,6 @@ TEST(AutonomousObservableLocalPluginAdapterTest, onReaderDisconnected_shouldNoti
 
     const std::vector<std::string>& pluginReaderNames = plugin->getReaderNames();
     ASSERT_EQ(pluginReaderNames.size(), 0);
+
+    tearDown();
 }
