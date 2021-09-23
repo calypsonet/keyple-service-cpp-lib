@@ -10,22 +10,29 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
+#pragma once
+
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-/* Util */
-#include "Logger.h"
+/* Keyple Core Common */
+#include "KeyplePluginExtension.h"
+
+/* Keyple Core Plugin */
+#include "PoolPluginSpi.h"
 
 using namespace testing;
 
-using namespace keyple::core::util::cpp;
+using namespace keyple::core::commons;
 
-int main(int argc, char **argv)
-{
-    /* Initialize GTest */
-    ::testing::InitGoogleTest(&argc, argv);
-
-    Logger::setLoggerLevel(Logger::Level::logError);
-
-    /* Run */
-    return RUN_ALL_TESTS();
-}
+class PoolPluginSpiMock final : public KeyplePluginExtension, public PoolPluginSpi {
+public:
+    MOCK_METHOD((const std::string&), getName, (), (const, override));
+    MOCK_METHOD((const std::vector<std::string>&), getReaderGroupReferences, (), (const, override));
+    MOCK_METHOD(void, releaseReader, (std::shared_ptr<ReaderSpi> readerSpi), (override));
+    MOCK_METHOD(void, onUnregister, (), (override));
+    MOCK_METHOD((std::shared_ptr<ReaderSpi>),
+                allocateReader,
+                (const std::string& readerGroupReference),
+                (override));
+};

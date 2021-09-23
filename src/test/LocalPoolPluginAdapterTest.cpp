@@ -13,8 +13,6 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-/* Keyple Core Common */
-#include "KeyplePluginExtension.h"
 
 /* Keyple Core Plugin */
 #include "DontWaitForCardRemovalDuringProcessingSpi.h"
@@ -22,7 +20,6 @@
 #include "ObservableReaderSpi.h"
 #include "PluginIOException.h"
 #include "PluginSpi.h"
-#include "PoolPluginSpi.h"
 #include "WaitForCardInsertionBlockingSpi.h"
 #include "WaitForCardRemovalBlockingSpi.h"
 
@@ -33,9 +30,14 @@
 #include "ObservableReader.h"
 #include "ObservableLocalReaderAdapter.h"
 
+/* Mock */
+#include "ObservableReaderSpiMock.h"
+#include "PluginSpiMock.h"
+#include "PoolPluginSpiMock.h"
+#include "ReaderSpiMock.h"
+
 using namespace testing;
 
-using namespace keyple::core::commons;
 using namespace keyple::core::plugin;
 using namespace keyple::core::plugin::spi;
 using namespace keyple::core::plugin::spi::reader::observable;
@@ -53,220 +55,38 @@ const std::string GROUP_1 = "group1";
 const std::string GROUP_2 = "group2";
 const std::string GROUP_3 = "group3";
 
-class LPPAT_PoolPluginSpiMock final : public KeyplePluginExtension, public PoolPluginSpi {
-public:
-    virtual const std::string& getName() const override final
-    {
-        return POOL_PLUGIN_NAME;
-    }
-
-    MOCK_METHOD((const std::vector<std::string>&),
-                getReaderGroupReferences,
-                (),
-                (const, override, final));
-
-    MOCK_METHOD((std::shared_ptr<ReaderSpi>),
-                allocateReader,
-                (const std::string& readerGroupReference),
-                (override, final));
-
-    MOCK_METHOD(void,
-                releaseReader,
-                (std::shared_ptr<ReaderSpi> readerSpi),
-                (override, final));
-
-    virtual void onUnregister() override final {}
-};
-
-class LPAT_PluginSpiMock final : public KeyplePluginExtension, public PluginSpi {
-public:
-    virtual const std::string& getName() const override final
-    {
-        return PLUGIN_NAME;
-    }
-
-    MOCK_METHOD((const std::vector<std::shared_ptr<ReaderSpi>>),
-                searchAvailableReaders,
-                (),
-                (const, override, final));
-
-    virtual void onUnregister() override final {}
-};
-
-class LPPAT_ObservableReaderSpiMock final
-: public ObservableReaderSpi,
-  public WaitForCardInsertionBlockingSpi,
-  public WaitForCardRemovalBlockingSpi,
-  public DontWaitForCardRemovalDuringProcessingSpi {
-public:
-    LPPAT_ObservableReaderSpiMock() {}
-
-    virtual const std::string& getName() const override final
-    {
-        return OBSERVABLE_READER_NAME;
-    }
-
-    virtual bool isProtocolSupported(const std::string& readerProtocol) const override final
-    {
-        (void)readerProtocol;
-        return true;
-    }
-
-    virtual void activateProtocol(const std::string& readerProtocol) override final
-    {
-        (void)readerProtocol;
-    }
-
-    virtual void deactivateProtocol(const std::string& readerProtocol) override final
-    {
-        (void)readerProtocol;
-    }
-
-    virtual bool isCurrentProtocol(const std::string& readerProtocol) const override final
-    {
-        (void)readerProtocol;
-        return true;
-    }
-
-    virtual void openPhysicalChannel() override final {}
-
-    virtual void closePhysicalChannel() override final {}
-
-    virtual bool isPhysicalChannelOpen() const override final
-    {
-        return true;
-    }
-
-    virtual bool checkCardPresence() override final
-    {
-        return true;
-    }
-
-    virtual const std::string getPowerOnData() const override final
-    {
-        return "";
-    }
-
-    virtual const std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn) override
-        final
-    {
-        (void)apduIn;
-        return std::vector<uint8_t>();
-    }
-
-    virtual bool isContactless() override final
-    {
-        return true;
-    }
-
-    virtual void onUnregister() override final {}
-
-    virtual void onStartDetection() override final {}
-
-    virtual void onStopDetection() override final {}
-
-    virtual void waitForCardInsertion() override final {}
-
-    virtual void stopWaitForCardInsertion() override final {}
-
-    virtual void waitForCardRemoval() override final {}
-
-    virtual void stopWaitForCardRemoval() override final {}
-};
-
-class LPPAT_ReaderSpiMock final : public ReaderSpi {
-public:
-    LPPAT_ReaderSpiMock(const std::string& name) : mName(name) {}
-
-    virtual const std::string& getName() const override final
-    {
-        return mName;
-    }
-
-    virtual bool isProtocolSupported(const std::string& readerProtocol) const override final
-    {
-        (void)readerProtocol;
-        return true;
-    }
-
-    virtual void activateProtocol(const std::string& readerProtocol) override final
-    {
-        (void)readerProtocol;
-    }
-
-    virtual void deactivateProtocol(const std::string& readerProtocol) override final
-    {
-        (void)readerProtocol;
-    }
-
-    virtual bool isCurrentProtocol(const std::string& readerProtocol) const override final
-    {
-        (void)readerProtocol;
-        return true;
-    }
-
-    virtual void openPhysicalChannel() override final {}
-
-    virtual void closePhysicalChannel() override final {}
-
-    virtual bool isPhysicalChannelOpen() const override final
-    {
-        return true;
-    }
-
-    virtual bool checkCardPresence() override final
-    {
-        return true;
-    }
-
-    virtual const std::string getPowerOnData() const override final
-    {
-        return "";
-    }
-
-    virtual const std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn) override
-        final
-    {
-        (void)apduIn;
-        return std::vector<uint8_t>();
-    }
-
-    virtual bool isContactless() override final
-    {
-        return true;
-    }
-
-    virtual void onUnregister() override final {}
-
-private:
-    const std::string mName;
-};
-
-static std::shared_ptr<ReaderSpi> readerSpi1;
-static std::shared_ptr<ReaderSpi> readerSpi2;
-static std::shared_ptr<LPPAT_ObservableReaderSpiMock> observableReader;
-static std::shared_ptr<LPPAT_PoolPluginSpiMock> poolPluginSpi;
+static std::shared_ptr<ReaderSpiMock> readerSpi1;
+static std::shared_ptr<ReaderSpiMock> readerSpi2;
+static std::shared_ptr<ObservableReaderSpiMock> observableReader;
+static std::shared_ptr<PoolPluginSpiMock> poolPluginSpi;
 static std::vector<std::string> groupReference({GROUP_1, GROUP_2});
 
 static void setUp()
 {
-    readerSpi1 = std::make_shared<LPPAT_ReaderSpiMock>(READER_NAME_1);
-    readerSpi2 = std::make_shared<LPPAT_ReaderSpiMock>(READER_NAME_2);
-    observableReader = std::make_shared<LPPAT_ObservableReaderSpiMock>();
-    poolPluginSpi = std::make_shared<LPPAT_PoolPluginSpiMock>();
+    readerSpi1 = std::make_shared<ReaderSpiMock>(READER_NAME_1);
+    EXPECT_CALL(*readerSpi1.get(), onUnregister()).WillRepeatedly(Return());
+
+    readerSpi2 = std::make_shared<ReaderSpiMock>(READER_NAME_2);
+    EXPECT_CALL(*readerSpi2.get(), onUnregister()).WillRepeatedly(Return());
+
+    observableReader = std::make_shared<ObservableReaderSpiMock>(OBSERVABLE_READER_NAME);
+    EXPECT_CALL(*observableReader.get(), onUnregister()).WillRepeatedly(Return());
+
+    poolPluginSpi = std::make_shared<PoolPluginSpiMock>();
+    EXPECT_CALL(*poolPluginSpi.get(), getName()).WillRepeatedly(ReturnRef(PLUGIN_NAME));
+    EXPECT_CALL(*poolPluginSpi.get(), allocateReader(GROUP_1)).WillRepeatedly(Return(readerSpi1));
+    EXPECT_CALL(*poolPluginSpi.get(), allocateReader(GROUP_2)).WillRepeatedly(Return(readerSpi2));
+    EXPECT_CALL(*poolPluginSpi.get(), releaseReader(_)).WillRepeatedly(Return());
+    EXPECT_CALL(*poolPluginSpi.get(), onUnregister()).WillRepeatedly(Return());
     EXPECT_CALL(*poolPluginSpi.get(), getReaderGroupReferences())
         .WillRepeatedly(ReturnRef(groupReference));
-    EXPECT_CALL(*poolPluginSpi.get(), allocateReader(GROUP_1))
-        .WillRepeatedly(Return(readerSpi1));
-    EXPECT_CALL(*poolPluginSpi.get(), allocateReader(GROUP_2))
-        .WillRepeatedly(Return(readerSpi2));
-    EXPECT_CALL(*poolPluginSpi.get(), releaseReader(_))
-        .WillRepeatedly(Return());
 }
 
 static void tearDown()
 {
-    /* Force count down to force pointer deletion and expectations check */
+    readerSpi1.reset();
+    readerSpi2.reset();
+    observableReader.reset();
     poolPluginSpi.reset();
 }
 
@@ -304,12 +124,8 @@ TEST(LocalPoolPluginAdapterTest, getReaderGroupReferences_whenSucceeds_shouldRet
 
     const std::vector<std::string>& groupReferences = localPluginAdapter.getReaderGroupReferences();
     ASSERT_EQ(groupReferences.size(), 2);
-    ASSERT_TRUE(std::count(groupReferences.begin(),
-                           groupReferences.end(),
-                           GROUP_1));
-    ASSERT_TRUE(std::count(groupReferences.begin(),
-                           groupReferences.end(),
-                           GROUP_2));
+    ASSERT_TRUE(std::count(groupReferences.begin(), groupReferences.end(), GROUP_1));
+    ASSERT_TRUE(std::count(groupReferences.begin(), groupReferences.end(), GROUP_2));
 
     tearDown();
 }

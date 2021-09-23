@@ -87,7 +87,7 @@ void LocalReaderAdapter::computeCurrentProtocol()
             }
         }
     }
-};
+}
 
 void LocalReaderAdapter::closeLogicalChannel()
 {

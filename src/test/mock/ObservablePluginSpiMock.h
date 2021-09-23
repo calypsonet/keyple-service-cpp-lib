@@ -10,22 +10,28 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
+#pragma once
+
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-/* Util */
-#include "Logger.h"
+/* Keyple Core Commons */
+#include "KeyplePluginExtension.h"
+
+/* Keyple Core Plugin */
+#include "ObservablePluginSpi.h"
 
 using namespace testing;
 
-using namespace keyple::core::util::cpp;
+using namespace keyple::core::commons;
+using namespace keyple::core::plugin::spi;
 
-int main(int argc, char **argv)
-{
-    /* Initialize GTest */
-    ::testing::InitGoogleTest(&argc, argv);
-
-    Logger::setLoggerLevel(Logger::Level::logError);
-
-    /* Run */
-    return RUN_ALL_TESTS();
-}
+class ObservablePluginSpiMock final : public ObservablePluginSpi, public KeyplePluginExtension {
+public:
+    MOCK_METHOD(const std::string&, getName, (), (const, override));
+    MOCK_METHOD((const std::vector<std::shared_ptr<ReaderSpi>>), searchAvailableReaders, (), (const, override));
+    MOCK_METHOD(const std::vector<std::string>, searchAvailableReaderNames, (), (override));
+    MOCK_METHOD(std::shared_ptr<ReaderSpi>, searchReader, (const std::string& readerName), (override));
+    MOCK_METHOD(int, getMonitoringCycleDuration, (), (const, override));
+    MOCK_METHOD(void, onUnregister, (), (override));
+};

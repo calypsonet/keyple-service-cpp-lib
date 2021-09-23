@@ -10,22 +10,18 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
-#include "gtest/gtest.h"
+#pragma once
 
-/* Util */
-#include "Logger.h"
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
 using namespace testing;
 
-using namespace keyple::core::util::cpp;
-
-int main(int argc, char **argv)
-{
-    /* Initialize GTest */
-    ::testing::InitGoogleTest(&argc, argv);
-
-    Logger::setLoggerLevel(Logger::Level::logError);
-
-    /* Run */
-    return RUN_ALL_TESTS();
-}
+class PoolPluginFactoryMock final
+: public KeyplePluginExtensionFactory, public PoolPluginFactorySpi {
+public:
+    MOCK_METHOD((const std::string&), getPluginApiVersion, (), (const, override));
+    MOCK_METHOD((const std::string&), getCommonsApiVersion, (), (const, override));
+    MOCK_METHOD((const std::string&), getPoolPluginName, (), (const, override));
+    MOCK_METHOD((PoolPluginSpi&), getPoolPlugin, (), (override));
+};

@@ -83,6 +83,7 @@ ADD_LIBRARY(
     ${CMAKE_CURRENT_SOURCE_DIR}/CardRemovalActiveMonitoringJobAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardRemovalPassiveMonitoringJobAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardResponseAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionManagerAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionResponseAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionResultAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/CardSelectionScenarioAdapter.cpp
@@ -96,6 +97,7 @@ ADD_LIBRARY(
     ${CMAKE_CURRENT_SOURCE_DIR}/PluginEventAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ReaderEventAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ScheduledCardSelectionsResponseAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/SmartCardServiceAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WaitForCardInsertionStateAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WaitForCardProcessingStateAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WaitForCardRemovalStateAdapter.cpp

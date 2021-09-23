@@ -10,22 +10,20 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
+#pragma once
+
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-/* Util */
-#include "Logger.h"
+/* Calypso Terminal Card */
+#include "CardSelectionRequestSpi.h"
 
 using namespace testing;
 
-using namespace keyple::core::util::cpp;
+using namespace calypsonet::terminal::card;
 
-int main(int argc, char **argv)
-{
-    /* Initialize GTest */
-    ::testing::InitGoogleTest(&argc, argv);
-
-    Logger::setLoggerLevel(Logger::Level::logError);
-
-    /* Run */
-    return RUN_ALL_TESTS();
-}
+class CardSelectionRequestSpiMock final : public CardSelectionRequestSpi {
+public:
+    MOCK_METHOD((const std::shared_ptr<CardRequestSpi>), getCardRequest, (), (const, override));
+    MOCK_METHOD((const std::shared_ptr<CardSelectorSpi>), getCardSelector, (), (const, override));
+};

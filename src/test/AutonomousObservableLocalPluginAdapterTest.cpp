@@ -56,8 +56,7 @@ static void setUp()
     observer = std::make_shared<PluginObserverSpiMock>(nullptr);
     exceptionHandler = std::make_shared<PluginObservationExceptionHandlerMock>(nullptr);
 
-    readerSpi1 = std::make_shared<ReaderSpiMock>();
-    EXPECT_CALL(*readerSpi1.get(), getName()).WillRepeatedly(ReturnRef(READER_NAME_1));
+    readerSpi1 = std::make_shared<ReaderSpiMock>(READER_NAME_1);
     EXPECT_CALL(*readerSpi1.get(), onUnregister()).WillRepeatedly(Return());
 
     plugin->doRegister();

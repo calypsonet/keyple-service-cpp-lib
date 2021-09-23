@@ -16,21 +16,25 @@
 #include "gtest/gtest.h"
 
 /* Keyple Core Plugin */
-#include "ReaderSpi.h"
-
-/* Keyple Core Commons */
-#include "KeypleReaderExtension.h"
+#include "ObservableReaderSpi.h"
+#include "WaitForCardInsertionBlockingSpi.h"
+#include "WaitForCardRemovalBlockingSpi.h"
+#include "DontWaitForCardRemovalDuringProcessingSpi.h"
 
 using namespace testing;
 
-using namespace keyple::core::commons;
-using namespace keyple::core::plugin::spi::reader;
-using namespace keyple::core::service;
+using namespace keyple::core::plugin::spi::reader::observable;
+using namespace keyple::core::plugin::spi::reader::observable::state::insertion;
+using namespace keyple::core::plugin::spi::reader::observable::state::processing;
+using namespace keyple::core::plugin::spi::reader::observable::state::removal;
 
-class ReaderSpiMock final : public ReaderSpi, public KeypleReaderExtension {
+class ObservableReaderSpiMock final
+: public ObservableReaderSpi,
+  public WaitForCardInsertionBlockingSpi,
+  public WaitForCardRemovalBlockingSpi,
+  public DontWaitForCardRemovalDuringProcessingSpi {
 public:
-    ReaderSpiMock(const std::string& name) : mName(name) {}
-    ReaderSpiMock() : ReaderSpiMock("") {}
+    ObservableReaderSpiMock(const std::string& name) : mName(name) {}
 
     virtual const std::string& getName() const override { return mName; }
 
@@ -39,12 +43,18 @@ public:
     MOCK_METHOD(void, deactivateProtocol, (const std::string& readerProtocol), (override));
     MOCK_METHOD(bool, isCurrentProtocol, (const std::string& readerProtocol), (const, override));
     MOCK_METHOD(void, openPhysicalChannel, (), (override));
-    MOCK_METHOD(void, closePhysicalChannel, (), (override, final));
+    MOCK_METHOD(void, closePhysicalChannel, (), (override));
     MOCK_METHOD(bool, isPhysicalChannelOpen, (), (const, override));
-    MOCK_METHOD(bool, checkCardPresence,(), (override, final));
+    MOCK_METHOD(bool, checkCardPresence, (), (override));
     MOCK_METHOD((const std::string), getPowerOnData, (), (const, override));
-    MOCK_METHOD(bool, isContactless, (), (override, final));
-    MOCK_METHOD(void, onUnregister,(), (override, final));
+    MOCK_METHOD(bool, isContactless, (), (override));
+    MOCK_METHOD(void, onUnregister, (), (override));
+    MOCK_METHOD(void, onStartDetection, (), (override));
+    MOCK_METHOD(void, onStopDetection, (), (override));
+    MOCK_METHOD(void, waitForCardInsertion, (), (override));
+    MOCK_METHOD(void, stopWaitForCardInsertion, (), (override));
+    MOCK_METHOD(void, waitForCardRemoval, (), (override));
+    MOCK_METHOD(void, stopWaitForCardRemoval, (), (override));
     MOCK_METHOD((const std::vector<uint8_t>),
                 transmitApdu,
                 (const std::vector<uint8_t>& apduIn),

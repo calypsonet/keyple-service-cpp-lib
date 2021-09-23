@@ -10,22 +10,23 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
+#pragma once
+
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-/* Util */
-#include "Logger.h"
+#include "PluginFactorySpi.h"
+#include "KeyplePluginExtensionFactory.h"
 
 using namespace testing;
 
-using namespace keyple::core::util::cpp;
+using namespace keyple::core::commons;
+using namespace keyple::core::plugin::spi;
 
-int main(int argc, char **argv)
-{
-    /* Initialize GTest */
-    ::testing::InitGoogleTest(&argc, argv);
-
-    Logger::setLoggerLevel(Logger::Level::logError);
-
-    /* Run */
-    return RUN_ALL_TESTS();
-}
+class PluginFactoryMock final : public KeyplePluginExtensionFactory, public PluginFactorySpi {
+public:
+    MOCK_METHOD(const std::string&, getPluginApiVersion, (), (const, override));
+    MOCK_METHOD(const std::string&, getCommonsApiVersion,(), (const, override));
+    MOCK_METHOD(const std::string&, getPluginName,(), (const, override));
+    MOCK_METHOD(PluginSpi&, getPlugin, (), (const, override));
+};

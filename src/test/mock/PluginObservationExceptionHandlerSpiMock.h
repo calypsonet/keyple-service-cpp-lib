@@ -10,22 +10,40 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-/* Util */
-#include "Logger.h"
+/* Keyple Core Service */
+#include "PluginObservationExceptionHandlerSpi.h"
 
 using namespace testing;
 
-using namespace keyple::core::util::cpp;
+using namespace keyple::core::service::spi;
 
-int main(int argc, char **argv)
-{
-    /* Initialize GTest */
-    ::testing::InitGoogleTest(&argc, argv);
+class PluginObservationExceptionHandlerSpiMock final : public PluginObservationExceptionHandlerSpi {
+public:
+    PluginObservationExceptionHandlerSpiMock(const std::shared_ptr<RuntimeException> throwEx)
+    : mInvoked(false), mThrowEx(throwEx) {}
 
-    Logger::setLoggerLevel(Logger::Level::logError);
+    virtual void onPluginObservationError(const std::string& pluginName,
+                                          const std::shared_ptr<Exception> e) override final
+    {
+        mInvoked = true;
+        if (mThrowEx != nullptr) {
+            throw *mThrowEx.get();
+        }
 
-    /* Run */
-    return RUN_ALL_TESTS();
-}
+        mPluginName = pluginName;
+        mE = e;
+    }
+
+    bool isInvoked() const { return mInvoked; }
+    const std::string& getPluginName() const { return mPluginName; }
+    const std::shared_ptr<Exception> getE() const { return mE; }
+
+private:
+    bool mInvoked = false;
+    std::string mPluginName;
+    std::shared_ptr<Exception> mE;
+    const std::shared_ptr<RuntimeException> mThrowEx;
+};

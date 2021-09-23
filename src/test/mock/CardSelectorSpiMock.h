@@ -10,22 +10,23 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
+#pragma once
+
+#include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-/* Util */
-#include "Logger.h"
+#include "CardSelectorSpi.h"
 
 using namespace testing;
 
-using namespace keyple::core::util::cpp;
+using namespace calypsonet::terminal::card::spi;
 
-int main(int argc, char **argv)
-{
-    /* Initialize GTest */
-    ::testing::InitGoogleTest(&argc, argv);
-
-    Logger::setLoggerLevel(Logger::Level::logError);
-
-    /* Run */
-    return RUN_ALL_TESTS();
-}
+class CardSelectorSpiMock final : public CardSelectorSpi {
+public:
+    MOCK_METHOD((const std::string&), getCardProtocol, (), (const, override));
+    MOCK_METHOD((const std::string&), getPowerOnDataRegex, (), (const, override));
+    MOCK_METHOD((const std::vector<uint8_t>), getAid, (), (const, override));
+    MOCK_METHOD(FileOccurrence, getFileOccurrence, (), (const, override));
+    MOCK_METHOD(FileControlInformation, getFileControlInformation, (), (const, override));
+    MOCK_METHOD((const std::vector<int>&), getSuccessfulSelectionStatusWords, (), (const,override));
+};
