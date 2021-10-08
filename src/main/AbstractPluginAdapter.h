@@ -49,6 +49,11 @@ public:
                           std::shared_ptr<KeyplePluginExtension> pluginExtension);
 
     /**
+     * 
+     */
+    virtual ~AbstractPluginAdapter() = default;
+
+    /**
      * (package-private)<br>
      * Check if the plugin is registered.
      *

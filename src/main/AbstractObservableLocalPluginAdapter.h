@@ -55,6 +55,11 @@ public:
     AbstractObservableLocalPluginAdapter(std::shared_ptr<PluginSpi> pluginSpi);
 
     /**
+     * 
+     */
+    virtual ~AbstractObservableLocalPluginAdapter() = default;
+
+    /**
      * (package-private)<br>
      * Gets the associated observation manager.
      *

@@ -33,7 +33,7 @@ using namespace keyple::core::plugin::spi;
  * @since 2.0
  */
 class LocalPluginAdapter : public AbstractPluginAdapter {
-public:
+public:    
     /**
      * (package-private)<br>
      * Constructor.
@@ -42,6 +42,11 @@ public:
      * @since 2.0
      */
     LocalPluginAdapter(std::shared_ptr<PluginSpi> pluginSpi);
+
+    /**
+     * 
+     */
+    virtual ~LocalPluginAdapter() = default;
 
     /**
      * {@inheritDoc}

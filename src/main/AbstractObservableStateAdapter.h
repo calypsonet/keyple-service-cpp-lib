@@ -79,6 +79,11 @@ public:
                                    ObservableLocalReaderAdapter* reader);
 
     /**
+     * 
+     */
+    virtual ~AbstractObservableStateAdapter() = default;
+
+    /**
      * (package-private)<br>
      * Get the current state identifier of the state machine
      *

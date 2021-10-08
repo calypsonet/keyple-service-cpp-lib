@@ -202,15 +202,15 @@ static void tearDown()
     service.unregisterPlugin(REMOTE_PLUGIN_NAME);
     // service.unregisterDistributedLocalService(LOCAL_SERVICE_NAME);
 
-    _reader.reset();
-    plugin.reset();
     pluginFactory.reset();
-    observablePlugin.reset();
+    plugin.reset();
     observablePluginFactory.reset();
-    autonomousObservablePlugin.reset();
+    observablePlugin.reset();
     autonomousObservablePluginFactory.reset();
-    poolPlugin.reset();
+    autonomousObservablePlugin.reset();
     poolPluginFactory.reset();
+    poolPlugin.reset();
+    _reader.reset();
 }
 
 TEST(SmartCardServiceAdapterTest, getInstance_whenIsInvokedTwice_shouldReturnSameInstance)

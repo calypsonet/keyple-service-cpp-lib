@@ -84,10 +84,10 @@ static void setUp()
 
 static void tearDown()
 {
-    readerSpi1.reset();
-    readerSpi2.reset();
     observableReader.reset();
     poolPluginSpi.reset();
+    readerSpi1.reset();
+    readerSpi2.reset();
 }
 
 TEST(LocalPoolPluginAdapterTest, getReaderGroupReferences_whenGettingReferencesFails_shouldKPE)

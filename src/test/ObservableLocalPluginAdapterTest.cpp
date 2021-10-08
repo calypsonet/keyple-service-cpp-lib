@@ -91,8 +91,8 @@ static void tearDown()
 
     exceptionHandlerMock.reset();
     observerMock.reset();
-    observablePluginMock.reset();
     pluginAdapter.reset();
+    observablePluginMock.reset();
 }
 
 TEST(ObservableLocalPluginAdapterTest, addObserver_onUnregisteredPlugin_throwISE)

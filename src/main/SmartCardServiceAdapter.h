@@ -100,7 +100,7 @@ public:
      *
      * @since 2.0
      */
-    void checkCardExtension(const std::shared_ptr<KeypleCardExtension> cardExtension);
+    void checkCardExtension(const std::shared_ptr<KeypleCardExtension> cardExtension) override final;
 
     /**
      * {@inheritDoc}

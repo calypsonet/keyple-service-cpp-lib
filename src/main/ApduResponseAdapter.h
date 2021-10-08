@@ -44,6 +44,11 @@ public:
     ApduResponseAdapter(const std::vector<uint8_t>& apdu);
 
     /**
+     * 
+     */
+    virtual ~ApduResponseAdapter() = default;
+
+    /**
      * {@inheritDoc}
      *
      * @since 2.0

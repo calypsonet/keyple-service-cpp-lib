@@ -39,6 +39,11 @@ using namespace keyple::core::commons;
 class Plugin {
 public:
     /**
+     * 
+     */
+    virtual ~Plugin() = default;
+    
+    /**
      * Gets the name of the plugin.
      *
      * @return A not empty string.

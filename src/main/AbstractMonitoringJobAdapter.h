@@ -45,6 +45,11 @@ public:
     AbstractMonitoringJobAdapter(ObservableLocalReaderAdapter* reader);
 
     /**
+     * 
+     */
+    virtual ~AbstractMonitoringJobAdapter() = default;
+
+    /**
      * (package-private)<br>
      * Gets the reader.
      *

@@ -66,8 +66,8 @@ static void setUp()
 
 static void tearDown()
 {
-    plugin.reset();
     pluginSpi.reset();
+    plugin.reset();
     readerSpi1.reset();
 }
 

@@ -68,6 +68,11 @@ public:
     ApduRequestAdapter& setInfo(const std::string& info);
 
     /**
+     * 
+     */
+    virtual ~ApduRequestAdapter() = default;
+
+    /**
      * {@inheritDoc}
      *
      * @since 2.0
