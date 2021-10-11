@@ -37,6 +37,7 @@
 
 /* Mock */
 #include "AutonomousObservablePluginSpiMock.h"
+#include "CardExtensionMock.h"
 #include "ObservablePluginSpiMock.h"
 #include "PluginFactoryMock.h"
 #include "PluginSpiMock.h"
@@ -91,7 +92,7 @@ static std::shared_ptr<PoolPluginFactoryMock> poolPluginFactory;
 // static std::shared_ptr<SCSAT_RemotePluginFactoryMock> remotePluginFactory;
 // static std::shared_ptr<SCSAT_ObservableRemotePluginFactoryMock> observableRemotePluginFactory;
 // static std::shared_ptr<SCSAT_RemotePoolPluginFactoryMock> remotePoolPluginFactory;
-// static std::shared_ptr<SCSAT_CardExtensionMock> cardExtension;
+static std::shared_ptr<CardExtensionMock> cardExtension;
 // static std::shared_ptr<SCSAT_DistributedLocalServiceMock> localService;
 // static std::shared_ptr<SCSAT_DistributedLocalServiceFactoryMock> localServiceFactory;
 
@@ -177,10 +178,10 @@ static void setUp()
     //     .thenReturn(DISTRIBUTED_REMOTE_API_VERSION);
     // when(remotePoolPluginFactory.getRemotePlugin()).thenReturn(remotePoolPlugin);
 
-    // cardExtension = mock(CardExtensionMock.class);
-    // when(cardExtension.getCommonsApiVersion()).thenReturn(COMMONS_API_VERSION);
-    // when(cardExtension.getCardApiVersion()).thenReturn(CARD_API_VERSION);
-    // when(cardExtension.getReaderApiVersion()).thenReturn(READER_API_VERSION);
+    cardExtension = std::make_shared<CardExtensionMock>();
+    EXPECT_CALL(*cardExtension.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(COMMONS_API_VERSION));
+    EXPECT_CALL(*cardExtension.get(), getCardApiVersion()).WillRepeatedly(ReturnRef(CARD_API_VERSION));
+    EXPECT_CALL(*cardExtension.get(), getReaderApiVersion()).WillRepeatedly(ReturnRef(READER_API_VERSION));
 
     // localService = mock(DistributedLocalServiceMock.class);
     // when(localService.getName()).thenReturn(LOCAL_SERVICE_NAME);
@@ -211,6 +212,7 @@ static void tearDown()
     poolPlugin.reset();
     poolPluginFactory.reset();
     _reader.reset();
+    cardExtension.reset();
 }
 
 TEST(SmartCardServiceAdapterTest, getInstance_whenIsInvokedTwice_shouldReturnSameInstance)
@@ -545,3 +547,239 @@ TEST(SmartCardServiceAdapterTest, registerPlugin_whenApiVersionHasBadFormat_shou
 
     tearDown();
 }
+
+/* Unregister regular plugin */
+
+TEST(SmartCardServiceAdapterTest, unregisterPlugin_whenPluginIsNotRegistered_shouldDoNothing)
+{
+    setUp();
+
+    service.unregisterPlugin(PLUGIN_NAME);
+
+    const auto plugins = service.getPluginNames();
+    ASSERT_FALSE(std::count(plugins.begin(), plugins.end(), PLUGIN_NAME));
+
+    tearDown();
+}
+
+TEST(SmartCardServiceAdapterTest, unregisterPlugin_whenPluginIsRegistered_shouldUnregister)
+{
+    setUp();
+
+    service.registerPlugin(pluginFactory);
+
+    const auto plugins1 = service.getPluginNames();
+    ASSERT_TRUE(std::count(plugins1.begin(), plugins1.end(), PLUGIN_NAME));
+    
+    service.unregisterPlugin(PLUGIN_NAME);
+
+    const auto plugins2 = service.getPluginNames();
+    ASSERT_FALSE(std::count(plugins2.begin(), plugins2.end(), PLUGIN_NAME));
+
+    tearDown();
+}
+
+/* Unregister pool plugin */
+
+TEST(SmartCardServiceAdapterTest, unregisterPlugin_Pool_whenPluginIsNotRegistered_shouldDoNothing)
+{
+    setUp();
+
+    service.unregisterPlugin(POOL_PLUGIN_NAME);
+
+    const auto plugins1 = service.getPluginNames();
+    ASSERT_FALSE(std::count(plugins1.begin(), plugins1.end(), POOL_PLUGIN_NAME));
+
+    tearDown();
+}
+
+TEST(SmartCardServiceAdapterTest, unregisterPlugin_Pool_whenPluginIsRegistered_shouldUnregister)
+{
+    setUp();
+
+
+    service.registerPlugin(poolPluginFactory);
+
+    const auto plugins1 = service.getPluginNames();
+    ASSERT_TRUE(std::count(plugins1.begin(), plugins1.end(), POOL_PLUGIN_NAME));
+
+    service.unregisterPlugin(POOL_PLUGIN_NAME);
+
+    const auto plugins2 = service.getPluginNames();
+    ASSERT_FALSE(std::count(plugins2.begin(), plugins2.end(), POOL_PLUGIN_NAME));
+
+    tearDown();
+}
+
+/* Unregister remote plugin */
+
+//   @Test
+//   public void unregisterPlugin_Remote_whenPluginIsNotRegistered_shouldDoNothing() {
+//     service.unregisterPlugin(REMOTE_PLUGIN_NAME);
+//     assertThat(service.getPluginNames().contains(REMOTE_PLUGIN_NAME)).isFalse();
+//   }
+
+//   @Test
+//   public void unregisterPlugin_Remote_whenPluginIsRegistered_shouldUnregister() {
+//     service.registerPlugin(remotePluginFactory);
+//     assertThat(service.getPluginNames().contains(REMOTE_PLUGIN_NAME)).isTrue();
+//     service.unregisterPlugin(REMOTE_PLUGIN_NAME);
+//     assertThat(service.getPluginNames().contains(REMOTE_PLUGIN_NAME)).isFalse();
+//   }
+
+//   @Test
+//   public void getPlugin_whenPluginIsNotRegistered_shouldReturnNull() {
+//     assertThat(service.getPlugin(PLUGIN_NAME)).isNull();
+//   }
+
+//   @Test
+//   public void getPlugin_whenPluginIsRegistered_shouldPluginInstance() {
+//     service.registerPlugin(pluginFactory);
+//     assertThat(service.getPlugin(PLUGIN_NAME)).isNotNull();
+//   }
+
+//   @Test
+//   public void getPlugins_whenNoPluginRegistered_shouldReturnEmptyList() {
+//     assertThat(service.getPlugins()).isEmpty();
+//   }
+
+//   @Test
+//   public void getPlugins_whenTwoPluginsRegistered_shouldHaveTwoPlugins() {
+//     service.registerPlugin(pluginFactory);
+//     service.registerPlugin(poolPluginFactory);
+//     assertThat(service.getPlugins()).hasSize(2);
+//     assertThat(service.getPluginNames()).contains(PLUGIN_NAME);
+//     assertThat(service.getPluginNames()).contains(POOL_PLUGIN_NAME);
+//   }
+
+/* Check card extension APIs */
+
+TEST(SmartCardServiceAdapterTest, checkCardExtension_whenCommonsApiDiffers_shouldLogWarn)
+{
+    setUp();
+
+    const std::string version = "2.1";
+    EXPECT_CALL(*cardExtension.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(version));
+    
+    service.checkCardExtension(cardExtension);
+    
+    // verify(logger).warn(anyString(), eq("2.1"), eq(COMMONS_API_VERSION));
+
+    tearDown();
+}
+
+TEST(SmartCardServiceAdapterTest, checkCardExtension_whenReaderApiDiffers_shouldLogWarn)
+{
+    setUp();
+    
+    const std::string version = "2.1";
+    EXPECT_CALL(*cardExtension.get(), getReaderApiVersion()).WillRepeatedly(ReturnRef(version));
+    
+    service.checkCardExtension(cardExtension);
+    
+    // verify(logger).warn(anyString(), eq("2.1"), eq(READER_API_VERSION));
+
+    tearDown();
+}
+
+TEST(SmartCardServiceAdapterTest, checkCardExtension_whenCardApiDiffers_shouldLogWarn)
+{
+    setUp();
+    
+    const std::string version = "2.1";
+    EXPECT_CALL(*cardExtension.get(), getCardApiVersion()).WillRepeatedly(ReturnRef(version));
+    
+    service.checkCardExtension(cardExtension);
+    
+    // verify(logger).warn(anyString(), eq("2.1"), eq(CARD_API_VERSION));
+
+    tearDown();
+}
+
+// Register distributed local service
+
+//   @Test
+//   public void
+//       registerDistributedLocalService_whenLocalServiceIsCorrect_shouldBeRegistered_withoutWarning() {
+//     service.registerDistributedLocalService(localServiceFactory);
+//     assertThat(service.isDistributedLocalServiceRegistered(LOCAL_SERVICE_NAME)).isTrue();
+//     verify(logger, times(0)).warn(anyString(), anyString(), anyString(), anyString());
+//   }
+
+//   @Test
+//   public void
+//       registerDistributedLocalService_whenFactoryServiceNameMismatchesServiceName_shouldIAE_and_notRegister() {
+//     when(localServiceFactory.getLocalServiceName()).thenReturn("otherServiceName");
+//     try {
+//       service.registerDistributedLocalService(localServiceFactory);
+//       shouldHaveThrown(IllegalArgumentException.class);
+//     } catch (IllegalArgumentException e) {
+//     }
+//     assertThat(service.isDistributedLocalServiceRegistered(LOCAL_SERVICE_NAME)).isFalse();
+//   }
+
+//   @Test
+//   public void
+//       registerDistributedLocalService_whenCommonsApiVersionDiffers_shouldRegister_and_LogWarn() {
+//     when(localServiceFactory.getCommonsApiVersion()).thenReturn("2.1");
+//     service.registerDistributedLocalService(localServiceFactory);
+//     assertThat(service.isDistributedLocalServiceRegistered(LOCAL_SERVICE_NAME)).isTrue();
+//     verify(logger).warn(anyString(), eq(LOCAL_SERVICE_NAME), eq("2.1"), eq(COMMONS_API_VERSION));
+//   }
+
+//   @Test
+//   public void
+//       registerDistributedLocalService_whenDistributedLocalApiVersionDiffers_shouldRegister_and_LogWarn() {
+//     when(localServiceFactory.getDistributedLocalApiVersion()).thenReturn("2.1");
+//     service.registerDistributedLocalService(localServiceFactory);
+//     assertThat(service.isDistributedLocalServiceRegistered(LOCAL_SERVICE_NAME)).isTrue();
+//     verify(logger)
+//         .warn(anyString(), eq(LOCAL_SERVICE_NAME), eq("2.1"), eq(DISTRIBUTED_LOCAL_API_VERSION));
+//   }
+
+//   @Test(expected = IllegalStateException.class)
+//   public void registerDistributedLocalService_whenInvokedTwice_shouldISE() {
+//     service.registerDistributedLocalService(localServiceFactory);
+//     service.registerDistributedLocalService(localServiceFactory);
+//   }
+
+//   // Bad version format
+
+//   @Test(expected = IllegalStateException.class)
+//   public void registerDistributedLocalService_whenApiVersionHasBadLength_shouldISE() {
+//     when(localServiceFactory.getCommonsApiVersion()).thenReturn("2.0.0");
+//     service.registerDistributedLocalService(localServiceFactory);
+//   }
+
+//   @Test(expected = IllegalStateException.class)
+//   public void registerDistributedLocalService_whenApiVersionHasBadFormat_shouldISE() {
+//     when(localServiceFactory.getCommonsApiVersion()).thenReturn("2.A");
+//     service.registerDistributedLocalService(localServiceFactory);
+//   }
+
+//   // Unregister local service
+
+//   @Test
+//   public void unregisterDistributedLocalService_whenPluginIsNotRegistered_shouldDoNothing() {
+//     service.unregisterPlugin(PLUGIN_NAME);
+//     assertThat(service.getPluginNames().contains(PLUGIN_NAME)).isFalse();
+//   }
+
+//   @Test
+//   public void unregisterDistributedLocalService_whenPluginIsRegistered_shouldUnregister() {
+//     service.registerPlugin(pluginFactory);
+//     assertThat(service.getPluginNames().contains(PLUGIN_NAME)).isTrue();
+//     service.unregisterPlugin(PLUGIN_NAME);
+//     assertThat(service.getPluginNames().contains(PLUGIN_NAME)).isFalse();
+//   }
+
+//   @Test
+//   public void getDistributedLocalService_whenServiceIsNotRegistered_shouldReturnNull() {
+//     assertThat(service.getDistributedLocalService(LOCAL_SERVICE_NAME)).isNull();
+//   }
+
+//   @Test
+//   public void getDistributedLocalService_whenServiceIsRegistered_shouldPluginInstance() {
+//     service.registerDistributedLocalService(localServiceFactory);
+//     assertThat(service.getDistributedLocalService(LOCAL_SERVICE_NAME)).isNotNull();
+//   }
