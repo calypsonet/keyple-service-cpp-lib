@@ -41,6 +41,11 @@ using namespace keyple::core::commons;
 class SmartCardService {
 public:
     /**
+     * 
+     */
+    virtual ~SmartCardService() = default;
+    
+    /**
      * Registers a new plugin to the service.
      *
      * @param pluginFactory The plugin factory.

@@ -26,9 +26,15 @@ namespace service {
 using namespace keyple::core::plugin::spi::reader::observable;
 
 LocalPluginAdapter::LocalPluginAdapter(std::shared_ptr<PluginSpi> pluginSpi)
-: AbstractPluginAdapter(pluginSpi->getName(),
+: AbstractPluginAdapter(pluginSpi ? pluginSpi->getName() : "",
                         std::dynamic_pointer_cast<KeyplePluginExtension>(pluginSpi)),
-  mPluginSpi(pluginSpi) {}
+  mPluginSpi(pluginSpi)
+{
+    if (pluginSpi == nullptr) {
+        throw IllegalArgumentException("Invalid pluginSpi");
+    }
+
+}
 
 void LocalPluginAdapter::doRegister()
 {

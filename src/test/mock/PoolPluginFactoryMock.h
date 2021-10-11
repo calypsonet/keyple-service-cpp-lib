@@ -23,5 +23,5 @@ public:
     MOCK_METHOD((const std::string&), getPluginApiVersion, (), (const, override));
     MOCK_METHOD((const std::string&), getCommonsApiVersion, (), (const, override));
     MOCK_METHOD((const std::string&), getPoolPluginName, (), (const, override));
-    MOCK_METHOD((PoolPluginSpi&), getPoolPlugin, (), (override));
+    MOCK_METHOD(std::shared_ptr<PoolPluginSpi>, getPoolPlugin, (), (override));
 };

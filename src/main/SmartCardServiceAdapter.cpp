@@ -285,63 +285,57 @@ void SmartCardServiceAdapter::checkPluginRegistration(const std::string& pluginN
         }
 }
 
-std::unique_ptr<AbstractPluginAdapter> SmartCardServiceAdapter::createLocalPlugin(
+std::shared_ptr<AbstractPluginAdapter> SmartCardServiceAdapter::createLocalPlugin(
         std::shared_ptr<PluginFactorySpi> pluginFactorySpi)
 {
     checkPluginRegistration(pluginFactorySpi->getPluginName());
     checkPluginVersion(pluginFactorySpi);
 
-    PluginSpi& pluginSpi = pluginFactorySpi->getPlugin();
+    std::shared_ptr<PluginSpi> pluginSpi = pluginFactorySpi->getPlugin();
 
-    if (pluginSpi.getName() != pluginFactorySpi->getPluginName()) {
+    if (pluginSpi->getName() != pluginFactorySpi->getPluginName()) {
         throw IllegalArgumentException("The plugin name '" +
-                                       pluginSpi.getName() +
+                                       pluginSpi->getName() +
                                        "' mismatches the expected name '" +
                                        pluginFactorySpi->getPluginName() +
                                        "' provided by the factory");
     }
 
-    std::unique_ptr<AbstractPluginAdapter> plugin = nullptr;
-    try {
-        auto observable = std::shared_ptr<ObservablePluginSpi>(
-                              &dynamic_cast<ObservablePluginSpi&>(pluginSpi));
-        plugin = std::unique_ptr<ObservableLocalPluginAdapter>(
-                     new ObservableLocalPluginAdapter(observable));
-    } catch (std::bad_cast) {
-        try {
-            auto autonomous = std::shared_ptr<AutonomousObservablePluginSpi>(
-                                  &dynamic_cast<AutonomousObservablePluginSpi&>(pluginSpi));
-            plugin = std::unique_ptr<AutonomousObservableLocalPluginAdapter>(
-                         new AutonomousObservableLocalPluginAdapter(autonomous));
-        } catch (std::bad_cast) {
-            plugin = std::unique_ptr<LocalPluginAdapter>(
-                         new LocalPluginAdapter(
-                             std::shared_ptr<PluginSpi>(&pluginSpi)));
+    std::shared_ptr<AbstractPluginAdapter> plugin = nullptr;
+    
+    
+    auto observable = std::dynamic_pointer_cast<ObservablePluginSpi>(pluginSpi);
+    if (observable) {
+        plugin = std::make_shared<ObservableLocalPluginAdapter>(observable);
+    } else {
+        auto autonomous = std::dynamic_pointer_cast<AutonomousObservablePluginSpi>(pluginSpi);
+        if (autonomous) {
+            plugin = std::make_shared<AutonomousObservableLocalPluginAdapter>(autonomous);
+        } else {
+            plugin = std::make_shared<LocalPluginAdapter>(pluginSpi);
         }
     }
     
     return plugin;
 }
 
-std::unique_ptr<AbstractPluginAdapter> SmartCardServiceAdapter::createLocalPoolPlugin(
+std::shared_ptr<AbstractPluginAdapter> SmartCardServiceAdapter::createLocalPoolPlugin(
         std::shared_ptr<PoolPluginFactorySpi> poolPluginFactorySpi)
 {
     checkPluginRegistration(poolPluginFactorySpi->getPoolPluginName());
     checkPoolPluginVersion(poolPluginFactorySpi);
 
-    PoolPluginSpi& poolPluginSpi = poolPluginFactorySpi->getPoolPlugin();
+    std::shared_ptr<PoolPluginSpi> poolPluginSpi = poolPluginFactorySpi->getPoolPlugin();
 
-    if (poolPluginSpi.getName() != poolPluginFactorySpi->getPoolPluginName()) {
+    if (poolPluginSpi->getName() != poolPluginFactorySpi->getPoolPluginName()) {
         throw IllegalArgumentException("The pool plugin name '" +
-                                       poolPluginSpi.getName() +
+                                       poolPluginSpi->getName() +
                                        "' mismatches the expected name '" +
                                        poolPluginFactorySpi->getPoolPluginName() +
                                        "' provided by the factory");
     }
 
-    return std::unique_ptr<LocalPoolPluginAdapter>(
-               new LocalPoolPluginAdapter(
-                    std::shared_ptr<PoolPluginSpi>(&poolPluginSpi)));
+    return std::make_shared<LocalPoolPluginAdapter>(poolPluginSpi);
 }
 
 

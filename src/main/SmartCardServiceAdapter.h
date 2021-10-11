@@ -385,7 +385,7 @@ private:
      * @param pluginFactorySpi The plugin factory SPI.
      * @return A not null reference.
      */
-    std::unique_ptr<AbstractPluginAdapter> createLocalPlugin(
+    std::shared_ptr<AbstractPluginAdapter> createLocalPlugin(
         std::shared_ptr<PluginFactorySpi> pluginFactorySpi);
 
     /**
@@ -395,7 +395,7 @@ private:
      * @param poolPluginFactorySpi The pool plugin factory SPI.
      * @return A not null reference.
      */
-    std::unique_ptr<AbstractPluginAdapter> createLocalPoolPlugin(
+    std::shared_ptr<AbstractPluginAdapter> createLocalPoolPlugin(
         std::shared_ptr<PoolPluginFactorySpi> poolPluginFactorySpi);
 
     /**

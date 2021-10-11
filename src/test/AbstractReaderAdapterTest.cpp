@@ -51,6 +51,8 @@ static void setUp()
 static void tearDown()
 {
     readerAdapter.reset();
+    cardRequestSpi.reset();
+    readerSpi.reset();
 }
 
 TEST(AbstractReaderAdapterTest, getPluginName_shouldReturnPluginName)
@@ -115,11 +117,16 @@ TEST(AbstractReaderAdapterTest, transmitCardRequest_shouldInvoke_processCardRequ
 
     readerAdapter->doRegister();
 
-    EXPECT_CALL(*readerAdapter.get(), processCardRequest(_,_))
-        .Times(1)
-        .WillOnce(Return(std::make_shared<CardResponseApiMock>()));
+    auto response = std::make_shared<CardResponseApiMock>();
+    EXPECT_CALL(*response.get(), isLogicalChannelOpen()).WillRepeatedly(Return(true));
+    const std::vector<std::shared_ptr<ApduResponseApi>> empty;
+    EXPECT_CALL(*response.get(), getApduResponses()).WillRepeatedly(ReturnRef(empty));
+
+    EXPECT_CALL(*readerAdapter.get(), processCardRequest(_,_)).Times(1).WillOnce(Return(response));
 
     readerAdapter->transmitCardRequest(cardRequestSpi, ChannelControl::KEEP_OPEN);
+
+    response.reset();
 
     tearDown();
 }

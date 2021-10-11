@@ -136,25 +136,25 @@ static void setUp()
     EXPECT_CALL(*pluginFactory.get(), getPluginName()).WillRepeatedly(ReturnRef(PLUGIN_NAME));
     EXPECT_CALL(*pluginFactory.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(COMMONS_API_VERSION));
     EXPECT_CALL(*pluginFactory.get(), getPluginApiVersion()).WillRepeatedly(ReturnRef(PLUGIN_API_VERSION));
-    EXPECT_CALL(*pluginFactory.get(), getPlugin()).WillRepeatedly(ReturnRef(*plugin));
+    EXPECT_CALL(*pluginFactory.get(), getPlugin()).WillRepeatedly(Return(plugin));
 
     observablePluginFactory = std::make_shared<PluginFactoryMock>();
     EXPECT_CALL(*observablePluginFactory.get(), getPluginName()).WillRepeatedly(ReturnRef(OBSERVABLE_PLUGIN_NAME));
     EXPECT_CALL(*observablePluginFactory.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(COMMONS_API_VERSION));
     EXPECT_CALL(*observablePluginFactory.get(), getPluginApiVersion()).WillRepeatedly(ReturnRef(PLUGIN_API_VERSION));
-    EXPECT_CALL(*observablePluginFactory.get(), getPlugin()).WillRepeatedly(ReturnRef(*observablePlugin));
+    EXPECT_CALL(*observablePluginFactory.get(), getPlugin()).WillRepeatedly(Return(observablePlugin));
 
     autonomousObservablePluginFactory = std::make_shared<PluginFactoryMock>();
     EXPECT_CALL(*autonomousObservablePluginFactory.get(), getPluginName()).WillRepeatedly(ReturnRef(AUTONOMOUS_OBSERVABLE_PLUGIN_NAME));
     EXPECT_CALL(*autonomousObservablePluginFactory.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(COMMONS_API_VERSION));
     EXPECT_CALL(*autonomousObservablePluginFactory.get(), getPluginApiVersion()).WillRepeatedly(ReturnRef(PLUGIN_API_VERSION));
-    EXPECT_CALL(*autonomousObservablePluginFactory.get(), getPlugin()).WillRepeatedly(ReturnRef(*autonomousObservablePlugin));
+    EXPECT_CALL(*autonomousObservablePluginFactory.get(), getPlugin()).WillRepeatedly(Return(autonomousObservablePlugin));
     
     poolPluginFactory = std::make_shared<PoolPluginFactoryMock>();
     EXPECT_CALL(*poolPluginFactory.get(), getPoolPluginName()).WillRepeatedly(ReturnRef(POOL_PLUGIN_NAME));
     EXPECT_CALL(*poolPluginFactory.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(COMMONS_API_VERSION));
     EXPECT_CALL(*poolPluginFactory.get(), getPluginApiVersion()).WillRepeatedly(ReturnRef(PLUGIN_API_VERSION));
-    EXPECT_CALL(*poolPluginFactory.get(), getPoolPlugin()).WillRepeatedly(ReturnRef(*poolPlugin));
+    EXPECT_CALL(*poolPluginFactory.get(), getPoolPlugin()).WillRepeatedly(Return(poolPlugin));
 
     // remotePluginFactory = mock(RemotePluginFactoryMock.class);
     // when(remotePluginFactory.getRemotePluginName()).thenReturn(REMOTE_PLUGIN_NAME);
@@ -202,14 +202,14 @@ static void tearDown()
     service.unregisterPlugin(REMOTE_PLUGIN_NAME);
     // service.unregisterDistributedLocalService(LOCAL_SERVICE_NAME);
 
-    pluginFactory.reset();
     plugin.reset();
-    observablePluginFactory.reset();
+    pluginFactory.reset();
     observablePlugin.reset();
-    autonomousObservablePluginFactory.reset();
+    observablePluginFactory.reset();
     autonomousObservablePlugin.reset();
-    poolPluginFactory.reset();
+    autonomousObservablePluginFactory.reset();
     poolPlugin.reset();
+    poolPluginFactory.reset();
     _reader.reset();
 }
 
