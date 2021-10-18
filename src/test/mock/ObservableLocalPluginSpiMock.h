@@ -65,7 +65,7 @@ public:
         return nullptr;
     }
 
-    virtual const std::vector<std::shared_ptr<ReaderSpi>> searchAvailableReaders() const override
+    virtual const std::vector<std::shared_ptr<ReaderSpi>> searchAvailableReaders() override
     {
         std::vector<std::shared_ptr<ReaderSpi>> readers;
         for (const auto& reader : mStubReaders) {
