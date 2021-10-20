@@ -7,8 +7,8 @@ licenses:
     url: https://www.eclipse.org/legal/epl-2.0/
     distribution: repo
 developers:
-  - name: Alexandre Munsch
-    email: alexandre.munsch@gmail.com
+  - name: Keyple Contributors
+    email: keyple-dev@eclipse.org
 scm:
   connection: scm:git:git://github.com/eclipse/keyple-service-cpp-lib.git
   developerConnection: scm:git:https://github.com/eclipse/keyple-service-cpp-lib.git

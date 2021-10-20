@@ -1,21 +1,21 @@
-# Keyple C++ Service
+# Keyple Service C++ Library
 
 ## Overview
 
-The **Keyple Service** C++ library contains the core Keyple interfaces and classes.
+The **Keyple Service C++ Library** contains the Keyple core components.
 
-This library **should be imported explicitly** by the main application.
+## Documentation & Contribution Guide
 
-## User Guide & Download Information
+The full documentation, including the **user guide**, **download information** and **contribution guide**, is available on the Keyple website [keyple.org](https://keyple.org).
 
-The full documentation, including download information is available in the **Documentation** section of the official Keyple website [keyple.org](https://keyple.org)
+## API documentation
 
-## Build the Code
+API documentation & class diagram is available online: [eclipse.github.io/keyple-service-cpp-lib](https://eclipse.github.io/keyple-service-cpp-lib)
 
-* C++ 11
-* GCC 6+
-* CLang 6+
+## Examples
 
-## Code Contributions
+Examples of implementation are available in the following repository: [github.com/eclipse/keyple-cpp-example](https://github.com/eclipse/keyple-cpp-example)
 
-We welcome code contributions through merge requests.
+## About the source code
+
+The code is built with **CLang / GCC / MSVC ** in order to address a wide range of applications.
