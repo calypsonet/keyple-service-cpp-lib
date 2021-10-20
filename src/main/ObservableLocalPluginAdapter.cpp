@@ -77,13 +77,19 @@ void ObservableLocalPluginAdapter::addObserver(std::shared_ptr<PluginObserverSpi
 
 void ObservableLocalPluginAdapter::removeObserver(const std::shared_ptr<PluginObserverSpi> observer)
 {
+    Assert::getInstance().notNull(observer, "observer");
+
     AbstractObservableLocalPluginAdapter::removeObserver(observer);
 
-    if (countObservers() == 0) {
-        mLogger->debug("Stop the plugin monitoring\n");
+    if (getObservationManager()->getObservers().contains(observer)) {
+        AbstractObservableLocalPluginAdapter::removeObserver(observer);
 
-        if (mThread != nullptr) {
-            mThread->end();
+        if (countObservers() == 0) {
+            mLogger->debug("Stop the plugin monitoring\n");
+
+            if (mThread != nullptr) {
+                mThread->end();
+            }
         }
     }
 }

@@ -17,9 +17,9 @@
 #include <ostream>
 #include <vector>
 
-/* Calypsonet Terminal Card */
-#include "ApduResponseApi.h"
-#include "CardResponseApi.h"
+/* Keyple Core Service */
+#include "ApduResponseAdapter.h"
+#include "CardResponseAdapter.h"
 
 namespace keyple {
 namespace core {
@@ -46,7 +46,7 @@ public:
      * @param isLogicalChannelOpen true if the logical channel is open, false if not.
      * @since 2.0
      */
-    CardResponseAdapter(const std::vector<std::shared_ptr<ApduResponseApi>> apduResponses,
+    CardResponseAdapter(const std::vector<std::shared_ptr<ApduResponseAdapter>> apduResponses,
                         const bool isLogicalChannelOpen);
 
     /**
@@ -54,14 +54,14 @@ public:
      *
      * @since 2.0
      */
-    virtual const std::vector<std::shared_ptr<ApduResponseApi>>& getApduResponses() const override;
+    const std::vector<std::shared_ptr<ApduResponseAdapter>> getApduResponses() const override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    virtual bool isLogicalChannelOpen() const override;
+    bool isLogicalChannelOpen() const override;
 
     /**
      *
@@ -78,7 +78,7 @@ private:
     /**
      *
      */
-    const std::vector<std::shared_ptr<ApduResponseApi>> mApduResponses;
+    const std::vector<std::shared_ptr<ApduResponseAdapter>> mApduResponses;
 
     /**
      *

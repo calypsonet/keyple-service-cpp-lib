@@ -304,22 +304,22 @@ void ObservableLocalReaderAdapter::scheduleCardSelectionScenario(
 
 void ObservableLocalReaderAdapter::doUnregister()
 {
-    LocalReaderAdapter::doUnregister();
-
     try {
-        notifyObservers(
-            std::make_shared<ReaderEventAdapter>(getPluginName(),
-                                                 getName(),
-                                                 CardReaderEvent::Type::UNAVAILABLE,
-                                                 nullptr));
         stopCardDetection();
     } catch (const Exception& e) {
-
+        mLogger->error("Error during the stop card detection of reader '%'\n", getName(), e);
     }
 
     /* Finally */
-    clearObservers();
     mStateService->shutdown();
+
+    notifyObservers(
+        std::make_shared<ReaderEventAdapter>(getPluginName(),
+                                             getName(), 
+                                             CardReaderEvent::Type::UNAVAILABLE, 
+                                             nullptr));
+    clearObservers();
+    LocalReaderAdapter::doUnregister();
 }
 
 bool ObservableLocalReaderAdapter::isCardPresent()
@@ -349,7 +349,11 @@ void ObservableLocalReaderAdapter::addObserver(std::shared_ptr<CardReaderObserve
 
 void ObservableLocalReaderAdapter::removeObserver(std::shared_ptr<CardReaderObserverSpi> observer)
 {
-    mObservationManager->removeObserver(observer);
+    Assert::getInstance().notNull(observer, "observer");
+
+    if (mObservationManager->getObservers().contains(observer)) {
+        mObservationManager->removeObserver(observer);
+    }
 }
 
 int ObservableLocalReaderAdapter::countObservers() const

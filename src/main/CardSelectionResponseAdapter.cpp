@@ -18,9 +18,9 @@ namespace service {
 
 CardSelectionResponseAdapter::CardSelectionResponseAdapter(
   const std::string& powerOnData,
-  const std::shared_ptr<ApduResponseApi> selectApplicationResponse,
+  const std::shared_ptr<ApduResponseAdapter> selectApplicationResponse,
   const bool hasMatched,
-  const std::shared_ptr<CardResponseApi> cardResponse)
+  const std::shared_ptr<CardResponseAdapter> cardResponse)
 : mPowerOnData(powerOnData),
   mSelectApplicationResponse(selectApplicationResponse),
   mHasMatched(hasMatched),
@@ -31,8 +31,8 @@ const std::string& CardSelectionResponseAdapter::getPowerOnData() const
     return mPowerOnData;
 }
 
-const std::shared_ptr<ApduResponseApi> CardSelectionResponseAdapter::getSelectApplicationResponse()
-    const
+const std::shared_ptr<ApduResponseAdapter> 
+    CardSelectionResponseAdapter::getSelectApplicationResponse() const
 {
     return mSelectApplicationResponse;
 }
@@ -42,7 +42,7 @@ bool CardSelectionResponseAdapter::hasMatched() const
     return mHasMatched;
 }
 
-const std::shared_ptr<CardResponseApi> CardSelectionResponseAdapter::getCardResponse() const
+const std::shared_ptr<CardResponseAdapter> CardSelectionResponseAdapter::getCardResponse() const
 {
     return mCardResponse;
 }

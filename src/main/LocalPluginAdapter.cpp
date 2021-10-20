@@ -61,8 +61,15 @@ void LocalPluginAdapter::doRegister()
 
 void LocalPluginAdapter::doUnregister()
 {
-    AbstractPluginAdapter::doUnregister();
-    mPluginSpi->onUnregister();
+    try {
+      mPluginSpi->onUnregister();
+    } catch (const Exception& e) {
+        mLogger->error("Error during the unregistration of the extension of plugin '%'\n", 
+                       getName(), 
+                       e);
+    }
+
+    AbstractPluginAdapter::doUnregister();    
 }
 
 }

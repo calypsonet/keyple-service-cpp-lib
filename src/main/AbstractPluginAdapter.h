@@ -16,6 +16,9 @@
 #include <string>
 #include <typeinfo>
 
+/* Keyple Core Util */
+#include "LoggerFactory.h"
+
 /* Keyple Core Common */
 #include "KeyplePluginExtension.h"
 
@@ -27,7 +30,8 @@ namespace keyple {
 namespace core {
 namespace service {
 
-using namespace keyple::core::commons;
+using namespace keyple::core::common;
+using namespace keyple::core::util::cpp;
 
 /**
  * (package-private)<br>
@@ -84,15 +88,15 @@ public:
      *
      * @since 2.0
      */
-    virtual const std::string& getName() const override final;
+    const std::string& getName() const final;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    virtual std::shared_ptr<KeyplePluginExtension> getExtension(
-        const std::type_info& pluginExtensionClass) const override final;
+    std::shared_ptr<KeyplePluginExtension> getExtension(const std::type_info& pluginExtensionClass) 
+        const final;
 
     /**
      * (package-private)<br>
@@ -100,30 +104,35 @@ public:
      *
      * @since 2.0
      */
-    virtual std::map<const std::string, std::shared_ptr<Reader>>& getReadersMap() final;
+    std::map<const std::string, std::shared_ptr<Reader>>& getReadersMap() final;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    virtual const std::vector<std::string> getReaderNames() const override final;
+    const std::vector<std::string> getReaderNames() const final;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    virtual const std::vector<std::shared_ptr<Reader>> getReaders() const override final;
+    const std::vector<std::shared_ptr<Reader>> getReaders() const final;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    virtual std::shared_ptr<Reader> getReader(const std::string& name) const override final;
+    std::shared_ptr<Reader> getReader(const std::string& name) const final;
 
 private:
+    /**
+     * 
+     */
+    const std::unique_ptr<Logger> mLogger = LoggerFactory::getLogger(typeid(AbstractPluginAdapter));
+    
     /**
      *
      */

@@ -149,8 +149,8 @@ std::shared_ptr<Plugin> SmartCardServiceAdapter::registerPlugin(
                 throw IllegalArgumentException("The factory doesn't implement the right SPI.");
             }
 
-            plugin->doRegister();
             mPlugins.insert({plugin->getName(), plugin});
+            plugin->doRegister();
 
     } catch (const IllegalArgumentException& e) {
         throw IllegalArgumentException("The provided plugin factory doesn't implement the plugin" \
@@ -177,17 +177,15 @@ void SmartCardServiceAdapter::unregisterPlugin(const std::string& pluginName)
     auto i = mPlugins.find(pluginName);
     if (i != mPlugins.end()) {
         std::shared_ptr<Plugin> removedPlugin = std::move(i->second);
-        mPlugins.erase(i);
         std::dynamic_pointer_cast<AbstractPluginAdapter>(removedPlugin)->doUnregister();
+        mPlugins.erase(i);
     } else {
         mLogger->warn("The plugin '%' is not registered\n", pluginName);
     }
 }
 
-const std::vector<std::string> SmartCardServiceAdapter::getPluginNames()
+const std::vector<std::string> SmartCardServiceAdapter::getPluginNames() const
 {
-    const std::lock_guard<std::mutex> lock(mMutex);
-
     std::vector<std::string> pluginNames;
     for (const auto& pair : mPlugins) {
         pluginNames.push_back(pair.first);
@@ -196,11 +194,9 @@ const std::vector<std::string> SmartCardServiceAdapter::getPluginNames()
     return pluginNames;
 }
 
-const std::vector<std::shared_ptr<Plugin>> SmartCardServiceAdapter::getPlugins()
+const std::vector<std::shared_ptr<Plugin>> SmartCardServiceAdapter::getPlugins() const
 {
-    const std::lock_guard<std::mutex> lock(mMutex);
-
-    std::vector<std::shared_ptr<Plugin>> plugins;
+   std::vector<std::shared_ptr<Plugin>> plugins;
     for (const auto& pair : mPlugins) {
         plugins.push_back(pair.second);
     }
@@ -208,10 +204,8 @@ const std::vector<std::shared_ptr<Plugin>> SmartCardServiceAdapter::getPlugins()
     return plugins;
 }
 
-std::shared_ptr<Plugin> SmartCardServiceAdapter::getPlugin(const std::string& pluginName)
+std::shared_ptr<Plugin> SmartCardServiceAdapter::getPlugin(const std::string& pluginName) const
 {
-    const std::lock_guard<std::mutex> lock(mMutex);
-
     return mPlugins.at(pluginName);
 }
 

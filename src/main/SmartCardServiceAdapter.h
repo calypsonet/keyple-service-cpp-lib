@@ -79,21 +79,21 @@ public:
      *
      * @since 2.0
      */
-    virtual const std::vector<std::string> getPluginNames() override final;
+    const std::vector<std::string> getPluginNames() const final;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    virtual const std::vector<std::shared_ptr<Plugin>> getPlugins() override final;
+    const std::vector<std::shared_ptr<Plugin>> getPlugins() const final;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    virtual std::shared_ptr<Plugin> getPlugin(const std::string& pluginName) override final;
+    std::shared_ptr<Plugin> getPlugin(const std::string& pluginName) const final;
 
     /**
      * {@inheritDoc}

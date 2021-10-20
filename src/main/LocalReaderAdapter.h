@@ -19,14 +19,13 @@
 #include <typeinfo>
 #include <vector>
 
-/* Calypsonet Terminal Card */
-#include "ApduResponseApi.h"
-
 /* Keyple Core Plugin */
 #include "ReaderSpi.h"
 
 /* Keyple Core Service */
 #include "AbstractReaderAdapter.h"
+#include "ApduResponseAdapter.h"
+#include "CardResponseAdapter.h"
 
 /* Keyple Core Util */
 #include "LoggerFactory.h"
@@ -35,8 +34,6 @@ namespace keyple {
 namespace core {
 namespace service {
 
-using namespace calypsonet::terminal::card;
-using namespace calypsonet::terminal::card::spi;
 using namespace keyple::core::plugin::spi::reader;
 using namespace keyple::core::util::cpp;
 
@@ -118,7 +115,7 @@ public:
      *
      * @since 2.0
      */
-    virtual std::shared_ptr<CardResponseApi> processCardRequest(
+    virtual std::shared_ptr<CardResponseAdapter> processCardRequest(
         const std::shared_ptr<CardRequestSpi> cardRequest,
         const ChannelControl channelControl) override final;
 
@@ -217,7 +214,7 @@ private:
          * @param hasMatched A boolean.
          */
         SelectionStatus(const std::string& powerOnData,
-                        const std::shared_ptr<ApduResponseApi> selectApplicationResponse,
+                        const std::shared_ptr<ApduResponseAdapter> selectApplicationResponse,
                         const bool hasMatched);
 
     private:
@@ -229,7 +226,7 @@ private:
         /**
          *
          */
-        const std::shared_ptr<ApduResponseApi> mSelectApplicationResponse;
+        const std::shared_ptr<ApduResponseAdapter> mSelectApplicationResponse;
 
         /**
          *
@@ -279,14 +276,14 @@ private:
     /**
      * (private)<br>
      * Sends the select application command to the card and returns the requested data according to
-     * AidSelector attributes (ISO7816-4 selection data) into an {@link ApduResponseApi}.
+     * AidSelector attributes (ISO7816-4 selection data) into an {@link ApduResponseAdapter}.
      *
      * @param cardSelector The card selector.
-     * @return A not null {@link ApduResponseApi}.
+     * @return A not null {@link ApduResponseAdapter}.
      * @throw ReaderIOException if the communication with the reader has failed.
      * @throw CardIOException if the communication with the card has failed.
      */
-    std::shared_ptr<ApduResponseApi> processExplicitAidSelection(
+    std::shared_ptr<ApduResponseAdapter> processExplicitAidSelection(
         std::shared_ptr<CardSelectorSpi> cardSelector);
 
     /**
@@ -294,10 +291,10 @@ private:
      * Selects the card with the provided AID and gets the FCI response in return.
      *
      * @param cardSelector The card selector.
-     * @return An not null ApduResponseApi containing the FCI.
+     * @return An not null ApduResponseAdapter containing the FCI.
      * @see processSelection(CardSelectorSpi)
      */
-    std::shared_ptr<ApduResponseApi> selectByAid(std::shared_ptr<CardSelectorSpi> cardSelector);
+    std::shared_ptr<ApduResponseAdapter> selectByAid(std::shared_ptr<CardSelectorSpi> cardSelector);
 
     /**
      * (private)<br>
@@ -360,11 +357,11 @@ private:
      * @throw ReaderIOException if the communication with the reader has failed.
      * @throw CardIOException if the communication with the card has failed.
      */
-    std::shared_ptr<ApduResponseApi> case4HackGetResponse();
+    std::shared_ptr<ApduResponseAdapter> case4HackGetResponse();
 
     /**
      * (private)<br>
-     * Transmits an ApduRequestSpi and receives the ApduResponseApi.
+     * Transmits an ApduRequestSpi and receives the ApduResponseAdapter.
      *
      * <p>The time measurement is carried out and logged with the detailed information of the
      * exchanges (TRACE level).
@@ -374,12 +371,12 @@ private:
      * @throw ReaderIOException if the communication with the reader has failed.
      * @throw CardIOException if the communication with the card has failed.
      */
-    std::shared_ptr<ApduResponseApi> processApduRequest(
+    std::shared_ptr<ApduResponseAdapter> processApduRequest(
         const std::shared_ptr<ApduRequestSpi> apduRequest);
 
     /**
      * (private)<br>
-     * Transmits a CardRequestSpi and returns a CardResponseApi.
+     * Transmits a CardRequestSpi and returns a CardResponseAdapter.
      *
      * @param cardRequest The card request to transmit.
      * @return A not null reference.
@@ -388,7 +385,7 @@ private:
      * @throw UnexpectedStatusWordException If status word verification is enabled in the card
      *        request and the card returned an unexpected code.
      */
-    std::shared_ptr<CardResponseApi> processCardRequest(
+    std::shared_ptr<CardResponseAdapter> processCardRequest(
         const std::shared_ptr<CardRequestSpi> cardRequest);
 
     /**

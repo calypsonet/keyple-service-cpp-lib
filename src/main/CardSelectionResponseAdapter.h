@@ -16,9 +16,11 @@
 #include <ostream>
 #include <string>
 
+/* Keyple Core Service */
+#include "ApduResponseAdapter.h"
+#include "CardResponseAdapter.h"
+
 /* Calypsonet Terminal Card */
-#include "ApduResponseApi.h"
-#include "CardResponseApi.h"
 #include "CardSelectionResponseApi.h"
 
 namespace keyple {
@@ -32,7 +34,7 @@ using namespace calypsonet::terminal::card;
  * This POJO contains the data from a card obtained in response to a card selection request.
  *
  * <p>These data are the selection status and the responses, if any, to the additional APDUs sent to
- * the card CardResponseApi).
+ * the card CardResponseAdapter).
  *
  * @see calypsonet::terminal::card::spi::CardSelectionRequestSpi
  * @since 2.0
@@ -41,8 +43,8 @@ class CardSelectionResponseAdapter final : public CardSelectionResponseApi {
 public:
     /**
      * (package-private)<br>
-     * Builds a card selection response including the selection status and a CardResponseApi
-     * (list of calypsonet::terminal::card::ApduResponseApi).
+     * Builds a card selection response including the selection status and a CardResponseAdapter
+     * (list of calypsonet::terminal::card::ApduResponseAdapter).
      *
      * @param powerOnData The card power-on data, null if the power-on data is not available.
      * @param selectApplicationResponse The response to the Select Application command, null if no
@@ -52,37 +54,37 @@ public:
      * @since 2.0
      */
     CardSelectionResponseAdapter(const std::string& powerOnData,
-                                 const std::shared_ptr<ApduResponseApi> selectApplicationResponse,
+                                 const std::shared_ptr<ApduResponseAdapter> selectApplicationResponse,
                                  const bool hasMatched,
-                                 const std::shared_ptr<CardResponseApi> cardResponse);
+                                 const std::shared_ptr<CardResponseAdapter> cardResponse);
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    virtual const std::string& getPowerOnData() const override;
+    const std::string& getPowerOnData() const override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    virtual const std::shared_ptr<ApduResponseApi> getSelectApplicationResponse() const override;
+    const std::shared_ptr<ApduResponseAdapter> getSelectApplicationResponse() const override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    virtual bool hasMatched() const override;
+    bool hasMatched() const override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0
      */
-    virtual const std::shared_ptr<CardResponseApi> getCardResponse() const override;
+    const std::shared_ptr<CardResponseAdapter> getCardResponse() const override;
 
     /**
      *
@@ -104,7 +106,7 @@ private:
     /**
      *
      */
-    const std::shared_ptr<ApduResponseApi> mSelectApplicationResponse;
+    const std::shared_ptr<ApduResponseAdapter> mSelectApplicationResponse;
 
     /**
      *
@@ -114,7 +116,7 @@ private:
     /**
      *
      */
-    const std::shared_ptr<CardResponseApi> mCardResponse;
+    const std::shared_ptr<CardResponseAdapter> mCardResponse;
 };
 
 }

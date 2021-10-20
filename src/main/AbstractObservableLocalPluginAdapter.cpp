@@ -88,13 +88,12 @@ void AbstractObservableLocalPluginAdapter::doUnregister()
 {
     const std::vector<std::string>& unregisteredReaderNames = getReaderNames();
 
-    LocalPluginAdapter::doUnregister();
-
     notifyObservers(
         std::make_shared<PluginEventAdapter>(
             getName(), unregisteredReaderNames, PluginEvent::Type::UNAVAILABLE));
 
     clearObservers();
+    LocalPluginAdapter::doUnregister();
 }
 
 void AbstractObservableLocalPluginAdapter::addObserver(
@@ -107,7 +106,14 @@ void AbstractObservableLocalPluginAdapter::addObserver(
 void AbstractObservableLocalPluginAdapter::removeObserver(
     const std::shared_ptr<PluginObserverSpi> observer)
 {
-    mObservationManager->removeObserver(observer);
+    Assert::getInstance().notNull(observer, "observer");
+
+    const auto& observers = mObservationManager->getObservers();
+    const auto it = std::find(observers.begin(), observers.end(), observer);
+
+    if (it != observers.end()) {
+      mObservationManager->removeObserver(observer);
+    }
 }
 
 void AbstractObservableLocalPluginAdapter::clearObservers()

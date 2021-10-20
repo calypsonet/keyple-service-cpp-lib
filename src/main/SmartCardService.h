@@ -68,22 +68,18 @@ public:
     /**
      * Gets the names of all registered plugins.
      *
-     * C++: cannot return a reference to vector as list is built on the fly in some derived classes
-     *
      * @return A not null Set String.
      * @since 2.0
      */
-    virtual const std::vector<std::string> getPluginNames() = 0;
+    virtual const std::vector<std::string> getPluginNames() const = 0;
 
     /**
      * Gets all registered plugins.
      *
-     * C++: cannot return a reference to vector as list is built on the fly in some derived classes
-     *
      * @return A not null Set of Plugin.
      * @since 2.0
      */
-    virtual const  std::vector<std::shared_ptr<Plugin>> getPlugins() = 0;
+    virtual const  std::vector<std::shared_ptr<Plugin>> getPlugins() const = 0;
 
     /**
      * Gets the plugin whose name is provided as an argument.
@@ -92,7 +88,7 @@ public:
      * @return Null if the plugin is not found or no longer registered.
      * @since 2.0
      */
-    virtual std::shared_ptr<Plugin> getPlugin(const std::string& pluginName) = 0;
+    virtual std::shared_ptr<Plugin> getPlugin(const std::string& pluginName) const = 0;
 
     /**
      * Verifies the compatibility with the service of the provided card extension.

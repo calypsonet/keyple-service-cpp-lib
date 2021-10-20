@@ -51,6 +51,20 @@ void AbstractPluginAdapter::doUnregister()
     }
 
     mReaders.clear();
+
+
+    for (const auto& pair : mReaders) {
+        try {
+            std::dynamic_pointer_cast<AbstractReaderAdapter>(pair.second)->doUnregister();
+        } catch (const Exception& e) {
+            mLogger->error("Error during the unregistration of reader '%'\n", 
+                           pair.second->getName(), 
+                           e);
+        }
+    }
+    
+    mReaders.clear();
+    mIsRegistered = false;
 }
 
 const std::string& AbstractPluginAdapter::getName() const

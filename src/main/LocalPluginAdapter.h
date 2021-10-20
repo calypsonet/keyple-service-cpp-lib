@@ -20,6 +20,9 @@
 /* Keyple Core Plugin */
 #include "PluginSpi.h"
 
+/* Keyple Core Util */
+#include "LoggerFactory.h"
+
 namespace keyple {
 namespace core {
 namespace service {
@@ -67,6 +70,11 @@ public:
     virtual void doUnregister() override;
 
 private:
+    /**
+     * 
+     */
+    const std::unique_ptr<Logger> mLogger = LoggerFactory::getLogger(typeid(LocalPluginAdapter));
+    
     /**
      *
      */

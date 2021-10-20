@@ -96,8 +96,6 @@ public:
                        mOwnerComponent,
                        observer != nullptr ? typeid(*observer.get()).name() : "null");
 
-        Assert::getInstance().notNull(observer, "observer");
-
         const std::lock_guard<std::mutex> lock(mMonitor);
 
         mObservers.erase(std::remove(mObservers.begin(), mObservers.end(), observer),
