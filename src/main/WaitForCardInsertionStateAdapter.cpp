@@ -66,7 +66,7 @@ void WaitForCardInsertionStateAdapter::onEvent(const InternalEvent event)
 
     case InternalEvent::CARD_REMOVED:
         /* The card has been removed during default selection */
-        if (getReader()->getdetectionMode() == DetectionMode::REPEATING) {
+        if (getReader()->getDetectionMode() == DetectionMode::REPEATING) {
             switchState(MonitoringState::WAIT_FOR_CARD_INSERTION);
         } else {
             switchState(MonitoringState::WAIT_FOR_START_DETECTION);

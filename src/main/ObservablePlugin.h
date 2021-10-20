@@ -81,23 +81,6 @@ public:
     virtual int countObservers() const = 0;
 
     /**
-     * Configures the plugin to use a custom thread pool for events notification.
-     *
-     * <p>The custom pool should be flexible enough to handle many concurrent tasks as each
-     * PluginEvent are executed asynchronously.
-     *
-     * <p>The use of this method is optional and depends on the needs of the application.<br>
-     * When used, the event notification will always be done asynchronously. Otherwise, the
-     * notification can be synchronous (local plugin) or asynchronous (remote plugin) depending on
-     * the type of reader.
-     *
-     * @param eventNotificationExecutorService The executor service provided by the application.
-     * @since 2.0
-     */
-    virtual void setEventNotificationExecutorService(
-        std::shared_ptr<ExecutorService> eventNotificationExecutorService) = 0;
-
-    /**
      * Sets the exception handler.
      *
      * <p>The invocation of this method is <b>mandatory</b> when the plugin has to be observed.

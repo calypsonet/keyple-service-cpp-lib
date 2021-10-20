@@ -62,20 +62,8 @@ void AbstractObservableLocalPluginAdapter::notifyObservers(const std::shared_ptr
                    event->getType(),
                    countObservers());
 
-    const std::vector<std::shared_ptr<PluginObserverSpi>>& observers =
-        mObservationManager->getObservers();
-
-    if (mObservationManager->getEventNotificationExecutorService() == nullptr) {
-        /* Synchronous notification */
-        for (const auto& observer : observers) {
-            notifyObserver(observer, event);
-        }
-    } else {
-        /* Asynchronous notification */
-        for (const auto& observer : observers) {
-            auto job = std::make_shared<ObservableLocalPluginAdapterJob>(observer, event, this);
-            mObservationManager->getEventNotificationExecutorService()->execute(job);
-        }
+    for (const auto& observer : mObservationManager->getObservers()) {
+        notifyObserver(observer, event);
     }
 }
 
@@ -130,13 +118,6 @@ void AbstractObservableLocalPluginAdapter::clearObservers()
 int AbstractObservableLocalPluginAdapter::countObservers() const
 {
     return mObservationManager->countObservers();
-}
-
-void AbstractObservableLocalPluginAdapter::setEventNotificationExecutorService(
-    std::shared_ptr<ExecutorService> eventNotificationExecutorService)
-{
-    checkStatus();
-    mObservationManager->setEventNotificationExecutorService(eventNotificationExecutorService);
 }
 
 void AbstractObservableLocalPluginAdapter::setPluginObservationExceptionHandler(

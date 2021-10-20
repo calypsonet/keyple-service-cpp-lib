@@ -102,7 +102,7 @@ std::shared_ptr<CardReaderObservationExceptionHandlerSpi>
     return mObservationManager->getObservationExceptionHandler();
 }
 
-DetectionMode ObservableLocalReaderAdapter::getdetectionMode()  const
+DetectionMode ObservableLocalReaderAdapter::getDetectionMode()  const
 {
     return mDetectionMode;
 }
@@ -269,20 +269,8 @@ void ObservableLocalReaderAdapter::notifyObservers(const std::shared_ptr<ReaderE
                    event->getType(),
                    countObservers());
 
-    std::vector<std::shared_ptr<CardReaderObserverSpi>> observers =
-        mObservationManager->getObservers();
-
-    if (mObservationManager->getEventNotificationExecutorService() == nullptr) {
-        /* Synchronous notification */
-        for (const auto& observer : observers) {
-            notifyObserver(observer, event);
-        }
-    } else {
-        /* Asynchronous notification */
-        for (const auto& observer : observers) {
-            auto job = std::make_shared<ObservableLocalReaderAdapterJob>(observer, event, this);
-            mObservationManager->getEventNotificationExecutorService()->execute(job);
-        }
+    for (const auto& observer : mObservationManager->getObservers()) {
+        notifyObserver(observer, event);
     }
 }
 
@@ -405,14 +393,6 @@ void ObservableLocalReaderAdapter::finalizeCardProcessing()
 
     mStateService->onEvent(InternalEvent::CARD_PROCESSED);
 }
-
-// void ObservableLocalReaderAdapter::setEventNotificationExecutorService(
-//     std::shared_ptr<ExecutorService> eventNotificationExecutorService)
-// {
-//     checkStatus();
-
-//     mObservationManager->setEventNotificationExecutorService(eventNotificationExecutorService);
-// }
 
 void ObservableLocalReaderAdapter::setReaderObservationExceptionHandler(
     std::shared_ptr<CardReaderObservationExceptionHandlerSpi> exceptionHandler)

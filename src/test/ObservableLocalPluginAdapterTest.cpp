@@ -127,33 +127,6 @@ TEST(ObservableLocalPluginAdapterTest, addObserver_withoutExceptionHandler_throw
 }
 
 // FIXME
-// TEST(ObservableLocalPluginAdapterTest, notifyObservers_withEventNotificationExecutorService_isAsync)
-// {
-//     setUp();
-
-//     pluginAdapter->doRegister();
-//     pluginAdapter->setPluginObservationExceptionHandler(exceptionHandlerMock);
-//     pluginAdapter->addObserver(observerMock);
-
-//     ASSERT_EQ(pluginAdapter->countObservers(), 1);
-//     ASSERT_TRUE(pluginAdapter->isMonitoring());
-
-//     pluginAdapter->setEventNotificationExecutorService(std::make_shared<ExecutorService>());
-
-//     /* Add reader name */
-//     observablePluginMock->addReaderName({READER_NAME_1});
-
-//     /* Wait until READER_CONNECTED event, should not take longer than 1 sec */
-//     std::this_thread::sleep_for(std::chrono::seconds(1));
-
-//     /* Check if exception has been thrown */
-//     ASSERT_EQ(exceptionHandlerMock->getPluginName(), "");
-//     ASSERT_EQ(exceptionHandlerMock->getE(), nullptr);
-
-//     tearDown();
-// }
-
-// FIXME
 // TEST(ObservableLocalPluginAdapterTest, notifyObserver_throwException_isPassedTo_exceptionHandler)
 // {
 //     setUp();

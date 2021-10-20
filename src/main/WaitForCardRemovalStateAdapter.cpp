@@ -45,7 +45,7 @@ void WaitForCardRemovalStateAdapter::onEvent(const InternalEvent event)
          * We notify the application of the CARD_REMOVED event.
          */
         getReader()->processCardRemoved();
-        if (getReader()->getdetectionMode() == DetectionMode::REPEATING) {
+        if (getReader()->getDetectionMode() == DetectionMode::REPEATING) {
             switchState(MonitoringState::WAIT_FOR_CARD_INSERTION);
         } else {
             switchState(MonitoringState::WAIT_FOR_START_DETECTION);

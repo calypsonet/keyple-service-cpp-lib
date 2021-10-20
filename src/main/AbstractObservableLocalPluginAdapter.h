@@ -122,14 +122,6 @@ public:
      *
      * @since 2.0
      */
-    virtual void setEventNotificationExecutorService(
-        std::shared_ptr<ExecutorService> eventNotificationExecutorService) override final;
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 2.0
-     */
     virtual void setPluginObservationExceptionHandler(
         std::shared_ptr<PluginObservationExceptionHandlerSpi> exceptionHandler) override final;
 

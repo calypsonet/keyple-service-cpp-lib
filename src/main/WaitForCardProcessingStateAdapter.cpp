@@ -41,7 +41,7 @@ void WaitForCardProcessingStateAdapter::onEvent(const InternalEvent event)
     /* Process InternalEvent */
     switch (event) {
     case InternalEvent::CARD_PROCESSED:
-        if (getReader()->getdetectionMode() == DetectionMode::REPEATING) {
+        if (getReader()->getDetectionMode() == DetectionMode::REPEATING) {
             switchState(MonitoringState::WAIT_FOR_CARD_REMOVAL);
         } else {
             /* We close the channels now and notify the application of the CARD_REMOVED event */
@@ -57,7 +57,7 @@ void WaitForCardProcessingStateAdapter::onEvent(const InternalEvent event)
          * We notify the application of the CARD_REMOVED event.
          */
         getReader()->processCardRemoved();
-        if (getReader()->getdetectionMode() == DetectionMode::REPEATING) {
+        if (getReader()->getDetectionMode() == DetectionMode::REPEATING) {
             switchState(MonitoringState::WAIT_FOR_CARD_INSERTION);
         } else {
             switchState(MonitoringState::WAIT_FOR_START_DETECTION);

@@ -17,9 +17,6 @@
 #include <mutex>
 #include <vector>
 
-/* Keyple Core Service */
-#include "ExecutorService.h"
-
 /* Keyple Core Util */
 #include "IllegalStateException.h"
 #include "KeypleAssert.h"
@@ -136,23 +133,6 @@ public:
 
     /**
      * (package-private)<br>
-     * Sets the event notification executor service.
-     *
-     * @param eventNotificationExecutorService The event notification executor service.
-     * @throw IllegalArgumentException If the provided service is null.
-     * @since 2.0
-     */
-    void setEventNotificationExecutorService(
-        std::shared_ptr<ExecutorService> eventNotificationExecutorService)
-    {
-        Assert::getInstance().notNull(eventNotificationExecutorService,
-                                      "eventNotificationExecutorService");
-
-        mEventNotificationExecutorService = eventNotificationExecutorService;
-    }
-
-    /**
-     * (package-private)<br>
      * Sets the observation exception handler.
      *
      * @param exceptionHandler the observation exception handler.
@@ -179,18 +159,6 @@ public:
 
         /* Voluntary copy of the vector */
         return mObservers;
-    }
-
-    /**
-     * (package-private)<br>
-     * Gets the event notification executor service.
-     *
-     * @return Null if no service has been set.
-     * @since 2.0
-     */
-    std::shared_ptr<ExecutorService> getEventNotificationExecutorService() const
-    {
-        return mEventNotificationExecutorService;
     }
 
     /**
@@ -222,11 +190,6 @@ private:
      *
      */
     std::vector<std::shared_ptr<T>> mObservers;
-
-    /**
-     *
-     */
-    std::shared_ptr<ExecutorService> mEventNotificationExecutorService;
 
     /**
      *

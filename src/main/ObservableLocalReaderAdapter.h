@@ -166,7 +166,7 @@ public:
      * @return Null if the polling mode has not been defined.
      * @since 2.0
      */
-    DetectionMode getdetectionMode() const;
+    DetectionMode getDetectionMode() const;
 
     /**
      * (package-private)<br>
@@ -337,14 +337,6 @@ public:
      * @since 2.0
      */
     void finalizeCardProcessing() override;
-
-    /**
-     * {@inheritDoc}
-     *
-     * @since 2.0
-     */
-    //virtual void setEventNotificationExecutorService(
-    //    std::shared_ptr<ExecutorService> eventNotificationExecutorService) override;
 
     /**
      * {@inheritDoc}
