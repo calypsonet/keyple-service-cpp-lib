@@ -63,7 +63,7 @@ using NotificationMode = ObservableCardReader::NotificationMode;
  *
  * @since 2.0
  */
-class ObservableLocalReaderAdapter final
+class ObservableLocalReaderAdapter
 : public LocalReaderAdapter,
   public ObservableReader,
   public WaitForCardInsertionAutonomousReaderApi,

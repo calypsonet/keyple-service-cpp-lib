@@ -134,19 +134,26 @@ public:
     virtual bool isCardPresent() override;
 
     /**
-     * {@inheritDoc}
+     * (package-private)<br>
+     * Activates a protocol (for configurable reader only).
+     *
+     * @param readerProtocol The reader protocol.
+     * @param applicationProtocol The corresponding application protocol to associate.
      *
      * @since 2.0
      */
-    virtual void activateProtocol(const std::string& readerProtocol,
-                                  const std::string& applicationProtocol) override final;
+    void activateReaderProtocol(const std::string& readerProtocol,
+                                const std::string& applicationProtocol);
 
     /**
-     * {@inheritDoc}
+     * (package-private)<br>
+     * Deactivates a protocol (for configurable reader only).
+     *
+     * @param readerProtocol The reader protocol.
      *
      * @since 2.0
      */
-    virtual void deactivateProtocol(const std::string& readerProtocol) override final;
+    void deactivateReaderProtocol(const std::string& readerProtocol);
 
     /**
      * {@inheritDoc}
@@ -291,7 +298,7 @@ private:
      * Selects the card with the provided AID and gets the FCI response in return.
      *
      * @param cardSelector The card selector.
-     * @return An not null ApduResponseAdapter containing the FCI.
+     * @return A not null ApduResponseAdapter containing the FCI.
      * @see processSelection(CardSelectorSpi)
      */
     std::shared_ptr<ApduResponseAdapter> selectByAid(std::shared_ptr<CardSelectorSpi> cardSelector);
@@ -387,15 +394,6 @@ private:
      */
     std::shared_ptr<CardResponseAdapter> processCardRequest(
         const std::shared_ptr<CardRequestSpi> cardRequest);
-
-    /**
-     * (private)<br>
-     * Opens the physical channel, determines and keep the current protocol.
-     *
-     * @throw ReaderIOException if the communication with the reader has failed.
-     * @throw CardIOException if the communication with the card has failed.
-     */
-    void openPhysicalChannelAndSetProtocol();
 };
 
 }

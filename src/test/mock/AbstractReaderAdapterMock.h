@@ -36,7 +36,6 @@ public:
     MOCK_METHOD(void, releaseChannel,(), (override));
     MOCK_METHOD(bool, isContactless,(), (override));
     MOCK_METHOD(bool, isCardPresent,(), (override));
-    MOCK_METHOD(void, deactivateProtocol, (const std::string& readerProtocol), (override));
     MOCK_METHOD((std::vector<std::shared_ptr<CardSelectionResponseApi>>),
                 processCardSelectionRequests,
                 (const std::vector<std::shared_ptr<CardSelectionRequestSpi>>& cardSelectionRequests,
@@ -47,9 +46,5 @@ public:
                 processCardRequest,
                 (const std::shared_ptr<CardRequestSpi> cardRequest,
                  const ChannelControl channelControl),
-                (override));
-    MOCK_METHOD(void,
-                activateProtocol,
-                (const std::string& readerProtocol, const std::string& cardProtocol),
                 (override));
 };

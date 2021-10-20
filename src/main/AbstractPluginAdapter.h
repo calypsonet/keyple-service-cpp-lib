@@ -59,6 +59,16 @@ public:
 
     /**
      * (package-private)<br>
+     * Builds a local reader adapter using the provided SPI.
+     *
+     * @param readerSpi The associated reader SPI.
+     * @return A new instance.
+     */
+    std::shared_ptr<LocalReaderAdapter> buildLocalReaderAdapter(
+        std::shared_ptr<ReaderSpi> readerSpi);
+
+    /**
+     * (package-private)<br>
      * Check if the plugin is registered.
      *
      * @throw IllegalStateException is thrown when plugin is not or no longer registered.

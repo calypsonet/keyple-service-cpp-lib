@@ -16,7 +16,6 @@
 #include "KeypleAssert.h"
 
 /* Keyple Core Plugin */
-#include "ObservableReaderSpi.h"
 #include "PluginEventAdapter.h"
 
 /* Keyple Core Service */
@@ -90,15 +89,7 @@ void AutonomousObservableLocalPluginAdapter::onReaderDisconnected(
 
 void AutonomousObservableLocalPluginAdapter::addReader(std::shared_ptr<ReaderSpi> readerSpi)
 {
-    std::shared_ptr<LocalReaderAdapter> reader;
-
-    if (std::dynamic_pointer_cast<ObservableReaderSpi>(readerSpi)) {
-        reader = std::make_shared<ObservableLocalReaderAdapter>(
-                     std::dynamic_pointer_cast<ObservableReaderSpi>(readerSpi), getName());
-    } else {
-        reader = std::make_shared<LocalReaderAdapter>(readerSpi, getName());
-    }
-
+    std::shared_ptr<LocalReaderAdapter> reader = buildLocalReaderAdapter(readerSpi);
     reader->doRegister();
     getReadersMap().insert({reader->getName(), reader});
 

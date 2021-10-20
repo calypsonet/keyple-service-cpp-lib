@@ -25,7 +25,6 @@
 #include "KeypleStd.h"
 
 /* Keyple Core Plugin */
-#include "ObservableReaderSpi.h"
 #include "PluginIOException.h"
 
 namespace keyple {
@@ -127,14 +126,7 @@ bool ObservableLocalPluginAdapter::EventThread::isMonitoring() const
 void ObservableLocalPluginAdapter::EventThread::addReader(const std::string& readerName)
 {
     std::shared_ptr<ReaderSpi> readerSpi = mParent->mObservablePluginSpi->searchReader(readerName);
-    std::shared_ptr<LocalReaderAdapter> reader;
-
-    const auto spi = std::dynamic_pointer_cast<ObservableReaderSpi>(readerSpi);
-    if (spi) {
-        reader = std::make_shared<ObservableLocalReaderAdapter>(spi, mPluginName);
-    } else {
-        reader = std::make_shared<LocalReaderAdapter>(readerSpi, mPluginName);
-    }
+    std::shared_ptr<LocalReaderAdapter> reader = buildLocalReaderAdapter(readerSpi);
 
     reader->doRegister();
     mParent->getReadersMap().insert({reader->getName(), reader});

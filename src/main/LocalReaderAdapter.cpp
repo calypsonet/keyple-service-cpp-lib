@@ -34,6 +34,7 @@
 /* Keyple Core Plugin */
 #include "AutonomousSelectionReaderSpi.h"
 #include "CardIOException.h"
+#include "ConfigurableReaderSpi.h"
 #include "ReaderIOException.h"
 
 /* Keyple Core Service */
@@ -80,8 +81,9 @@ void LocalReaderAdapter::computeCurrentProtocol()
     } else {
         mUseDefaultProtocol = false;
 
+        const auto configurable = std::dynamic_pointer_cast<ConfigurableReaderSpi>(mReaderSpi);
         for (const auto& entry : mProtocolAssociations) {
-            if (mReaderSpi->isCurrentProtocol(entry.first)) {
+            if (configurable->isCurrentProtocol(entry.first)) {
                 mCurrentProtocol = entry.second;
             }
         }
@@ -440,12 +442,6 @@ std::shared_ptr<CardResponseAdapter> LocalReaderAdapter::processCardRequest(
     return std::make_shared<CardResponseAdapter>(apduResponses, mLogicalChannelIsOpen);
 }
 
-void LocalReaderAdapter::openPhysicalChannelAndSetProtocol()
-{
-    mReaderSpi->openPhysicalChannel();
-    computeCurrentProtocol();
-}
-
 void LocalReaderAdapter::releaseChannel()
 {
     checkStatus();
@@ -460,32 +456,34 @@ void LocalReaderAdapter::releaseChannel()
     }
 }
 
-void LocalReaderAdapter::deactivateProtocol(const std::string& readerProtocol)
+void LocalReaderAdapter::deactivateReaderProtocol(const std::string& readerProtocol)
 {
     checkStatus();
     Assert::getInstance().notEmpty(readerProtocol, "readerProtocol");
 
     mProtocolAssociations.erase(readerProtocol);
 
-    if (!mReaderSpi->isProtocolSupported(readerProtocol)) {
+    const auto configurable = std::dynamic_pointer_cast<ConfigurableReaderSpi>(mReaderSpi);
+    if (!configurable || !configurable->isProtocolSupported(readerProtocol)) {
         throw ReaderProtocolNotSupportedException(readerProtocol);
     }
 
-    mReaderSpi->deactivateProtocol(readerProtocol);
+    configurable->deactivateProtocol(readerProtocol);
 }
 
-void LocalReaderAdapter::activateProtocol(const std::string& readerProtocol,
-                                          const std::string& applicationProtocol)
+void LocalReaderAdapter::activateReaderProtocol(const std::string& readerProtocol,
+                                                const std::string& applicationProtocol)
 {
     checkStatus();
     Assert::getInstance().notEmpty(readerProtocol, "readerProtocol")
                          .notEmpty(applicationProtocol, "applicationProtocol");
 
-    if (!mReaderSpi->isProtocolSupported(readerProtocol)) {
+    const auto configurable = std::dynamic_pointer_cast<ConfigurableReaderSpi>(mReaderSpi);
+    if (!configurable || !configurable->isProtocolSupported(readerProtocol)) {
         throw ReaderProtocolNotSupportedException(readerProtocol);
     }
 
-    mReaderSpi->activateProtocol(readerProtocol);
+    configurable->activateProtocol(readerProtocol);
 
     mProtocolAssociations.insert({readerProtocol, applicationProtocol});
 }
@@ -540,7 +538,8 @@ std::vector<std::shared_ptr<CardSelectionResponseApi>>
     /* Open the physical channel if needed, determine the current protocol */
     if (!mReaderSpi->isPhysicalChannelOpen()) {
         try {
-            openPhysicalChannelAndSetProtocol();
+            mReaderSpi->openPhysicalChannel();
+            computeCurrentProtocol();
         } catch (const ReaderIOException& e) {
             throw ReaderBrokenCommunicationException(
                       nullptr,

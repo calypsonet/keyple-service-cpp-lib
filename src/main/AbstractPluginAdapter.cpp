@@ -17,6 +17,7 @@
 
 /* Keyple Core Service */
 #include "AbstractReaderAdapter.h"
+#include "ObservableLocalConfigurableReaderAdapter.h"
 
 namespace keyple {
 namespace core {
@@ -27,6 +28,29 @@ using namespace keyple::core::util::cpp::exception;
 AbstractPluginAdapter::AbstractPluginAdapter(const std::string& pluginName,
                                              std::shared_ptr<KeyplePluginExtension> pluginExtension)
 : mPluginName(pluginName), mPluginExtension(pluginExtension) {}
+
+std::shared_ptr<LocalReaderAdapter> AbstractPluginAdapter::buildLocalReaderAdapter(
+    std::shared_ptr<ReaderSpi> readerSpi)
+{
+    std::shared_ptr<LocalReaderAdapter> adapter = nullptr;
+
+    const auto& observable = std::dynamic_pointer_cast<ObservableReaderSpi>(readerSpi);
+    const auto& configurable = std::dynamic_pointer_cast<ConfigurableReaderSpi>(readerSpi);
+    
+    if (observable) {
+        if (configurable) {
+            adapter = 
+                std::make_shared<ObservableLocalConfigurableReaderAdapter>(configurable, getName());
+        } else {
+            adapter = std::make_shared<ObservableLocalReaderAdapter>(observable, getName());
+        }
+    } else if (configurable) {
+        adapter = std::make_shared<LocalConfigurableReaderAdapter>(configurable, getName());
+    } else {
+        adapter = std::make_shared<LocalReaderAdapter>(readerSpi, getName());
+    }
+    return adapter;
+  }
 
 void AbstractPluginAdapter::checkStatus() const
 {

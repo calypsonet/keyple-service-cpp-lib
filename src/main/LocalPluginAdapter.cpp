@@ -12,9 +12,6 @@
 
 #include "LocalPluginAdapter.h"
 
-/* Keyple Core Plugin */
-#include "ObservableReaderSpi.h"
-
 /* Keyple Core Service */
 #include "LocalReaderAdapter.h"
 #include "ObservableLocalReaderAdapter.h"
@@ -44,16 +41,7 @@ void LocalPluginAdapter::doRegister()
         mPluginSpi->searchAvailableReaders();
 
     for (const auto& readerSpi : readerSpiList) {
-        std::shared_ptr<LocalReaderAdapter> localReaderAdapter;
-
-        if (std::dynamic_pointer_cast<ObservableReaderSpi>(readerSpi)) {
-            localReaderAdapter =
-                std::make_shared<ObservableLocalReaderAdapter>(
-                    std::dynamic_pointer_cast<ObservableReaderSpi>(readerSpi), getName());
-        } else {
-            localReaderAdapter = std::make_shared<LocalReaderAdapter>(readerSpi, getName());
-        }
-
+        std::shared_ptr<LocalReaderAdapter> localReaderAdapter = buildLocalReaderAdapter(readerSpi);
         getReadersMap().insert({readerSpi->getName(), localReaderAdapter});
         localReaderAdapter->doRegister();
     }

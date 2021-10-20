@@ -10,52 +10,26 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
-#pragma once
-
-#include <memory>
-#include <string>
-#include <typeinfo>
-#include <vector>
-
-/* Calypsonet Terminal Reader */
-#include "CardReader.h"
-
-/* Keyple Core Common */
-#include "KeypleReaderExtension.h"
+#include "LocalConfigurableReaderAdapter.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
-using namespace calypsonet::terminal::reader;
-using namespace keyple::core::common;
+LocalConfigurableReaderAdapter::LocalConfigurableReaderAdapter(
+  std::shared_ptr<ConfigurableReaderSpi> configurableReaderSpi, const std::string& pluginName)
+: LocalReaderAdapter(configurableReaderSpi, pluginName) {}
 
-/**
- * Drives the underlying hardware to configure the search and check for the presence of cards.
- *
- * @since 2.0
- */
-class Reader : virtual public CardReader {
-public:
-    /**
-     * 
-     */
-    virtual ~Reader() = default;
-    
-    /**
-     * Returns the {@link KeypleReaderExtension} that is reader-specific.
-     *
-     * <p>Note: the provided argument is used at compile time to check the type consistency.
-     *
-     * @param readerExtensionClass The specific class of the reader.
-     * @param <T> The type of the reader extension.
-     * @return A {@link KeypleReaderExtension}.
-     * @throws IllegalStateException If reader is no longer registered.
-     * @since 2.0
-     */
-    virtual std::shared_ptr<KeypleReaderExtension> getExtension(
-        const std::type_info& readerExtensionClass) const = 0;
-};
+void LocalConfigurableReaderAdapter::activateProtocol(const std::string& readerProtocol, 
+                                                      const std::string& applicationProtocol)
+{
+    activateReaderProtocol(readerProtocol, applicationProtocol);
+}
+
+void LocalConfigurableReaderAdapter::deactivateProtocol(const std::string& readerProtocol)
+{
+    deactivateReaderProtocol(readerProtocol);
+}
 
 }
 }

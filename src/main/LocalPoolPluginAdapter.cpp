@@ -14,7 +14,6 @@
 
 /* Keyple Core Plugin */
 #include "KeyplePluginException.h"
-#include "ObservableReaderSpi.h"
 #include "PluginIOException.h"
 
 /* Keyple Core Util */
@@ -92,15 +91,7 @@ std::shared_ptr<Reader> LocalPoolPluginAdapter::allocateReader(
                                     std::make_shared<PluginIOException>(e));
     }
 
-    std::shared_ptr<LocalReaderAdapter> localReaderAdapter = nullptr;
-
-    const auto reader = std::dynamic_pointer_cast<ObservableReaderSpi>(readerSpi);
-    if (reader) {
-        localReaderAdapter = std::make_shared<ObservableLocalReaderAdapter>(reader, getName());
-    } else {
-        localReaderAdapter = std::make_shared<LocalReaderAdapter>(readerSpi, getName());
-    }
-
+    std::shared_ptr<LocalReaderAdapter> localReaderAdapter = buildLocalReaderAdapter(readerSpi);
     getReadersMap().insert({localReaderAdapter->getName(), localReaderAdapter});
     localReaderAdapter->doRegister();
 

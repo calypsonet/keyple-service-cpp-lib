@@ -12,49 +12,52 @@
 
 #pragma once
 
-#include <memory>
-#include <string>
-#include <typeinfo>
-#include <vector>
+/* Keyple Core Service */
+#include "ConfigurableReader.h"
+#include "LocalReaderAdapter.h"
 
-/* Calypsonet Terminal Reader */
-#include "CardReader.h"
-
-/* Keyple Core Common */
-#include "KeypleReaderExtension.h"
+/* Keyple Core Plugin */
+#include "ConfigurableReaderSpi.h"
 
 namespace keyple {
 namespace core {
 namespace service {
 
-using namespace calypsonet::terminal::reader;
-using namespace keyple::core::common;
+using namespace keyple::core::plugin::spi::reader;
 
 /**
- * Drives the underlying hardware to configure the search and check for the presence of cards.
+ * (package-private)<br>
+ * Local configurable reader adapter.
  *
  * @since 2.0
  */
-class Reader : virtual public CardReader {
+class LocalConfigurableReaderAdapter final : public LocalReaderAdapter, public ConfigurableReader {
 public:
     /**
-     * 
-     */
-    virtual ~Reader() = default;
-    
-    /**
-     * Returns the {@link KeypleReaderExtension} that is reader-specific.
+     * (package-private)<br>
+     * Constructor.
      *
-     * <p>Note: the provided argument is used at compile time to check the type consistency.
-     *
-     * @param readerExtensionClass The specific class of the reader.
-     * @param <T> The type of the reader extension.
-     * @return A {@link KeypleReaderExtension}.
-     * @throws IllegalStateException If reader is no longer registered.
+     * @param configurableReaderSpi The configurable reader SPI.
+     * @param pluginName The name of the plugin.
      * @since 2.0
      */
-    virtual std::shared_ptr<KeypleReaderExtension> getExtension(
-        const std::type_info& readerExtensionClass) const = 0;
+    LocalConfigurableReaderAdapter(std::shared_ptr<ConfigurableReaderSpi> configurableReaderSpi, 
+                                   const std::string& pluginName);
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.0
+     */
+    void activateProtocol(const std::string& readerProtocol, const std::string& applicationProtocol)
+        override;
+
+    /**
+     * {@inheritDoc}
+     *
+     * @since 2.0
+     */
+    void deactivateProtocol(const std::string& readerProtocol) override;
 };
 
 }
