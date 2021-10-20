@@ -15,6 +15,9 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
+/* Keyple Core Common */
+#include "KeyplePluginExtension.h"
+
 /* Keyple Core Plugin */
 #include "ObservablePluginSpi.h"
 #include "PluginIOException.h"
@@ -27,7 +30,8 @@ using namespace testing;
 using namespace keyple::core::plugin;
 using namespace keyple::core::plugin::spi;
 
-class ObservableLocalPluginSpiMock final : public ObservablePluginSpi {
+class ObservableLocalPluginSpiMock final
+: public KeyplePluginExtension, public ObservablePluginSpi {
 public:
     ObservableLocalPluginSpiMock(const std::string& name,
                                  const std::shared_ptr<PluginIOException> pluginError)

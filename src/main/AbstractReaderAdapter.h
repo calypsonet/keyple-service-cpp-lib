@@ -36,7 +36,7 @@ namespace core {
 namespace service {
 
 using namespace calypsonet::terminal::card;
-using namespace keyple::core::commons;
+using namespace keyple::core::common;
 using namespace keyple::core::service;
 using namespace keyple::core::util::cpp;
 

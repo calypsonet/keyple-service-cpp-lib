@@ -15,14 +15,19 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
+/* Keyple Core Common */
+#include "KeyplePluginExtension.h"
+
 /* Keyple Core Plugin */
 #include "AutonomousObservablePluginSpi.h"
 
 using namespace testing;
 
+using namespace keyple::core::common;
 using namespace keyple::core::plugin::spi;
 
-class AutonomousObservablePluginSpiMock final : public AutonomousObservablePluginSpi {
+class AutonomousObservablePluginSpiMock final
+: public AutonomousObservablePluginSpi, public KeyplePluginExtension {
 public:
     MOCK_METHOD(void, onUnregister, (), (override));
     MOCK_METHOD((const std::string&), getName, (), (const, override));

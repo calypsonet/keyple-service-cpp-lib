@@ -15,6 +15,9 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
+/* Keyple Core Common */
+#include "KeypleReaderExtension.h"
+
 /* Keyple Core Plugin */
 #include "ObservableReaderSpi.h"
 #include "WaitForCardInsertionBlockingSpi.h"
@@ -23,13 +26,15 @@
 
 using namespace testing;
 
+using namespace keyple::core::common;
 using namespace keyple::core::plugin::spi::reader::observable;
 using namespace keyple::core::plugin::spi::reader::observable::state::insertion;
 using namespace keyple::core::plugin::spi::reader::observable::state::processing;
 using namespace keyple::core::plugin::spi::reader::observable::state::removal;
 
 class ObservableReaderSpiMock final
-: public ObservableReaderSpi,
+: public KeypleReaderExtension,
+  public ObservableReaderSpi,
   public WaitForCardInsertionBlockingSpi,
   public WaitForCardRemovalBlockingSpi,
   public DontWaitForCardRemovalDuringProcessingSpi {
