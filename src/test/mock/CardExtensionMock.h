@@ -20,11 +20,11 @@
 
 using namespace testing;
 
-using namespace keyple::core::commons;
+using namespace keyple::core::common;
 
 class CardExtensionMock final : public KeypleCardExtension {
 public:
     MOCK_METHOD(const std::string&, getReaderApiVersion,(), (const, override));
     MOCK_METHOD(const std::string&, getCardApiVersion, (), (const, override));
-    MOCK_METHOD(const std::string&, getCommonsApiVersion, (), (const, override));
+    MOCK_METHOD(const std::string&, getCommonApiVersion, (), (const, override));
 };

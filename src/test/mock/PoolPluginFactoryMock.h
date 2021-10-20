@@ -21,7 +21,7 @@ class PoolPluginFactoryMock final
 : public KeyplePluginExtensionFactory, public PoolPluginFactorySpi {
 public:
     MOCK_METHOD((const std::string&), getPluginApiVersion, (), (const, override));
-    MOCK_METHOD((const std::string&), getCommonsApiVersion, (), (const, override));
+    MOCK_METHOD((const std::string&), getCommonApiVersion, (), (const, override));
     MOCK_METHOD((const std::string&), getPoolPluginName, (), (const, override));
     MOCK_METHOD(std::shared_ptr<PoolPluginSpi>, getPoolPlugin, (), (override));
 };

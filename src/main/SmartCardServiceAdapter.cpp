@@ -19,8 +19,8 @@
 #include "KeypleStd.h"
 #include "NumberFormatException.h"
 
-/* Kepyle Core Commons */
-#include "CommonsApiProperties.h"
+/* Kepyle Core Common */
+#include "CommonApiProperties.h"
 
 /* Keyple Core Plugin */
 #include "ObservablePluginSpi.h"
@@ -48,7 +48,7 @@ namespace core {
 namespace service {
 
 using namespace calypsonet::terminal::reader;
-using namespace keyple::core::commons;
+using namespace keyple::core::common;
 using namespace keyple::core::plugin;
 using namespace keyple::core::plugin::spi;
 using namespace keyple::core::util;
@@ -108,13 +108,13 @@ int SmartCardServiceAdapter::compareVersions(const std::string& providedVersion,
 void SmartCardServiceAdapter::checkPluginVersion(
     const std::shared_ptr<PluginFactorySpi> pluginFactorySpi)
 {
-    if (compareVersions(pluginFactorySpi->getCommonsApiVersion(),
-                        CommonsApiProperties::VERSION) != 0) {
-        mLogger->warn("The version of Commons API used by the provided plugin (%:%) mismatches " \
+    if (compareVersions(pluginFactorySpi->getCommonApiVersion(),
+                        CommonApiProperties::VERSION) != 0) {
+        mLogger->warn("The version of Common API used by the provided plugin (%:%) mismatches " \
                       "the version used by the service (%)\n",
                       pluginFactorySpi->getPluginName(),
-                      pluginFactorySpi->getCommonsApiVersion(),
-                      CommonsApiProperties::VERSION);
+                      pluginFactorySpi->getCommonApiVersion(),
+                      CommonApiProperties::VERSION);
     }
 
     if (compareVersions(pluginFactorySpi->getPluginApiVersion(),
@@ -229,13 +229,13 @@ std::unique_ptr<CardSelectionManager> SmartCardServiceAdapter::createCardSelecti
 void SmartCardServiceAdapter::checkPoolPluginVersion(
     const std::shared_ptr<PoolPluginFactorySpi> poolPluginFactorySpi)
 {
-    if (compareVersions(poolPluginFactorySpi->getCommonsApiVersion(),
-                        CommonsApiProperties::VERSION) != 0) {
-        mLogger->warn("The version of Commons API used by the provided pool plugin (%:%) " \
+    if (compareVersions(poolPluginFactorySpi->getCommonApiVersion(),
+                        CommonApiProperties::VERSION) != 0) {
+        mLogger->warn("The version of Common API used by the provided pool plugin (%:%) " \
                       "mismatches the version used by the service (%)\n",
                       poolPluginFactorySpi->getPoolPluginName(),
-                      poolPluginFactorySpi->getCommonsApiVersion(),
-                      CommonsApiProperties::VERSION);
+                      poolPluginFactorySpi->getCommonApiVersion(),
+                      CommonApiProperties::VERSION);
     }
 
     if (compareVersions(poolPluginFactorySpi->getPluginApiVersion(),
@@ -251,11 +251,11 @@ void SmartCardServiceAdapter::checkPoolPluginVersion(
 void SmartCardServiceAdapter::checkCardExtensionVersion(
     const std::shared_ptr<KeypleCardExtension> cardExtension)
 {
-    if (compareVersions(cardExtension->getCommonsApiVersion(), CommonsApiProperties::VERSION) != 0) {
-        mLogger->warn("The version of Commons API used by the provided card extension (%) " \
+    if (compareVersions(cardExtension->getCommonApiVersion(), CommonApiProperties::VERSION) != 0) {
+        mLogger->warn("The version of Common API used by the provided card extension (%) " \
                       "mismatches the version used by the service (%)\n",
-                      cardExtension->getCommonsApiVersion(),
-                      CommonsApiProperties::VERSION);
+                      cardExtension->getCommonApiVersion(),
+                      CommonApiProperties::VERSION);
     }
 
     if (compareVersions(cardExtension->getCardApiVersion(), CardApiProperties::VERSION) != 0) {

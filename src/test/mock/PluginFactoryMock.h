@@ -20,13 +20,13 @@
 
 using namespace testing;
 
-using namespace keyple::core::commons;
+using namespace keyple::core::common;
 using namespace keyple::core::plugin::spi;
 
 class PluginFactoryMock final : public KeyplePluginExtensionFactory, public PluginFactorySpi {
 public:
     MOCK_METHOD(const std::string&, getPluginApiVersion, (), (const, override));
-    MOCK_METHOD(const std::string&, getCommonsApiVersion,(), (const, override));
+    MOCK_METHOD(const std::string&, getCommonApiVersion,(), (const, override));
     MOCK_METHOD(const std::string&, getPluginName,(), (const, override));
     MOCK_METHOD(std::shared_ptr<PluginSpi>, getPlugin, (), (const, override));
 };

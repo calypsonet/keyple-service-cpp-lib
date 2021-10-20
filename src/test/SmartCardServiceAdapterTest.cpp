@@ -47,7 +47,7 @@
 
 using namespace testing;
 
-using namespace keyple::core::commons;
+using namespace keyple::core::common;
 using namespace keyple::core::plugin::spi;
 using namespace keyple::core::plugin::spi::reader;
 using namespace keyple::core::service;
@@ -61,7 +61,7 @@ static const std::string READER_NAME = "reader";
 static const std::string LOCAL_SERVICE_NAME = "localService";
 
 static const std::string SERVICE_API_VERSION = "2.0";
-static const std::string COMMONS_API_VERSION = "2.0";
+static const std::string COMMON_API_VERSION = "2.0";
 static const std::string PLUGIN_API_VERSION = "2.0";
 static const std::string DISTRIBUTED_REMOTE_API_VERSION = "2.0";
 static const std::string DISTRIBUTED_LOCAL_API_VERSION = "2.0";
@@ -135,51 +135,51 @@ static void setUp()
 
     pluginFactory = std::make_shared<PluginFactoryMock>();
     EXPECT_CALL(*pluginFactory.get(), getPluginName()).WillRepeatedly(ReturnRef(PLUGIN_NAME));
-    EXPECT_CALL(*pluginFactory.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(COMMONS_API_VERSION));
+    EXPECT_CALL(*pluginFactory.get(), getCommonApiVersion()).WillRepeatedly(ReturnRef(COMMON_API_VERSION));
     EXPECT_CALL(*pluginFactory.get(), getPluginApiVersion()).WillRepeatedly(ReturnRef(PLUGIN_API_VERSION));
     EXPECT_CALL(*pluginFactory.get(), getPlugin()).WillRepeatedly(Return(plugin));
 
     observablePluginFactory = std::make_shared<PluginFactoryMock>();
     EXPECT_CALL(*observablePluginFactory.get(), getPluginName()).WillRepeatedly(ReturnRef(OBSERVABLE_PLUGIN_NAME));
-    EXPECT_CALL(*observablePluginFactory.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(COMMONS_API_VERSION));
+    EXPECT_CALL(*observablePluginFactory.get(), getCommonApiVersion()).WillRepeatedly(ReturnRef(COMMON_API_VERSION));
     EXPECT_CALL(*observablePluginFactory.get(), getPluginApiVersion()).WillRepeatedly(ReturnRef(PLUGIN_API_VERSION));
     EXPECT_CALL(*observablePluginFactory.get(), getPlugin()).WillRepeatedly(Return(observablePlugin));
 
     autonomousObservablePluginFactory = std::make_shared<PluginFactoryMock>();
     EXPECT_CALL(*autonomousObservablePluginFactory.get(), getPluginName()).WillRepeatedly(ReturnRef(AUTONOMOUS_OBSERVABLE_PLUGIN_NAME));
-    EXPECT_CALL(*autonomousObservablePluginFactory.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(COMMONS_API_VERSION));
+    EXPECT_CALL(*autonomousObservablePluginFactory.get(), getCommonApiVersion()).WillRepeatedly(ReturnRef(COMMON_API_VERSION));
     EXPECT_CALL(*autonomousObservablePluginFactory.get(), getPluginApiVersion()).WillRepeatedly(ReturnRef(PLUGIN_API_VERSION));
     EXPECT_CALL(*autonomousObservablePluginFactory.get(), getPlugin()).WillRepeatedly(Return(autonomousObservablePlugin));
     
     poolPluginFactory = std::make_shared<PoolPluginFactoryMock>();
     EXPECT_CALL(*poolPluginFactory.get(), getPoolPluginName()).WillRepeatedly(ReturnRef(POOL_PLUGIN_NAME));
-    EXPECT_CALL(*poolPluginFactory.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(COMMONS_API_VERSION));
+    EXPECT_CALL(*poolPluginFactory.get(), getCommonApiVersion()).WillRepeatedly(ReturnRef(COMMON_API_VERSION));
     EXPECT_CALL(*poolPluginFactory.get(), getPluginApiVersion()).WillRepeatedly(ReturnRef(PLUGIN_API_VERSION));
     EXPECT_CALL(*poolPluginFactory.get(), getPoolPlugin()).WillRepeatedly(Return(poolPlugin));
 
     // remotePluginFactory = mock(RemotePluginFactoryMock.class);
     // when(remotePluginFactory.getRemotePluginName()).thenReturn(REMOTE_PLUGIN_NAME);
-    // when(remotePluginFactory.getCommonsApiVersion()).thenReturn(COMMONS_API_VERSION);
+    // when(remotePluginFactory.getCommonApiVersion()).thenReturn(COMMON_API_VERSION);
     // when(remotePluginFactory.getDistributedRemoteApiVersion())
     //     .thenReturn(DISTRIBUTED_REMOTE_API_VERSION);
     // when(remotePluginFactory.getRemotePlugin()).thenReturn(remotePlugin);
 
     // observableRemotePluginFactory = mock(ObservableRemotePluginFactoryMock.class);
     // when(observableRemotePluginFactory.getRemotePluginName()).thenReturn(REMOTE_PLUGIN_NAME);
-    // when(observableRemotePluginFactory.getCommonsApiVersion()).thenReturn(COMMONS_API_VERSION);
+    // when(observableRemotePluginFactory.getCommonApiVersion()).thenReturn(COMMON_API_VERSION);
     // when(observableRemotePluginFactory.getDistributedRemoteApiVersion())
     //     .thenReturn(DISTRIBUTED_REMOTE_API_VERSION);
     // when(observableRemotePluginFactory.getRemotePlugin()).thenReturn(observableRemotePlugin);
 
     // remotePoolPluginFactory = mock(RemotePoolPluginFactoryMock.class);
     // when(remotePoolPluginFactory.getRemotePluginName()).thenReturn(REMOTE_PLUGIN_NAME);
-    // when(remotePoolPluginFactory.getCommonsApiVersion()).thenReturn(COMMONS_API_VERSION);
+    // when(remotePoolPluginFactory.getCommonApiVersion()).thenReturn(COMMON_API_VERSION);
     // when(remotePoolPluginFactory.getDistributedRemoteApiVersion())
     //     .thenReturn(DISTRIBUTED_REMOTE_API_VERSION);
     // when(remotePoolPluginFactory.getRemotePlugin()).thenReturn(remotePoolPlugin);
 
     cardExtension = std::make_shared<CardExtensionMock>();
-    EXPECT_CALL(*cardExtension.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(COMMONS_API_VERSION));
+    EXPECT_CALL(*cardExtension.get(), getCommonApiVersion()).WillRepeatedly(ReturnRef(COMMON_API_VERSION));
     EXPECT_CALL(*cardExtension.get(), getCardApiVersion()).WillRepeatedly(ReturnRef(CARD_API_VERSION));
     EXPECT_CALL(*cardExtension.get(), getReaderApiVersion()).WillRepeatedly(ReturnRef(READER_API_VERSION));
 
@@ -188,7 +188,7 @@ static void setUp()
 
     // localServiceFactory = mock(DistributedLocalServiceFactoryMock.class);
     // when(localServiceFactory.getLocalServiceName()).thenReturn(LOCAL_SERVICE_NAME);
-    // when(localServiceFactory.getCommonsApiVersion()).thenReturn(COMMONS_API_VERSION);
+    // when(localServiceFactory.getCommonApiVersion()).thenReturn(COMMON_API_VERSION);
     // when(localServiceFactory.getDistributedLocalApiVersion())
     //     .thenReturn(DISTRIBUTED_LOCAL_API_VERSION);
     // when(localServiceFactory.getLocalService()).thenReturn(localService);
@@ -310,14 +310,14 @@ TEST(SmartCardServiceAdapterTest,
     setUp();
 
     const std::string apiVersion = "2.1";
-    EXPECT_CALL(*pluginFactory.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(apiVersion));
+    EXPECT_CALL(*pluginFactory.get(), getCommonApiVersion()).WillRepeatedly(ReturnRef(apiVersion));
     
     service.registerPlugin(pluginFactory);
     
     const std::vector<std::string>& pluginNames = service.getPluginNames();
     ASSERT_TRUE(std::count(pluginNames.begin(), pluginNames.end(), PLUGIN_NAME));
 
-    // verify(logger).warn(anyString(), eq(PLUGIN_NAME), eq("2.1"), eq(COMMONS_API_VERSION));
+    // verify(logger).warn(anyString(), eq(PLUGIN_NAME), eq("2.1"), eq(COMMON_API_VERSION));
 
     tearDown();
 }
@@ -417,14 +417,14 @@ TEST(SmartCardServiceAdapterTest,
     setUp();
 
     const std::string apiVersion = "2.1";
-    EXPECT_CALL(*poolPluginFactory.get(), getCommonsApiVersion())
+    EXPECT_CALL(*poolPluginFactory.get(), getCommonApiVersion())
         .WillRepeatedly(ReturnRef(apiVersion));
 
     service.registerPlugin(poolPluginFactory);
     const auto plugins = service.getPluginNames();
     ASSERT_TRUE(std::count(plugins.begin(), plugins.end(), POOL_PLUGIN_NAME));
     
-    // verify(logger).warn(anyString(), eq(POOL_PLUGIN_NAME), eq("2.1"), eq(COMMONS_API_VERSION));
+    // verify(logger).warn(anyString(), eq(POOL_PLUGIN_NAME), eq("2.1"), eq(COMMON_API_VERSION));
 
     tearDown();
 }
@@ -501,10 +501,10 @@ TEST(SmartCardServiceAdapterTest, registerPlugin_Pool_whenInvokedTwice_shouldISE
 
 //   @Test
 //   public void registerPlugin_Remote_whenCommonsApiVersionDiffers_shouldRegister_and_LogWarn() {
-//     when(remotePluginFactory.getCommonsApiVersion()).thenReturn("2.1");
+//     when(remotePluginFactory.getCommonApiVersion()).thenReturn("2.1");
 //     service.registerPlugin(remotePluginFactory);
 //     assertThat(service.getPluginNames().contains(REMOTE_PLUGIN_NAME)).isTrue();
-//     verify(logger).warn(anyString(), eq(REMOTE_PLUGIN_NAME), eq("2.1"), eq(COMMONS_API_VERSION));
+//     verify(logger).warn(anyString(), eq(REMOTE_PLUGIN_NAME), eq("2.1"), eq(COMMON_API_VERSION));
 //   }
 
 //   @Test
@@ -529,7 +529,7 @@ TEST(SmartCardServiceAdapterTest, registerPlugin_whenApiVersionHasBadLength_shou
     setUp();
 
     const std::string apiVersion = "2.0.0";
-    EXPECT_CALL(*pluginFactory.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(apiVersion));
+    EXPECT_CALL(*pluginFactory.get(), getCommonApiVersion()).WillRepeatedly(ReturnRef(apiVersion));
     
     EXPECT_THROW(service.registerPlugin(pluginFactory), IllegalStateException);
 
@@ -541,7 +541,7 @@ TEST(SmartCardServiceAdapterTest, registerPlugin_whenApiVersionHasBadFormat_shou
     setUp();
 
     const std::string apiVersion = "2.A";
-    EXPECT_CALL(*pluginFactory.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(apiVersion));
+    EXPECT_CALL(*pluginFactory.get(), getCommonApiVersion()).WillRepeatedly(ReturnRef(apiVersion));
     
     EXPECT_THROW(service.registerPlugin(pluginFactory), IllegalStateException);
 
@@ -659,11 +659,11 @@ TEST(SmartCardServiceAdapterTest, checkCardExtension_whenCommonsApiDiffers_shoul
     setUp();
 
     const std::string version = "2.1";
-    EXPECT_CALL(*cardExtension.get(), getCommonsApiVersion()).WillRepeatedly(ReturnRef(version));
+    EXPECT_CALL(*cardExtension.get(), getCommonApiVersion()).WillRepeatedly(ReturnRef(version));
     
     service.checkCardExtension(cardExtension);
     
-    // verify(logger).warn(anyString(), eq("2.1"), eq(COMMONS_API_VERSION));
+    // verify(logger).warn(anyString(), eq("2.1"), eq(COMMON_API_VERSION));
 
     tearDown();
 }
@@ -721,10 +721,10 @@ TEST(SmartCardServiceAdapterTest, checkCardExtension_whenCardApiDiffers_shouldLo
 //   @Test
 //   public void
 //       registerDistributedLocalService_whenCommonsApiVersionDiffers_shouldRegister_and_LogWarn() {
-//     when(localServiceFactory.getCommonsApiVersion()).thenReturn("2.1");
+//     when(localServiceFactory.getCommonApiVersion()).thenReturn("2.1");
 //     service.registerDistributedLocalService(localServiceFactory);
 //     assertThat(service.isDistributedLocalServiceRegistered(LOCAL_SERVICE_NAME)).isTrue();
-//     verify(logger).warn(anyString(), eq(LOCAL_SERVICE_NAME), eq("2.1"), eq(COMMONS_API_VERSION));
+//     verify(logger).warn(anyString(), eq(LOCAL_SERVICE_NAME), eq("2.1"), eq(COMMON_API_VERSION));
 //   }
 
 //   @Test
@@ -747,13 +747,13 @@ TEST(SmartCardServiceAdapterTest, checkCardExtension_whenCardApiDiffers_shouldLo
 
 //   @Test(expected = IllegalStateException.class)
 //   public void registerDistributedLocalService_whenApiVersionHasBadLength_shouldISE() {
-//     when(localServiceFactory.getCommonsApiVersion()).thenReturn("2.0.0");
+//     when(localServiceFactory.getCommonApiVersion()).thenReturn("2.0.0");
 //     service.registerDistributedLocalService(localServiceFactory);
 //   }
 
 //   @Test(expected = IllegalStateException.class)
 //   public void registerDistributedLocalService_whenApiVersionHasBadFormat_shouldISE() {
-//     when(localServiceFactory.getCommonsApiVersion()).thenReturn("2.A");
+//     when(localServiceFactory.getCommonApiVersion()).thenReturn("2.A");
 //     service.registerDistributedLocalService(localServiceFactory);
 //   }
 
