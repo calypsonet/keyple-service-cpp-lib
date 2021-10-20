@@ -45,7 +45,7 @@ void* CardRemovalPassiveMonitoringJobAdapter::CardRemovalPassiveMonitoringJob::r
             try {
                 //mParent->mReaderSpi->waitForCardRemoval();
                 if (mParent->mReaderSpi != nullptr) {
-                    mParent->mReaderSpi.waitForCardRemoval();
+                    mParent->mReaderSpi->waitForCardRemoval();
                 } else {
                     mParent->mReaderProcessingSpi->waitForCardRemovalDuringProcessing();
                 }
@@ -81,7 +81,7 @@ CardRemovalPassiveMonitoringJobAdapter::CardRemovalPassiveMonitoringJobAdapter(
 : AbstractMonitoringJobAdapter(reader)
 {
     const auto waitForCardRemovalBlockingSpi = 
-        std::dynamic_pointer_cast<WaitForCardRemovalBlockingSpi>(reader->getObservableReaderSpi());
+        std::dynamic_pointer_cast<WaitForCardRemovalBlockingSpi>(reader)->getObservableReaderSpi());
 
     if (waitForCardRemovalBlockingSpi) {
         mReaderSpi = waitForCardRemovalBlockingSpi->getObservableReaderSpi();
@@ -89,7 +89,7 @@ CardRemovalPassiveMonitoringJobAdapter::CardRemovalPassiveMonitoringJobAdapter(
     } else {
         mReaderSpi = nullptr;
         mReaderProcessingSpi =
-            std::dynamic_pointer_cast<WaitForCardRemovalBlockingDuringProcessingSpi>(reader)
+            std::dynamic_pointer_cast<WaitForCardRemovalDuringProcessingBlockingSpi>(reader)
                 ->getObservableReaderSpi();
     }
 }
