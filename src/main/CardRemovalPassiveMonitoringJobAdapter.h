@@ -22,6 +22,7 @@
 
 /* Keyple Core Plugin */
 #include "WaitForCardRemovalBlockingSpi.h"
+#include "WaitForCardRemovalBlockingDuringProcessingSpi.h"
 
 /* Keyple Core Util */
 #include "LoggerFactory.h"
@@ -30,14 +31,15 @@ namespace keyple {
 namespace core {
 namespace service {
 
+using namespace keyple::core::plugin::spi::reader::observable::state::processing;
 using namespace keyple::core::plugin::spi::reader::observable::state::removal;
 using namespace keyple::core::util::cpp;
 
 /**
  * (package-private)<br>
- * Detect the card removal thanks to the method
- * keyple::core::plugin::spi::reader::observable::state::removal
- *     ::WaitForCardRemovalBlockingSpi::waitForCardAbsentNative().
+ * Detect the card removal thanks to the method WaitForCardRemovalBlockingSpi:waitForCardRemoval()
+ * or WaitForCardRemovalBlockingDuringProcessingSpi::waitForCardRemovalDuringProcessing() depending
+ * of the provided SPI.
  *
  * <p>This method is invoked in another thread
  *
@@ -98,6 +100,11 @@ private:
      *
      */
     std::shared_ptr<WaitForCardRemovalBlockingSpi> mReaderSpi;
+
+    /**
+     * 
+     */
+    std::shared_ptr<WaitForCardRemovalBlockingDuringProcessingSpi> mReaderProcessingSpi;
 
     /**
      *

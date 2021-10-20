@@ -21,7 +21,7 @@
 #include "WaitForCardInsertionBlockingSpi.h"
 #include "WaitForCardInsertionNonBlockingSpi.h"
 #include "WaitForCardRemovalAutonomousSpi.h"
-#include "WaitForCardRemovalDuringProcessingSpi.h"
+#include "WaitForCardRemovalBlockingDuringProcessingSpi.h"
 #include "WaitForCardRemovalNonBlockingSpi.h"
 
 /* Keyple Core Service */
@@ -79,7 +79,7 @@ ObservableReaderStateServiceAdapter::ObservableReaderStateServiceAdapter(
     }
 
     /* Processing */
-    if (std::dynamic_pointer_cast<WaitForCardRemovalDuringProcessingSpi>(mReaderSpi)) {
+    if (std::dynamic_pointer_cast<WaitForCardRemovalBlockingDuringProcessingSpi>(mReaderSpi)) {
         auto cardRemovalPassiveMonitoringJobAdapter =
             std::make_shared<CardRemovalPassiveMonitoringJobAdapter>(mReader);
         mStates.insert({MonitoringState::WAIT_FOR_CARD_PROCESSING,

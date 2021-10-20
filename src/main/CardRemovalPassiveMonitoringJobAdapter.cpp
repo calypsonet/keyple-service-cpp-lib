@@ -43,7 +43,12 @@ void* CardRemovalPassiveMonitoringJobAdapter::CardRemovalPassiveMonitoringJob::r
     try {
         while (!isInterrupted()) {
             try {
-                mParent->mReaderSpi->waitForCardRemoval();
+                //mParent->mReaderSpi->waitForCardRemoval();
+                if (mParent->mReaderSpi != nullptr) {
+                    mParent->mReaderSpi.waitForCardRemoval();
+                } else {
+                    mParent->mReaderProcessingSpi->waitForCardRemovalDuringProcessing();
+                }
                 mMonitoringState->onEvent(InternalEvent::CARD_REMOVED);
                 break;
             } catch (const ReaderIOException& e) {
@@ -73,9 +78,21 @@ void* CardRemovalPassiveMonitoringJobAdapter::CardRemovalPassiveMonitoringJob::r
 
 CardRemovalPassiveMonitoringJobAdapter::CardRemovalPassiveMonitoringJobAdapter(
   ObservableLocalReaderAdapter* reader)
-: AbstractMonitoringJobAdapter(reader),
-  mReaderSpi(
-      std::dynamic_pointer_cast<WaitForCardRemovalBlockingSpi>(reader->getObservableReaderSpi())) {}
+: AbstractMonitoringJobAdapter(reader)
+{
+    const auto waitForCardRemovalBlockingSpi = 
+        std::dynamic_pointer_cast<WaitForCardRemovalBlockingSpi>(reader->getObservableReaderSpi());
+
+    if (waitForCardRemovalBlockingSpi) {
+        mReaderSpi = waitForCardRemovalBlockingSpi->getObservableReaderSpi();
+        mReaderProcessingSpi = nullptr;
+    } else {
+        mReaderSpi = nullptr;
+        mReaderProcessingSpi =
+            std::dynamic_pointer_cast<WaitForCardRemovalBlockingDuringProcessingSpi>(reader)
+                ->getObservableReaderSpi();
+    }
+}
 
 std::shared_ptr<Job> CardRemovalPassiveMonitoringJobAdapter::getMonitoringJob(
     std::shared_ptr<AbstractObservableStateAdapter> monitoringState)
