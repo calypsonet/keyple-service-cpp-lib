@@ -32,7 +32,7 @@ using namespace calypsonet::terminal::reader::selection;
  * (package-private)<br>
  * POJO containing the card selection responses received during the card selection process.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class ScheduledCardSelectionsResponseAdapter : public ScheduledCardSelectionsResponse {
 public:
@@ -41,7 +41,7 @@ public:
      * Constructor
      *
      * @param cardSelectionResponses The card selection responses.
-     * @since 2.0
+     * @since 2.0.0
      */
     ScheduledCardSelectionsResponseAdapter(
         const std::vector<std::shared_ptr<CardSelectionResponseApi>>& cardSelectionResponses);
@@ -51,7 +51,7 @@ public:
      * Gets the card responses.
      *
      * @return A list of {@link CardSelectionResponseApi}.
-     * @since 2.0
+     * @since 2.0.0
      */
     const std::vector<std::shared_ptr<CardSelectionResponseApi>>& getCardSelectionResponses() const;
 

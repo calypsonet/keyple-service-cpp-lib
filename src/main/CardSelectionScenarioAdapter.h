@@ -45,7 +45,7 @@ using namespace calypsonet::terminal::card::spi;
  *       selection process.
  * </ul>
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class CardSelectionScenarioAdapter final {
 public:
@@ -64,7 +64,7 @@ public:
      * @param channelControl The channel control policy.
      * @throw IllegalArgumentException if the card selection request list is null or empty, if one
      *        of the indicators is null.
-     * @since 2.0
+     * @since 2.0.0
      */
     CardSelectionScenarioAdapter(
         const std::vector<std::shared_ptr<CardSelectionRequestSpi>> cardSelectionRequests,
@@ -76,7 +76,7 @@ public:
      * Gets the card selection requests list.
      *
      * @return A not null reference
-     * @since 2.0
+     * @since 2.0.0
      */
     const std::vector<std::shared_ptr<CardSelectionRequestSpi>>& getCardSelectionRequests() const;
 
@@ -85,7 +85,7 @@ public:
      * Gets the multi selection processing policy.
      *
      * @return A not null reference
-     * @since 2.0
+     * @since 2.0.0
      */
     MultiSelectionProcessing getMultiSelectionProcessing() const;
 
@@ -94,7 +94,7 @@ public:
      * Gets the channel control policy.
      *
      * @return A not null reference
-     * @since 2.0
+     * @since 2.0.0
      */
     ChannelControl getChannelControl() const;
 
@@ -103,7 +103,7 @@ public:
      * format.
      *
      * @return A not empty String
-     * @since 2.0
+     * @since 2.0.0
      */
     friend KEYPLESERVICE_API std::ostream& operator<<(
         std::ostream& os, const std::shared_ptr<CardSelectionScenarioAdapter> sa);

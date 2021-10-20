@@ -30,7 +30,7 @@ using namespace calypsonet::terminal::card;
  * (package-private)<br>
  * This POJO contains a set of data related to an ISO-7816 APDU response.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class ApduResponseAdapter final : public ApduResponseApi {
 public:
@@ -39,7 +39,7 @@ public:
      * Builds an APDU response from an array of bytes from the card, computes the status word.
      *
      * @param apdu A array of at least 2 bytes.
-     * @since 2.0
+     * @since 2.0.0
      */
     ApduResponseAdapter(const std::vector<uint8_t>& apdu);
 
@@ -51,21 +51,21 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::vector<uint8_t>& getApdu() const override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::vector<uint8_t> getDataOut() const override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual int getStatusWord() const override;
 

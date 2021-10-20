@@ -44,7 +44,7 @@ using namespace keyple::core::util::cpp;
  * (package-private)<br>
  * Abstract class for all readers.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class AbstractReaderAdapter : virtual public Reader, public ProxyReaderApi {
 public:
@@ -55,7 +55,7 @@ public:
      * @param readerName The name of the reader.
      * @param readerExtension The associated reader extension SPI.
      * @param pluginName The name of the plugin.
-     * @since 2.0
+     * @since 2.0.0
      */
     AbstractReaderAdapter(const std::string& readerName,
                           std::shared_ptr<KeypleReaderExtension> readerExtension,
@@ -71,7 +71,7 @@ public:
      * Gets the plugin name.
      *
      * @return A not empty String.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::string& getPluginName() const final;
 
@@ -94,7 +94,7 @@ public:
      * @return An empty list if no response was received.
      * @throw ReaderBrokenCommunicationException if the communication with the reader has failed.
      * @throw CardBrokenCommunicationException if the communication with the card has failed.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::vector<std::shared_ptr<CardSelectionResponseApi>>
         transmitCardSelectionRequests(
@@ -107,7 +107,7 @@ public:
      * Check if the reader status is "registered".
      *
      * @throw IllegalStateException is thrown when reader is not or no longer registered.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void checkStatus() const final;
 
@@ -115,7 +115,7 @@ public:
      * (package-private)<br>
      * Changes the reader status to registered.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void doRegister() final;
 
@@ -126,7 +126,7 @@ public:
      * <p>This method may be overridden in order to meet specific needs in certain implementations
      * of readers.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void doUnregister();
 
@@ -143,7 +143,7 @@ public:
      * @throw CardBrokenCommunicationException if the communication with the card has failed.
      * @throw UnexpectedStatusWordException If status word verification is enabled in the card
      *        request and the card returned an unexpected code.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::vector<std::shared_ptr<CardSelectionResponseApi>> processCardSelectionRequests(
         const std::vector<std::shared_ptr<CardSelectionRequestSpi>>& cardSelectionRequests,
@@ -161,7 +161,7 @@ public:
      * @throw CardBrokenCommunicationException if the communication with the card has failed.
      * @throw UnexpectedStatusWordException If status word verification is enabled in the card
      *        request and the card returned an unexpected code.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::shared_ptr<CardResponseApi> processCardRequest(
         const std::shared_ptr<CardRequestSpi> cardRequest,
@@ -170,14 +170,14 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::string& getName() const override final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::shared_ptr<KeypleReaderExtension> getExtension(
         const std::type_info& readerExtensionClass) const override final;
@@ -185,7 +185,7 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::shared_ptr<CardResponseApi> transmitCardRequest(
         const std::shared_ptr<CardRequestSpi> cardRequest,

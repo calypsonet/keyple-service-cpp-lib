@@ -44,7 +44,7 @@ using FileOccurrence = CardSelectorSpi::FileOccurrence;
  * (package-private)<br>
  * Local reader adapter.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class LocalReaderAdapter : public AbstractReaderAdapter {
 public:
@@ -54,7 +54,7 @@ public:
      *
      * @param readerSpi The reader SPI.
      * @param pluginName The name of the plugin.
-     * @since 2.0
+     * @since 2.0.0
      */
     LocalReaderAdapter(std::shared_ptr<ReaderSpi> readerSpi, const std::string& pluginName);
 
@@ -68,7 +68,7 @@ public:
      * Gets ReaderSpi associated to this reader.
      *
      * @return A not null reference.
-     * @since 2.0
+     * @since 2.0.0
      */
     std::shared_ptr<ReaderSpi> getReaderSpi() const;
 
@@ -77,7 +77,7 @@ public:
      * Gets the logical channel's opening state.
      *
      * @return True if the channel is open, false if not.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual bool isLogicalChannelOpen() const final;
 
@@ -87,7 +87,7 @@ public:
      *
      * <p>This method doesn't raise any exception.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void closeLogicalAndPhysicalChannelsSilently() final;
 
@@ -96,14 +96,14 @@ public:
      *
      * <p>Invoke  ReaderSpi#onUnregister() on the associated SPI.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void doUnregister() override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::vector<std::shared_ptr<CardSelectionResponseApi>> processCardSelectionRequests(
         const std::vector<std::shared_ptr<CardSelectionRequestSpi>>& cardSelectionRequests,
@@ -113,7 +113,7 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::shared_ptr<CardResponseAdapter> processCardRequest(
         const std::shared_ptr<CardRequestSpi> cardRequest,
@@ -122,14 +122,14 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual bool isContactless() override final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual bool isCardPresent() override;
 
@@ -140,7 +140,7 @@ public:
      * @param readerProtocol The reader protocol.
      * @param applicationProtocol The corresponding application protocol to associate.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     void activateReaderProtocol(const std::string& readerProtocol,
                                 const std::string& applicationProtocol);
@@ -151,14 +151,14 @@ public:
      *
      * @param readerProtocol The reader protocol.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     void deactivateReaderProtocol(const std::string& readerProtocol);
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void releaseChannel() override final;
 

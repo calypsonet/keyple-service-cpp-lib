@@ -27,7 +27,7 @@ using namespace calypsonet::terminal::reader;
 /**
  * Drives the underlying hardware to configure the protocol to use.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class ConfigurableReader : public Reader, public ConfigurableCardReader {
 public:

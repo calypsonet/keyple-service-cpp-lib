@@ -44,7 +44,7 @@ using InternalEvent = ObservableLocalReaderAdapter::InternalEvent;
  * Manages the internal state of an ObservableLocalReaderAdapter Process InternalEvent
  * against the current state
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class ObservableReaderStateServiceAdapter final {
 public:
@@ -55,7 +55,7 @@ public:
      * /!\ C++: cannot use a shared_ptr for reader as this is called from constructors
      *
      * @param reader The observable local reader adapter.
-     * @since 2.0
+     * @since 2.0.0
      */
     ObservableReaderStateServiceAdapter(ObservableLocalReaderAdapter* reader);
 
@@ -65,7 +65,7 @@ public:
      * the reader of external event like a tag discovered or a card inserted
      *
      * @param event internal event
-     * @since 2.0
+     * @since 2.0.0
      */
     void onEvent(const InternalEvent event);
 
@@ -75,7 +75,7 @@ public:
      * its state
      *
      * @param stateId next state to onActivate
-     * @since 2.0
+     * @since 2.0.0
      */
     void switchState(const MonitoringState stateId);
 
@@ -84,7 +84,7 @@ public:
      * Get reader current state
      *
      * @return reader current state
-     * @since 2.0
+     * @since 2.0.0
      */
     std::shared_ptr<AbstractObservableStateAdapter> getCurrentState();
 
@@ -93,7 +93,7 @@ public:
      * Get the reader current monitoring state
      *
      * @return current monitoring state
-     * @since 2.0
+     * @since 2.0.0
      */
     MonitoringState getCurrentMonitoringState();
 
@@ -104,7 +104,7 @@ public:
      * <p>This method should be invoked when the reader monitoring ends in order to stop any
      * remaining threads.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     void shutdown();
 

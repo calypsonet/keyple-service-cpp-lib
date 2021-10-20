@@ -33,7 +33,7 @@ using namespace keyple::core::common;
 /**
  * Drives the underlying hardware to configure the search and check for the presence of cards.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class Reader : virtual public CardReader {
 public:
@@ -51,7 +51,7 @@ public:
      * @param <T> The type of the reader extension.
      * @return A {@link KeypleReaderExtension}.
      * @throws IllegalStateException If reader is no longer registered.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::shared_ptr<KeypleReaderExtension> getExtension(
         const std::type_info& readerExtensionClass) const = 0;

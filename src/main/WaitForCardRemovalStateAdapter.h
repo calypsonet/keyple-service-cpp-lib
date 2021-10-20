@@ -40,7 +40,7 @@ namespace service {
  *   <li>Upon STOP_DETECT event, the machine changes state for WAIT_FOR_CARD_DETECTION.
  * </ul>
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class WaitForCardRemovalStateAdapter final : public AbstractObservableStateAdapter {
 public:
@@ -51,7 +51,7 @@ public:
      * @param reader The observable local reader adapter.
      * @param monitoringJob The monitoring job.
      * @param executorService The executor service to use.
-     * @since 2.0
+     * @since 2.0.0
      */
     WaitForCardRemovalStateAdapter(
         ObservableLocalReaderAdapter* reader,
@@ -63,14 +63,14 @@ public:
      * Creates an instance.
      *
      * @param reader The observable local reader adapter.
-     * @since 2.0
+     * @since 2.0.0
      */
     WaitForCardRemovalStateAdapter(ObservableLocalReaderAdapter* reader);
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void onEvent(const InternalEvent event) override;
 

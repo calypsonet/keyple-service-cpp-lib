@@ -37,7 +37,7 @@ using namespace keyple::core::util::cpp;
  * (package-private)<br>
  * Abstract class for all plugins.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class AbstractPluginAdapter : virtual public Plugin {
 public:
@@ -47,7 +47,7 @@ public:
      *
      * @param pluginName The name of the plugin.
      * @param pluginExtension The associated plugin extension SPI.
-     * @since 2.0
+     * @since 2.0.0
      */
     AbstractPluginAdapter(const std::string& pluginName,
                           std::shared_ptr<KeyplePluginExtension> pluginExtension);
@@ -72,7 +72,7 @@ public:
      * Check if the plugin is registered.
      *
      * @throw IllegalStateException is thrown when plugin is not or no longer registered.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void checkStatus() const final;
 
@@ -81,7 +81,7 @@ public:
      * Changes the plugin status to registered.
      *
      * @throw PluginIOException If registration failed.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void doRegister();
 
@@ -89,21 +89,21 @@ public:
      * (package-private)<br>
      * Unregisters the plugin and the readers present in its list.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void doUnregister();
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     const std::string& getName() const final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     std::shared_ptr<KeyplePluginExtension> getExtension(const std::type_info& pluginExtensionClass) 
         const final;
@@ -112,28 +112,28 @@ public:
      * (package-private)<br>
      * Gets the Map of all connected readers.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     std::map<const std::string, std::shared_ptr<Reader>>& getReadersMap() final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     const std::vector<std::string> getReaderNames() const final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     const std::vector<std::shared_ptr<Reader>> getReaders() const final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     std::shared_ptr<Reader> getReader(const std::string& name) const final;
 

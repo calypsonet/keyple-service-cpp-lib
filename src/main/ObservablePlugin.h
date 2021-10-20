@@ -33,7 +33,7 @@ using namespace keyple::core::service::spi;
  * <p>Allows registered observers to receive a {@link PluginEvent} when a reader is
  * connected/disconnected.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class ObservablePlugin : virtual public Plugin {
 public:
@@ -46,7 +46,7 @@ public:
      * <p>If applicable, the observation process shall be started when the first observer is added.
      *
      * @param observer An observer object implementing the required interface (should be not null).
-     * @since 2.0
+     * @since 2.0.0
      * @throw IllegalArgumentException if observer is null.
      * @throw IllegalStateException if no exception handler is defined.
      */
@@ -60,7 +60,7 @@ public:
      * <p>If applicable, the observation process shall be stopped when the last observer is removed.
      *
      * @param observer The observer object to be unregistered (should be not null).
-     * @since 2.0
+     * @since 2.0.0
      * @throw IllegalArgumentException if observer is null.
      */
     virtual void removeObserver(const std::shared_ptr<PluginObserverSpi> observer) = 0;
@@ -68,7 +68,7 @@ public:
     /**
      * Unregisters all observers at once.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void clearObservers() = 0;
 
@@ -76,7 +76,7 @@ public:
      * Provides the current number of registered observers.
      *
      * @return An int.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual int countObservers() const = 0;
 
@@ -88,7 +88,7 @@ public:
      * <p>In case of a fatal error during the observation, the handler will receive a notification.
      *
      * @param exceptionHandler The exception handler implemented by the application.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void setPluginObservationExceptionHandler(
         std::shared_ptr<PluginObservationExceptionHandlerSpi> exceptionHandler) = 0;

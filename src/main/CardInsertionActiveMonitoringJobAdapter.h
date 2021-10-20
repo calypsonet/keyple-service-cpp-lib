@@ -39,7 +39,7 @@ using namespace keyple::core::util::cpp;
  * the application level through the
  * keyple::core::service::spi::CardReaderObservationExceptionHandlerSpi mechanism.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class CardInsertionActiveMonitoringJobAdapter final : public AbstractMonitoringJobAdapter {
 public:
@@ -52,7 +52,7 @@ public:
      * @param reader reader that will be polled with the method isCardPresent()
      * @param cycleDurationMillis time interval between two presence polls.
      * @param monitorInsertion if true, polls for CARD_INSERTED, else CARD_REMOVED
-     * @since 2.0
+     * @since 2.0.0
      */
     CardInsertionActiveMonitoringJobAdapter(ObservableLocalReaderAdapter* reader,
                                             const long cycleDurationMillis,
@@ -63,7 +63,7 @@ public:
      * Gets the monitoring process.
      *
      * @return A not null reference.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::shared_ptr<Job> getMonitoringJob(
         const std::shared_ptr<AbstractObservableStateAdapter> monitoringState) override;
@@ -72,7 +72,7 @@ public:
      * (package-private)<br>
      * Terminates the monitoring process.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void stop() override;
 

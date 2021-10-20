@@ -41,7 +41,7 @@ using namespace keyple::core::service::spi;
  * (package-private)<br>
  * Abstract class for all observable local plugin adapters.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class AbstractObservableLocalPluginAdapter : public LocalPluginAdapter, public ObservablePlugin {
 public:
@@ -50,7 +50,7 @@ public:
      * Constructor.
      *
      * @param pluginSpi The associated plugin SPI.
-     * @since 2.0
+     * @since 2.0.0
      */
     AbstractObservableLocalPluginAdapter(std::shared_ptr<PluginSpi> pluginSpi);
 
@@ -64,7 +64,7 @@ public:
      * Gets the associated observation manager.
      *
      * @return A not null reference.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::shared_ptr<ObservationManagerAdapter<PluginObserverSpi,
                                                       PluginObservationExceptionHandlerSpi>>
@@ -78,49 +78,49 @@ public:
      * using the exception handler.
      *
      * @param event The plugin event.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void notifyObservers(const std::shared_ptr<PluginEvent> event) final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void doUnregister() override final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void addObserver(const std::shared_ptr<PluginObserverSpi> observer) override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void removeObserver(const std::shared_ptr<PluginObserverSpi> observer) override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void clearObservers() override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual int countObservers() const override final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void setPluginObservationExceptionHandler(
         std::shared_ptr<PluginObservationExceptionHandlerSpi> exceptionHandler) override final;

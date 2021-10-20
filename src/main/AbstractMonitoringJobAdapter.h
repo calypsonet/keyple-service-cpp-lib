@@ -29,7 +29,7 @@ using namespace keyple::core::service::cpp;
  * (package-private)<br>
  * Abstract class for all monitoring jobs.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class AbstractMonitoringJobAdapter {
 public:
@@ -40,7 +40,7 @@ public:
      * /!\ C++: cannot use a shared_ptr for reader as this is called from constructors
      *
      * @param reader The reader.
-     * @since 2.0
+     * @since 2.0.0
      */
     AbstractMonitoringJobAdapter(ObservableLocalReaderAdapter* reader);
 
@@ -54,7 +54,7 @@ public:
      * Gets the reader.
      *
      * @return A not null reference.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual ObservableLocalReaderAdapter* getReader() const final;
 
@@ -64,7 +64,7 @@ public:
      *
      * @param monitoringState reference to the state the monitoring job in running against.
      * @return A not null reference.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::shared_ptr<Job> getMonitoringJob(
         const std::shared_ptr<AbstractObservableStateAdapter> monitoringState) = 0;
@@ -73,7 +73,7 @@ public:
      * (package-private)<br>
      * Stops/interrupts the monitoring job
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void stop() = 0;
 

@@ -35,7 +35,7 @@ using Type = CardReaderEvent::Type;
  * (package-private)<br>
  * Implementation of {@link ReaderEvent}.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class ReaderEventAdapter final : public ReaderEvent {
 public:
@@ -47,7 +47,7 @@ public:
      * @param type The type of event (should be not null).
      * @param scheduledCardSelectionsResponse The responses received during the execution of the card
      *     selection scenario (can be null).
-     * @since 2.0
+     * @since 2.0.0
      */
     ReaderEventAdapter(
         const std::string& pluginName,

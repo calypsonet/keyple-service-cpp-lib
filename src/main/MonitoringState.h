@@ -22,34 +22,34 @@ namespace service {
  * (package-private)<br>
  * The states that the reader monitoring state machine can have
  *
- * @since 2.0
+ * @since 2.0.0
  */
 enum class MonitoringState {
     /**
      * The reader is idle and waiting for a start signal to enter the card detection mode.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     WAIT_FOR_START_DETECTION,
 
     /**
      * The reader is in card detection mode and is waiting for a card to be presented.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     WAIT_FOR_CARD_INSERTION,
 
     /**
      * The reader waits for the application to finish processing the card.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     WAIT_FOR_CARD_PROCESSING,
 
     /**
      * The reader waits for the removal of the card.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     WAIT_FOR_CARD_REMOVAL
 };

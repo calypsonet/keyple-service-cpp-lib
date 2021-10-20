@@ -33,7 +33,7 @@ using namespace keyple::core::plugin::spi;
  * (package-private)<br>
  * Implementation of a local {@link Plugin}.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class LocalPluginAdapter : public AbstractPluginAdapter {
 public:    
@@ -42,7 +42,7 @@ public:
      * Constructor.
      *
      * @param pluginSpi The associated SPI.
-     * @since 2.0
+     * @since 2.0.0
      */
     LocalPluginAdapter(std::shared_ptr<PluginSpi> pluginSpi);
 
@@ -56,7 +56,7 @@ public:
      *
      * <p>Populates its list of available readers and registers each of them.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void doRegister() override final;
 
@@ -65,7 +65,7 @@ public:
      *
      * <p>Unregisters the associated SPI.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void doUnregister() override;
 

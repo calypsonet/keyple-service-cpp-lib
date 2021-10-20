@@ -36,7 +36,7 @@ using namespace keyple::core::util::cpp;
  * (package-private)<br>
  * Implementation of an autonomous local {@link ObservablePlugin}.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class AutonomousObservableLocalPluginAdapter final
 : public AbstractObservableLocalPluginAdapter,
@@ -48,7 +48,7 @@ public:
      * Constructor.
      *
      * @param autonomousObservablePluginSpi The associated plugin SPI.
-     * @since 2.0
+     * @since 2.0.0
      */
     AutonomousObservableLocalPluginAdapter(
         std::shared_ptr<AutonomousObservablePluginSpi> autonomousObservablePluginSpi);
@@ -56,14 +56,14 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void onReaderConnected(const std::vector<std::shared_ptr<ReaderSpi>>& readers) override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void onReaderDisconnected(const std::vector<std::string>& readerNames) override;
 

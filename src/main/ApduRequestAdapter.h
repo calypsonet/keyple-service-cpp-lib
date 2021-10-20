@@ -31,7 +31,7 @@ using namespace calypsonet::terminal::card::spi;
  * (package-private)<br>
  * Adapter of {@link ApduRequestSpi}
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class ApduRequestAdapter final : public ApduRequestSpi {
 public:
@@ -41,7 +41,7 @@ public:
      * <p>The default status words list is initialized with the standard successful code 9000h.
      *
      * @param apdu An array of at least 4 bytes.
-     * @since 2.0
+     * @since 2.0.0
      */
     ApduRequestAdapter(const std::vector<uint8_t>& apdu);
 
@@ -52,7 +52,7 @@ public:
      *
      * @param successfulStatusWord A positive int &le; {@code FFFFh}.
      * @return The object instance.
-     * @since 2.0
+     * @since 2.0.0
      */
     ApduRequestAdapter& addSuccessfulStatusWord(const int successfulStatusWord);
 
@@ -63,7 +63,7 @@ public:
      *
      * @param info The request information (free text).
      * @return The object instance.
-     * @since 2.0
+     * @since 2.0.0
      */
     ApduRequestAdapter& setInfo(const std::string& info);
 
@@ -75,21 +75,21 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::vector<uint8_t>& getApdu() const override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::vector<int>& getSuccessfulStatusWords() const override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::string& getInfo() const override;
 

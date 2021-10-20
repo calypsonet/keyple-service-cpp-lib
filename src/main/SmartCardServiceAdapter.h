@@ -44,7 +44,7 @@ using namespace keyple::core::util::cpp;
  * (package-private)<br>
  * Implementation of {@link SmartCardService}.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class SmartCardServiceAdapter final : public SmartCardService {
 public:
@@ -53,14 +53,14 @@ public:
      * Gets the single instance of SmartCardServiceAdapter.
      *
      * @return single instance of SmartCardServiceAdapter
-     * @since 2.0
+     * @since 2.0.0
      */
     static SmartCardServiceAdapter& getInstance();
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::shared_ptr<Plugin> registerPlugin(
         const std::shared_ptr<KeyplePluginExtensionFactory> pluginFactory)
@@ -70,42 +70,42 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void unregisterPlugin(const std::string& pluginName) override final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     const std::vector<std::string> getPluginNames() const final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     const std::vector<std::shared_ptr<Plugin>> getPlugins() const final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     std::shared_ptr<Plugin> getPlugin(const std::string& pluginName) const final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     void checkCardExtension(const std::shared_ptr<KeypleCardExtension> cardExtension) override final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     // @Override
     // public DistributedLocalService registerDistributedLocalService(
@@ -155,7 +155,7 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     // @Override
     // public void unregisterDistributedLocalService(String distributedLocalServiceName) {
@@ -177,7 +177,7 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     // @Override
     // public boolean isDistributedLocalServiceRegistered(String distributedLocalServiceName) {
@@ -189,7 +189,7 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     // @Override
     // public DistributedLocalService getDistributedLocalService(String distributedLocalServiceName) {
@@ -201,7 +201,7 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::unique_ptr<CardSelectionManager> createCardSelectionManager() override final;
 

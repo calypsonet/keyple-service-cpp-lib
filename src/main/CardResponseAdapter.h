@@ -33,7 +33,7 @@ using namespace calypsonet::terminal::card;
  * indicators related to the status of the channel and the completion of the card request.
  *
  * @see calypsonet::terminal::card::spi::CardRequestSpi
- * @since 2.0
+ * @since 2.0.0
  */
 class CardResponseAdapter final : public CardResponseApi {
 public:
@@ -44,7 +44,7 @@ public:
      *
      * @param apduResponses A not null list.
      * @param isLogicalChannelOpen true if the logical channel is open, false if not.
-     * @since 2.0
+     * @since 2.0.0
      */
     CardResponseAdapter(const std::vector<std::shared_ptr<ApduResponseAdapter>> apduResponses,
                         const bool isLogicalChannelOpen);
@@ -52,14 +52,14 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     const std::vector<std::shared_ptr<ApduResponseAdapter>> getApduResponses() const override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     bool isLogicalChannelOpen() const override;
 

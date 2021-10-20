@@ -31,7 +31,7 @@ using Type = CardReaderEvent::Type;
  * <p>In the case of a card insertion, the responses received by the reader are included in the
  * event.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class ReaderEvent : public CardReaderEvent {
 public:
@@ -39,28 +39,28 @@ public:
      * Gets the name of the plugin from which the reader that generated the event comes from.
      *
      * @return A not empty string.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::string& getPluginName() const = 0;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::string& getReaderName() const override = 0;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual Type getType() const override = 0;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::shared_ptr<ScheduledCardSelectionsResponse>
         getScheduledCardSelectionsResponse() const override = 0;

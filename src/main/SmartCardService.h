@@ -31,12 +31,12 @@ namespace core {
 namespace service {
 
 using namespace calypsonet::terminal::reader::selection;
-using namespace keyple::core::commons;
+using namespace keyple::core::common;
 
 /**
  * Keyple main service.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class SmartCardService {
 public:
@@ -52,7 +52,7 @@ public:
      * @return A not null reference to the registered {@link Plugin}.
      * @throws KeyplePluginException If instantiation failed.
      * @throws IllegalStateException If the plugin has already been registered.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::shared_ptr<Plugin> registerPlugin(
         std::shared_ptr<KeyplePluginExtensionFactory> pluginFactory) = 0;
@@ -61,7 +61,7 @@ public:
      * Attempts to unregister the plugin having the provided name from the service.
      *
      * @param pluginName The plugin name.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void unregisterPlugin(const std::string& pluginName) = 0;
 
@@ -69,7 +69,7 @@ public:
      * Gets the names of all registered plugins.
      *
      * @return A not null Set String.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::vector<std::string> getPluginNames() const = 0;
 
@@ -77,7 +77,7 @@ public:
      * Gets all registered plugins.
      *
      * @return A not null Set of Plugin.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const  std::vector<std::shared_ptr<Plugin>> getPlugins() const = 0;
 
@@ -86,7 +86,7 @@ public:
      *
      * @param pluginName The plugin name.
      * @return Null if the plugin is not found or no longer registered.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::shared_ptr<Plugin> getPlugin(const std::string& pluginName) const = 0;
 
@@ -96,7 +96,7 @@ public:
      * <p>The verification is based on the comparison of the respective API versions.
      *
      * @param cardExtension A not null {@link KeypleCardExtension} reference object
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void checkCardExtension(const std::shared_ptr<KeypleCardExtension> cardExtension) = 0;
 
@@ -107,7 +107,7 @@ public:
      *     Local Service extension
      * @return A not null reference to the registered {@link DistributedLocalService}.
      * @throw IllegalStateException If the distributed local service has already been registered.
-     * @since 2.0
+     * @since 2.0.0
      */
     //DistributedLocalService registerDistributedLocalService(
     //    KeypleDistributedLocalServiceExtensionFactory distributedLocalServiceExtensionFactory);
@@ -116,7 +116,7 @@ public:
      * Attempts to unregister the distributed local service having the provided name from the service.
      *
      * @param distributedLocalServiceName The distributed local service name.
-     * @since 2.0
+     * @since 2.0.0
      */
     //void unregisterDistributedLocalService(String distributedLocalServiceName);
 
@@ -125,7 +125,7 @@ public:
      *
      * @param distributedLocalServiceName The name of the distributed local service to be checked.
      * @return True if the distributed local service is registered.
-     * @since 2.0
+     * @since 2.0.0
      */
     //boolean isDistributedLocalServiceRegistered(String distributedLocalServiceName);
 
@@ -134,7 +134,7 @@ public:
      *
      * @param distributedLocalServiceName The name of the distributed local service.
      * @return Null if the distributed local service is not found or no longer registered.
-     * @since 2.0
+     * @since 2.0.0
      */
     //DistributedLocalService getDistributedLocalService(String distributedLocalServiceName);
 
@@ -142,7 +142,7 @@ public:
      * Create a new instance of a CardSelectionManager in order to perform a card selection.
      *
      * @return A not null reference.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::unique_ptr<CardSelectionManager> createCardSelectionManager() = 0;
 };

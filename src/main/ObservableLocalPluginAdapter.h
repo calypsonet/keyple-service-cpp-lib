@@ -39,7 +39,7 @@ using namespace keyple::core::util::cpp;
  * (package-private)<br>
  * Implementation of a local ObservablePlugin.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class ObservableLocalPluginAdapter final : public AbstractObservableLocalPluginAdapter {
 public:
@@ -48,7 +48,7 @@ public:
      * Constructor.
      *
      * @param observablePluginSpi The associated plugin SPI.
-     * @since 2.0
+     * @since 2.0.0
      */
     ObservableLocalPluginAdapter(std::shared_ptr<ObservablePluginSpi> observablePluginSpi);
 
@@ -68,28 +68,28 @@ public:
      * Checks whether the background job is monitoring for new readers.
      *
      * @return True, if the background job is monitoring, false in all other cases.
-     * @since 2.0
+     * @since 2.0.0
      */
     bool isMonitoring() const;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void addObserver(std::shared_ptr<PluginObserverSpi> observer) override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void removeObserver(const std::shared_ptr<PluginObserverSpi> observer) override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void clearObservers() override;
 

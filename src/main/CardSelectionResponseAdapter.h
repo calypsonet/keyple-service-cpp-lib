@@ -37,7 +37,7 @@ using namespace calypsonet::terminal::card;
  * the card CardResponseAdapter).
  *
  * @see calypsonet::terminal::card::spi::CardSelectionRequestSpi
- * @since 2.0
+ * @since 2.0.0
  */
 class CardSelectionResponseAdapter final : public CardSelectionResponseApi {
 public:
@@ -51,7 +51,7 @@ public:
      *     Select Application command was performed...
      * @param hasMatched True if the card inserted matches the selection filters.
      * @param cardResponse null if no card response is available.
-     * @since 2.0
+     * @since 2.0.0
      */
     CardSelectionResponseAdapter(const std::string& powerOnData,
                                  const std::shared_ptr<ApduResponseAdapter> selectApplicationResponse,
@@ -61,28 +61,28 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     const std::string& getPowerOnData() const override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     const std::shared_ptr<ApduResponseAdapter> getSelectApplicationResponse() const override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     bool hasMatched() const override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     const std::shared_ptr<CardResponseAdapter> getCardResponse() const override;
 

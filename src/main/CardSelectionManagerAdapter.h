@@ -38,7 +38,7 @@ using NotificationMode = ObservableCardReader::NotificationMode;
  * (package-private) <br>
  * Implementation of the {@link CardSelectionManager}.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class CardSelectionManagerAdapter final : public CardSelectionManager {
 public:
@@ -47,35 +47,35 @@ public:
      * Creates an instance of the service with which the selection stops as soon as a card matches a
      * selection case.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     CardSelectionManagerAdapter();
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void setMultipleSelectionMode() override final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual int prepareSelection(const std::shared_ptr<CardSelection> cardSelection) override final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void prepareReleaseChannel() override final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::shared_ptr<CardSelectionResult> processCardSelectionScenario(
         std::shared_ptr<CardReader> reader) override final;
@@ -83,7 +83,7 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void scheduleCardSelectionScenario(
         std::shared_ptr<ObservableCardReader> observableCardReader,
@@ -93,7 +93,7 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::shared_ptr<CardSelectionResult> parseScheduledCardSelectionsResponse(
         const std::shared_ptr<ScheduledCardSelectionsResponse> scheduledCardSelectionsResponse) 

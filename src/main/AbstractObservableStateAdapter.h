@@ -41,7 +41,7 @@ class AbstractMonitoringJobAdapter;
  * (package-private)<br>
  * Abstract class for all states of a {@link ObservableLocalReaderAdapter}.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class AbstractObservableStateAdapter
 : public std::enable_shared_from_this<AbstractObservableStateAdapter> {
@@ -57,7 +57,7 @@ public:
      * @param monitoringJob the job to be executed in background (may be null if no background job is
      *        required)
      * @param executorService the executor service
-     * @since 2.0
+     * @since 2.0.0
      */
     AbstractObservableStateAdapter(
         const MonitoringState monitoringState,
@@ -73,7 +73,7 @@ public:
      *
      * @param reader observable reader this currentState is attached to
      * @param monitoringState name of the currentState
-     * @since 2.0
+     * @since 2.0.0
      */
     AbstractObservableStateAdapter(const MonitoringState monitoringState,
                                    ObservableLocalReaderAdapter* reader);
@@ -88,7 +88,7 @@ public:
      * Get the current state identifier of the state machine
      *
      * @return the current state identifier
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual MonitoringState getMonitoringState() const final;
 
@@ -97,7 +97,7 @@ public:
      * Gets the reader.
      *
      * @return A not null reference.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual ObservableLocalReaderAdapter* getReader() const final;
 
@@ -106,7 +106,7 @@ public:
      * Switch state in the parent reader
      *
      * @param stateId the new state
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void switchState(const MonitoringState stateId) final;
 
@@ -114,7 +114,7 @@ public:
      * (package-private)<br>
      * Invoked when activated, a custom behaviour can be added here.
      *
-     * @since 2.0
+     * @since 2.0.0
      * @throw IllegalStateException if a job is defined with a null executor service.
      */
     virtual void onActivate() final;
@@ -123,7 +123,7 @@ public:
      * (package-private)<br>
      * Invoked when deactivated.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void onDeactivate() final;
 
@@ -132,7 +132,7 @@ public:
      * Handle Internal Event.
      *
      * @param event internal event received by reader
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void onEvent(InternalEvent event) = 0;
 

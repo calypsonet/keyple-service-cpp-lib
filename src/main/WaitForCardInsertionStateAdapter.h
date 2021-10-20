@@ -45,7 +45,7 @@ using InternalEvent = ObservableLocalReaderAdapter::InternalEvent;
  *   <li>Upon CARD_REMOVED event, the machine changes state for WAIT_FOR_CARD_DETECTION.
  * </ul>
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class WaitForCardInsertionStateAdapter final : public AbstractObservableStateAdapter {
 public:
@@ -58,7 +58,7 @@ public:
      * @param reader The observable local reader adapter.
      * @param monitoringJob The monitoring job.
      * @param executorService The executor service to use.
-     * @since 2.0
+     * @since 2.0.0
      */
     WaitForCardInsertionStateAdapter(
         ObservableLocalReaderAdapter* reader,
@@ -72,14 +72,14 @@ public:
      * /!\ C++: cannot use a shared_ptr for reader as this is called from constructors
      *
      * @param reader The observable local reader adapter.
-     * @since 2.0
+     * @since 2.0.0
      */
     WaitForCardInsertionStateAdapter(ObservableLocalReaderAdapter* reader);
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void onEvent(const InternalEvent event) override;
 

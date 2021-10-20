@@ -31,7 +31,7 @@ using namespace keyple::core::util::cpp::exception;
  * <p>These exceptions can be thrown either in the internal monitoring layers of the readers or in
  * the application itself.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class PluginObservationExceptionHandlerSpi {
 public:
@@ -40,7 +40,7 @@ public:
      *
      * @param pluginName The plugin name
      * @param e The original exception
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void onPluginObservationError(const std::string& pluginName,
                                           const std::shared_ptr<Exception> e) = 0;

@@ -34,7 +34,7 @@ namespace service {
  *
  * <p>However, only one type of event is notified at a time.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class PluginEventAdapter final : public PluginEvent {
 public:
@@ -47,7 +47,7 @@ public:
      * @param readerName A string containing the name of the reader (should be not null).
      * @param type An event type Type::READER_CONNECTED or Type::READER_DISCONNECTED
      *        (should be not null).
-     * @since 2.0
+     * @since 2.0.0
      */
     PluginEventAdapter(const std::string& pluginName,
                        const std::string& readerName,
@@ -65,7 +65,7 @@ public:
      * @param readerNames A set of string containing the readers names (must be not empty).
      * @param type An event type {@link Type#READER_CONNECTED} or {@link Type#READER_DISCONNECTED}
      *        (must be not null).
-     * @since 2.0
+     * @since 2.0.0
      */
     PluginEventAdapter(const std::string& pluginName,
                        const std::vector<std::string>& readerNames,
@@ -74,21 +74,21 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::string& getPluginName() const override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::vector<std::string> getReaderNames() const override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual Type getType() const override;
 

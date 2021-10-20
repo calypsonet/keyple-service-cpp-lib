@@ -31,7 +31,7 @@ namespace service {
  *
  * <p>A PoolPlugin can't be observable.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class PoolPlugin : virtual public Plugin {
 public:
@@ -42,7 +42,7 @@ public:
      * (for example, containing a SAM with identical key sets).
      *
      * @return a list of String
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::vector<std::string>& getReaderGroupReferences() const = 0;
 
@@ -56,7 +56,7 @@ public:
      *        null depending on the implementation made).
      * @return A not null reference.
      * @throws KeyplePluginException If the allocation failed due to lack of available reader.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::shared_ptr<Reader> allocateReader(const std::string& readerGroupReference) = 0;
 
@@ -67,7 +67,7 @@ public:
      * allocateReader in order to free the resource.
      *
      * @param reader The Reader to be released.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void releaseReader(const std::shared_ptr<Reader> reader) = 0;
 };

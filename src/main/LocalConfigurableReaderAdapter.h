@@ -29,7 +29,7 @@ using namespace keyple::core::plugin::spi::reader;
  * (package-private)<br>
  * Local configurable reader adapter.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class LocalConfigurableReaderAdapter final : public LocalReaderAdapter, public ConfigurableReader {
 public:
@@ -39,7 +39,7 @@ public:
      *
      * @param configurableReaderSpi The configurable reader SPI.
      * @param pluginName The name of the plugin.
-     * @since 2.0
+     * @since 2.0.0
      */
     LocalConfigurableReaderAdapter(std::shared_ptr<ConfigurableReaderSpi> configurableReaderSpi, 
                                    const std::string& pluginName);
@@ -47,7 +47,7 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     void activateProtocol(const std::string& readerProtocol, const std::string& applicationProtocol)
         override;
@@ -55,7 +55,7 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     void deactivateProtocol(const std::string& readerProtocol) override;
 };

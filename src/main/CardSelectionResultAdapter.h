@@ -30,7 +30,7 @@ using namespace calypsonet::terminal::reader::selection::spi;
  * (package-private)<br>
  * Implementation of {@link CardSelectionResult}.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class CardSelectionResultAdapter final : public CardSelectionResult {
 public:
@@ -38,7 +38,7 @@ public:
      * (package-private)<br>
      * Constructor
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     CardSelectionResultAdapter();
 
@@ -48,28 +48,28 @@ public:
      *
      * @param selectionIndex The index of the selection that resulted in the smart card.
      * @param smartCard The smart card.
-     * @since 2.0
+     * @since 2.0.0
      */
     void addSmartCard(const int selectionIndex, std::shared_ptr<SmartCard> smartCard);
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::map<int, std::shared_ptr<SmartCard>>& getSmartCards() const override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::shared_ptr<SmartCard> getActiveSmartCard() const override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual int getActiveSelectionIndex() const override;
 

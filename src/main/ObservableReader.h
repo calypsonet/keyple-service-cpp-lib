@@ -27,7 +27,7 @@ using namespace calypsonet::terminal::reader;
 /**
  * Keyple observable card reader.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class ObservableReader : virtual public Reader, public ObservableCardReader {};
 

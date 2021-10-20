@@ -61,7 +61,7 @@ using NotificationMode = ObservableCardReader::NotificationMode;
  * Implementation for ObservableReader, WaitForCardInsertionAutonomousReaderApi and
  * WaitForCardRemovalAutonomousReaderApi.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class ObservableLocalReaderAdapter
 : public LocalReaderAdapter,
@@ -79,48 +79,48 @@ public:
      * (package-private)<br>
      * The events that drive the card's observation state machine.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     enum InternalEvent {
         /**
          * A card has been inserted
          *
-         * @since 2.0
+         * @since 2.0.0
          */
         CARD_INSERTED,
 
         /**
          * The card has been removed
          *
-         * @since 2.0
+         * @since 2.0.0
          */
         CARD_REMOVED,
 
         /**
          * The application has completed the processing of the card
          *
-         * @since 2.0
+         * @since 2.0.0
          */
         CARD_PROCESSED,
 
         /**
          * The application has requested the start of card detection
          *
-         * @since 2.0
+         * @since 2.0.0
          */
         START_DETECT,
 
         /**
          * The application has requested that card detection is to be stopped.
          *
-         * @since 2.0
+         * @since 2.0.0
          */
         STOP_DETECT,
 
         /**
          * A timeout has occurred (not yet implemented)
          *
-         * @since 2.0
+         * @since 2.0.0
          */
         TIME_OUT
     };
@@ -134,7 +134,7 @@ public:
      *
      * @param observableReaderSpi The reader SPI.
      * @param pluginName The plugin name.
-     * @since 2.0
+     * @since 2.0.0
      */
     ObservableLocalReaderAdapter(std::shared_ptr<ObservableReaderSpi> observableReaderSpi,
                                  const std::string& pluginName);
@@ -144,7 +144,7 @@ public:
      * Gets the SPI of the reader.
      *
      * @return A not null reference.
-     * @since 2.0
+     * @since 2.0.0
      */
     std::shared_ptr<ObservableReaderSpi> getObservableReaderSpi() const;
 
@@ -154,7 +154,7 @@ public:
      * observation process.
      *
      * @return Null if no exception has been set.
-     * @since 2.0
+     * @since 2.0.0
      */
     std::shared_ptr<CardReaderObservationExceptionHandlerSpi> getObservationExceptionHandler()
         const;
@@ -164,7 +164,7 @@ public:
      * Gets the current calypsonet::terminal::reader::ObservableCardReader::DetectionMode.
      *
      * @return Null if the polling mode has not been defined.
-     * @since 2.0
+     * @since 2.0.0
      */
     DetectionMode getDetectionMode() const;
 
@@ -173,7 +173,7 @@ public:
      * Get the current monitoring state
      *
      * @return current getMonitoringState
-     * @since 2.0
+     * @since 2.0.0
      */
     MonitoringState getCurrentMonitoringState() const;
 
@@ -186,7 +186,7 @@ public:
      * <p>This method has to be called regularly until the card no longer respond.
      *
      * @return True if the card still responds, false if not
-     * @since 2.0
+     * @since 2.0.0
      */
     bool isCardPresentPing();
 
@@ -212,7 +212,7 @@ public:
      * CardSelectionResponseApi.
      *
      * @return Null if the card has been rejected by the card selection scenario.
-     * @since 2.0
+     * @since 2.0.0
      */
     std::shared_ptr<ReaderEvent> processCardInserted();
 
@@ -224,7 +224,7 @@ public:
      * <p>It will also be invoked if isCardPresent() is called and at least one of the
      * physical or logical channels is still open.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     void processCardRemoved();
 
@@ -233,7 +233,7 @@ public:
      * Changes the state of the state machine
      *
      * @param stateId new stateId
-     * @since 2.0
+     * @since 2.0.0
      */
     void switchState(MonitoringState stateId);
 
@@ -245,7 +245,7 @@ public:
      * application using the exception handler.
      *
      * @param event The reader event.
-     * @since 2.0
+     * @since 2.0.0
      */
     void notifyObservers(const std::shared_ptr<ReaderEvent> event);
 
@@ -264,7 +264,7 @@ public:
      * @param cardSelectionScenario The card selection scenario.
      * @param notificationMode The notification policy.
      * @param detectionMode The polling policy (optional).
-     * @since 2.0
+     * @since 2.0.0
      */
     void scheduleCardSelectionScenario(
         std::shared_ptr<CardSelectionScenarioAdapter> cardSelectionScenario,
@@ -278,70 +278,70 @@ public:
      * Stops the card detection unconditionally.<br>
      * Shuts down the reader's executor service.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void doUnregister() override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual bool isCardPresent() override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void addObserver(std::shared_ptr<CardReaderObserverSpi> observer) override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void removeObserver(std::shared_ptr<CardReaderObserverSpi> observer) override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual int countObservers() const override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void clearObservers() override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void startCardDetection(const DetectionMode detectionMode) override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void stopCardDetection() override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     void finalizeCardProcessing() override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void setReaderObservationExceptionHandler(
         std::shared_ptr<CardReaderObservationExceptionHandlerSpi> exceptionHandler) override;
@@ -349,14 +349,14 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void onCardInserted() override;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void onCardRemoved() override;
 

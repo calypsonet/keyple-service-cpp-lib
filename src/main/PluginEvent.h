@@ -32,34 +32,34 @@ namespace service {
  *
  * <p>However, only one type of event is notified at a time.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class PluginEvent {
 public:
     /**
      * The two types of reader event
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     enum class Type {
         /**
          * A reader has been connected.
          *
-         * @since 2.0
+         * @since 2.0.0
          */
         READER_CONNECTED,
 
         /**
          * A reader has been disconnected.
          *
-         * @since 2.0
+         * @since 2.0.0
          */
         READER_DISCONNECTED,
 
         /**
          * This plugin has become unavailable.
          *
-         * @since 2.0
+         * @since 2.0.0
          */
         UNAVAILABLE
     };
@@ -68,7 +68,7 @@ public:
      * Gets the name of the plugin to which the reader that generated the event belongs.
      *
      * @return A not empty string.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::string& getPluginName() const = 0;
 
@@ -76,7 +76,7 @@ public:
      * Gets the names of the readers related to the event in the form of a sorted set.
      *
      * @return A not null reference.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::vector<std::string> getReaderNames() const = 0;
 
@@ -84,7 +84,7 @@ public:
      * Gets the plugin event type.
      *
      * @return A not null reference.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual Type getType() const = 0;
 

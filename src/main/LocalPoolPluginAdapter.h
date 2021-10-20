@@ -36,7 +36,7 @@ using namespace keyple::core::util::cpp;
  * (package-private)<br>
  * Implementation of a local {@link PoolPlugin}.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class LocalPoolPluginAdapter final : public AbstractPluginAdapter, public PoolPlugin {
 public:
@@ -45,7 +45,7 @@ public:
      * Constructor.
      *
      * @param poolPluginSpi The associated SPI.
-     * @since 2.0
+     * @since 2.0.0
      */
     LocalPoolPluginAdapter(std::shared_ptr<PoolPluginSpi> poolPluginSpi);
 
@@ -54,21 +54,21 @@ public:
      *
      * <p>Unregisters the associated SPI.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void doUnregister() override final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual const std::vector<std::string>& getReaderGroupReferences() const override final;
 
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::shared_ptr<Reader> allocateReader(const std::string& readerGroupReference)
         override final;
@@ -76,7 +76,7 @@ public:
     /**
      * {@inheritDoc}
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void releaseReader(std::shared_ptr<Reader> reader) override final;
 

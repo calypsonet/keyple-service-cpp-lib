@@ -52,7 +52,7 @@ using namespace keyple::core::util::cpp;
  * <p>All runtime exceptions that may occur during the monitoring process are caught and notified at
  * the application level through the appropriate exception handler.
  *
- * @since 2.0
+ * @since 2.0.0
  */
 class CardRemovalActiveMonitoringJobAdapter final : public AbstractMonitoringJobAdapter {
 public:
@@ -64,7 +64,7 @@ public:
      *
      * @param reader reference to the reader
      * @param cycleDurationMillis delay between between each APDU sending
-     * @since 2.0
+     * @since 2.0.0
      */
     CardRemovalActiveMonitoringJobAdapter(ObservableLocalReaderAdapter* reader,
                                           const long cycleDurationMillis);
@@ -74,7 +74,7 @@ public:
      * Gets the monitoring process.
      *
      * @return A not null reference.
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual std::shared_ptr<Job> getMonitoringJob(
         std::shared_ptr<AbstractObservableStateAdapter> monitoringState) override;
@@ -83,7 +83,7 @@ public:
      * (package-private)<br>
      * Terminates the monitoring process.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     virtual void stop() override;
 

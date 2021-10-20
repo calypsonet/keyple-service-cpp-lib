@@ -38,7 +38,7 @@ using namespace keyple::core::util;
  * @param <S> The type of the exception handler to use during the observation process
  *        (keyple::core::service::spi::PluginObservationExceptionHandlerSpi or
  *        calypsonet::terminal::reader::spi::CardReaderObservationExceptionHandlerSpi).
- * @since 2.0
+ * @since 2.0.0
  */
 template<class T, class S>
 class ObservationManagerAdapter final {
@@ -49,7 +49,7 @@ public:
      *
      * @param pluginName The name of the associated plugin (used for log only).
      * @param readerName The name of the associated reader (used for log only) (optional).
-     * @since 2.0
+     * @since 2.0.0
      */
     ObservationManagerAdapter(const std::string& pluginName, const std::string& readerName)
     : mOwnerComponent(readerName == "" ?
@@ -63,7 +63,7 @@ public:
      * @param observer The observer to add.
      * @throw IllegalArgumentException If the provided observer is null.
      * @throw IllegalStateException If no observation exception handler has been set.
-     * @since 2.0
+     * @since 2.0.0
      */
     void addObserver(std::shared_ptr<T> observer)
     {
@@ -88,7 +88,7 @@ public:
      *
      * @param observer The observer to remove.
      * @throw IllegalArgumentException If the provided observer is null.
-     * @since 2.0
+     * @since 2.0.0
      */
     void removeObserver(std::shared_ptr<T> observer)
     {
@@ -106,7 +106,7 @@ public:
      * (package-private)<br>
      * Removes all observers.
      *
-     * @since 2.0
+     * @since 2.0.0
      */
     void clearObservers()
     {
@@ -122,7 +122,7 @@ public:
      * Gets the number of observers.
      *
      * @return The number of observers.
-     * @since 2.0
+     * @since 2.0.0
      */
     int countObservers() const
     {
@@ -135,7 +135,7 @@ public:
      *
      * @param exceptionHandler the observation exception handler.
      * @throw IllegalArgumentException If the provided handler is null.
-     * @since 2.0
+     * @since 2.0.0
      */
     void setObservationExceptionHandler(std::shared_ptr<S> exceptionHandler)
     {
@@ -149,7 +149,7 @@ public:
      * Gets a copy of the set of all observers.
      *
      * @return A not null copy.
-     * @since 2.0
+     * @since 2.0.0
      */
     const std::vector<std::shared_ptr<T>> getObservers()
     {
@@ -165,7 +165,7 @@ public:
      * observation process.
      *
      * @return Null if no exception handler has been set.
-     * @since 2.0
+     * @since 2.0.0
      */
     std::shared_ptr<S> getObservationExceptionHandler() const
     {
