@@ -29,7 +29,7 @@ using namespace calypsonet::terminal::reader;
  *
  * @since 2.0.0
  */
-class ConfigurableReader : public Reader, public ConfigurableCardReader {
+class ConfigurableReader : virtual public Reader, virtual public ConfigurableCardReader {
 public:
     /**
      * 

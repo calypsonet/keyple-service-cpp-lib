@@ -283,14 +283,14 @@ std::shared_ptr<CardSelectionResponseApi> LocalReaderAdapter::processCardSelecti
     } catch (const ReaderIOException& e) {
         throw ReaderBrokenCommunicationException(
                 std::make_shared<CardResponseAdapter>(
-                      std::vector<std::shared_ptr<ApduResponseAdapter>>({}), false),
+                      std::vector<std::shared_ptr<ApduResponseApi>>({}), false),
                 false,
                 e.getMessage(),
                 std::make_shared<ReaderIOException>(e));
     } catch (const CardIOException& e) {
         throw CardBrokenCommunicationException(
                   std::make_shared<CardResponseAdapter>(
-                      std::vector<std::shared_ptr<ApduResponseAdapter>>({}), false),
+                      std::vector<std::shared_ptr<ApduResponseApi>>({}), false),
                   false,
                   e.getMessage(),
                   std::make_shared<CardIOException>(e));
@@ -303,7 +303,7 @@ std::shared_ptr<CardSelectionResponseApi> LocalReaderAdapter::processCardSelecti
                    selectionStatus->mSelectApplicationResponse,
                    false,
                    std::make_shared<CardResponseAdapter>(
-                      std::vector<std::shared_ptr<ApduResponseAdapter>>({}), false));
+                      std::vector<std::shared_ptr<ApduResponseApi>>({}), false));
     }
 
     mLogicalChannelIsOpen = true;
@@ -393,7 +393,7 @@ std::shared_ptr<CardResponseAdapter> LocalReaderAdapter::processCardRequest(
     const std::shared_ptr<CardRequestSpi> cardRequest)
 {
 
-    std::vector<std::shared_ptr<ApduResponseAdapter>> apduResponses;
+    std::vector<std::shared_ptr<ApduResponseApi>> apduResponses;
 
     /* Proceeds with the APDU requests present in the CardRequest */
     for (const auto& apduRequest : cardRequest->getApduRequests()) {
@@ -506,7 +506,7 @@ bool LocalReaderAdapter::isContactless()
     return mReaderSpi->isContactless();
 }
 
-std::shared_ptr<CardResponseAdapter> LocalReaderAdapter::processCardRequest(
+std::shared_ptr<CardResponseApi> LocalReaderAdapter::processCardRequest(
     const std::shared_ptr<CardRequestSpi> cardRequest,
     const ChannelControl channelControl)
 {

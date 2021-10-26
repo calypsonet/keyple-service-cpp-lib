@@ -31,6 +31,7 @@
 #include "ScheduledCardSelectionsResponseAdapter.h"
 
 /* Keyple Core Util */
+#include "Arrays.h"
 #include "Exception.h"
 #include "KeypleAssert.h"
 
@@ -351,7 +352,7 @@ void ObservableLocalReaderAdapter::removeObserver(std::shared_ptr<CardReaderObse
 {
     Assert::getInstance().notNull(observer, "observer");
 
-    if (mObservationManager->getObservers().contains(observer)) {
+    if (Arrays::contains(mObservationManager->getObservers(), observer)) {
         mObservationManager->removeObserver(observer);
     }
 }

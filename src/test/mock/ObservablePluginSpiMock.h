@@ -23,13 +23,13 @@
 
 using namespace testing;
 
-using namespace keyple::core::commons;
+using namespace keyple::core::common;
 using namespace keyple::core::plugin::spi;
 
 class ObservablePluginSpiMock final : public ObservablePluginSpi, public KeyplePluginExtension {
 public:
     MOCK_METHOD(const std::string&, getName, (), (const, override));
-    MOCK_METHOD((const std::vector<std::shared_ptr<ReaderSpi>>), searchAvailableReaders, (), (const, override));
+    MOCK_METHOD((const std::vector<std::shared_ptr<ReaderSpi>>), searchAvailableReaders, (), (override));
     MOCK_METHOD(const std::vector<std::string>, searchAvailableReaderNames, (), (override));
     MOCK_METHOD(std::shared_ptr<ReaderSpi>, searchReader, (const std::string& readerName), (override));
     MOCK_METHOD(int, getMonitoringCycleDuration, (), (const, override));

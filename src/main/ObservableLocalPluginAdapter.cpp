@@ -80,7 +80,7 @@ void ObservableLocalPluginAdapter::removeObserver(const std::shared_ptr<PluginOb
 
     AbstractObservableLocalPluginAdapter::removeObserver(observer);
 
-    if (getObservationManager()->getObservers().contains(observer)) {
+    if (Arrays::contains(getObservationManager()->getObservers(), observer)) {
         AbstractObservableLocalPluginAdapter::removeObserver(observer);
 
         if (countObservers() == 0) {
@@ -126,7 +126,7 @@ bool ObservableLocalPluginAdapter::EventThread::isMonitoring() const
 void ObservableLocalPluginAdapter::EventThread::addReader(const std::string& readerName)
 {
     std::shared_ptr<ReaderSpi> readerSpi = mParent->mObservablePluginSpi->searchReader(readerName);
-    std::shared_ptr<LocalReaderAdapter> reader = buildLocalReaderAdapter(readerSpi);
+    std::shared_ptr<LocalReaderAdapter> reader = mParent->buildLocalReaderAdapter(readerSpi);
 
     reader->doRegister();
     mParent->getReadersMap().insert({reader->getName(), reader});

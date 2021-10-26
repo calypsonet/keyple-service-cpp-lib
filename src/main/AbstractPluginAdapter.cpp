@@ -17,6 +17,7 @@
 
 /* Keyple Core Service */
 #include "AbstractReaderAdapter.h"
+#include "LocalConfigurableReaderAdapter.h"
 #include "ObservableLocalConfigurableReaderAdapter.h"
 
 namespace keyple {
@@ -49,6 +50,7 @@ std::shared_ptr<LocalReaderAdapter> AbstractPluginAdapter::buildLocalReaderAdapt
     } else {
         adapter = std::make_shared<LocalReaderAdapter>(readerSpi, getName());
     }
+
     return adapter;
   }
 
@@ -75,7 +77,6 @@ void AbstractPluginAdapter::doUnregister()
     }
 
     mReaders.clear();
-
 
     for (const auto& pair : mReaders) {
         try {

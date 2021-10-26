@@ -25,7 +25,7 @@
 using namespace testing;
 
 using namespace calypsonet::terminal::card::spi;
-using namespace keyple::core::commons;
+using namespace keyple::core::common;
 using namespace keyple::core::plugin::spi::reader;
 using namespace keyple::core::service;
 using namespace keyple::core::util::cpp::exception;

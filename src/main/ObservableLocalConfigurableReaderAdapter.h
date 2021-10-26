@@ -32,7 +32,7 @@ using namespace keyple::core::plugin::spi::reader;
  * @since 2.0.0
  */
 class ObservableLocalConfigurableReaderAdapter final
-: public ObservableLocalReaderAdapter, public ConfigurableReader {
+: virtual public ObservableLocalReaderAdapter, public ConfigurableReader {
 public:
     /**
      * (package-private)<br>

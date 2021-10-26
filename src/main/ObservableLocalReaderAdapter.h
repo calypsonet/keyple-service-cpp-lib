@@ -280,56 +280,56 @@ public:
      *
      * @since 2.0.0
      */
-    virtual void doUnregister() override;
+    void doUnregister() override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0.0
      */
-    virtual bool isCardPresent() override;
+    bool isCardPresent() override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0.0
      */
-    virtual void addObserver(std::shared_ptr<CardReaderObserverSpi> observer) override;
+    void addObserver(std::shared_ptr<CardReaderObserverSpi> observer) override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0.0
      */
-    virtual void removeObserver(std::shared_ptr<CardReaderObserverSpi> observer) override;
+    void removeObserver(std::shared_ptr<CardReaderObserverSpi> observer) override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0.0
      */
-    virtual int countObservers() const override;
+    int countObservers() const override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0.0
      */
-    virtual void clearObservers() override;
+    void clearObservers() override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0.0
      */
-    virtual void startCardDetection(const DetectionMode detectionMode) override;
+    void startCardDetection(const DetectionMode detectionMode) override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0.0
      */
-    virtual void stopCardDetection() override;
+    void stopCardDetection() override;
 
     /**
      * {@inheritDoc}
@@ -343,7 +343,7 @@ public:
      *
      * @since 2.0.0
      */
-    virtual void setReaderObservationExceptionHandler(
+    void setReaderObservationExceptionHandler(
         std::shared_ptr<CardReaderObservationExceptionHandlerSpi> exceptionHandler) override;
 
     /**
@@ -351,14 +351,14 @@ public:
      *
      * @since 2.0.0
      */
-    virtual void onCardInserted() override;
+    void onCardInserted() override;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0.0
      */
-    virtual void onCardRemoved() override;
+    void onCardRemoved() override;
 
 private:
     /**
@@ -376,7 +376,7 @@ private:
         /**
          *
          */
-        virtual void* run() override final;
+        void* run() final;
 
     private:
         /**

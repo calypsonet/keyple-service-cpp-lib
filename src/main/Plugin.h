@@ -27,7 +27,7 @@ namespace keyple {
 namespace core {
 namespace service {
 
-using namespace keyple::core::commons;
+using namespace keyple::core::common;
 
 /**
  * Manager for one or more Reader from the same family.

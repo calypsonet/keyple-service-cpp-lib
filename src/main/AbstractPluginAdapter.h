@@ -23,6 +23,7 @@
 #include "KeyplePluginExtension.h"
 
 /* Keyple Core Service */
+#include "LocalReaderAdapter.h"
 #include "Plugin.h"
 #include "Reader.h"
 
@@ -114,7 +115,7 @@ public:
      *
      * @since 2.0.0
      */
-    std::map<const std::string, std::shared_ptr<Reader>>& getReadersMap() final;
+    std::map<const std::string, std::shared_ptr<Reader>>& getReadersMap();
 
     /**
      * {@inheritDoc}

@@ -172,7 +172,7 @@ public:
      *
      * @since 2.0.0
      */
-    virtual const std::string& getName() const override final;
+    const std::string& getName() const final;
 
     /**
      * {@inheritDoc}

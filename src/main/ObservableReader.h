@@ -29,7 +29,13 @@ using namespace calypsonet::terminal::reader;
  *
  * @since 2.0.0
  */
-class ObservableReader : virtual public Reader, public ObservableCardReader {};
+class ObservableReader : virtual public Reader, public ObservableCardReader {
+public:
+    /**
+     * 
+     */
+    virtual ~ObservableReader() = default;
+};
 
 }
 }

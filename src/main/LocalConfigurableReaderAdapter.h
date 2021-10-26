@@ -31,7 +31,8 @@ using namespace keyple::core::plugin::spi::reader;
  *
  * @since 2.0.0
  */
-class LocalConfigurableReaderAdapter final : public LocalReaderAdapter, public ConfigurableReader {
+class LocalConfigurableReaderAdapter final
+: public LocalReaderAdapter, public ConfigurableReader {
 public:
     /**
      * (package-private)<br>

@@ -70,7 +70,7 @@ public:
      *
      * @since 2.0.0
      */
-    const std::shared_ptr<ApduResponseAdapter> getSelectApplicationResponse() const override;
+    const std::shared_ptr<ApduResponseApi> getSelectApplicationResponse() const override;
 
     /**
      * {@inheritDoc}
@@ -84,7 +84,7 @@ public:
      *
      * @since 2.0.0
      */
-    const std::shared_ptr<CardResponseAdapter> getCardResponse() const override;
+    const std::shared_ptr<CardResponseApi> getCardResponse() const override;
 
     /**
      *

@@ -17,11 +17,11 @@ namespace core {
 namespace service {
 
 CardResponseAdapter::CardResponseAdapter(
-  const std::vector<std::shared_ptr<ApduResponseAdapter>> apduResponses,
+  const std::vector<std::shared_ptr<ApduResponseApi>> apduResponses,
   const bool isLogicalChannelOpen)
 : mApduResponses(apduResponses), mIsLogicalChannelOpen(isLogicalChannelOpen) {}
 
-const std::vector<std::shared_ptr<ApduResponseAdapter>> CardResponseAdapter::getApduResponses() 
+const std::vector<std::shared_ptr<ApduResponseApi>>& CardResponseAdapter::getApduResponses() 
     const
 {
 	return mApduResponses;

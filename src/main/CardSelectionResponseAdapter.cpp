@@ -31,7 +31,7 @@ const std::string& CardSelectionResponseAdapter::getPowerOnData() const
     return mPowerOnData;
 }
 
-const std::shared_ptr<ApduResponseAdapter> 
+const std::shared_ptr<ApduResponseApi> 
     CardSelectionResponseAdapter::getSelectApplicationResponse() const
 {
     return mSelectApplicationResponse;
@@ -42,7 +42,7 @@ bool CardSelectionResponseAdapter::hasMatched() const
     return mHasMatched;
 }
 
-const std::shared_ptr<CardResponseAdapter> CardSelectionResponseAdapter::getCardResponse() const
+const std::shared_ptr<CardResponseApi> CardSelectionResponseAdapter::getCardResponse() const
 {
     return mCardResponse;
 }

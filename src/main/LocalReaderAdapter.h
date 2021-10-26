@@ -115,7 +115,7 @@ public:
      *
      * @since 2.0.0
      */
-    virtual std::shared_ptr<CardResponseAdapter> processCardRequest(
+    virtual std::shared_ptr<CardResponseApi> processCardRequest(
         const std::shared_ptr<CardRequestSpi> cardRequest,
         const ChannelControl channelControl) override final;
 

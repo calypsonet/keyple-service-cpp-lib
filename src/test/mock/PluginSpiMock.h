@@ -23,7 +23,7 @@
 
 using namespace testing;
 
-using namespace keyple::core::commons;
+using namespace keyple::core::common;
 using namespace keyple::core::plugin::spi;
 
 class PluginSpiMock final : public KeyplePluginExtension, public PluginSpi {
@@ -33,5 +33,5 @@ public:
     MOCK_METHOD((const std::vector<std::shared_ptr<ReaderSpi>>),
                 searchAvailableReaders,
                 (),
-                (const, override));
+                (override));
 };

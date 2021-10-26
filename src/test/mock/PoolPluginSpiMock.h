@@ -23,7 +23,7 @@
 
 using namespace testing;
 
-using namespace keyple::core::commons;
+using namespace keyple::core::common;
 
 class PoolPluginSpiMock final : public KeyplePluginExtension, public PoolPluginSpi {
 public:

@@ -43,10 +43,6 @@ public:
 
     virtual const std::string& getName() const override { return mName; }
 
-    MOCK_METHOD(bool, isProtocolSupported, (const std::string& readerProtocol), (const, override));
-    MOCK_METHOD(void, activateProtocol, (const std::string& readerProtocol), (override));
-    MOCK_METHOD(void, deactivateProtocol, (const std::string& readerProtocol), (override));
-    MOCK_METHOD(bool, isCurrentProtocol, (const std::string& readerProtocol), (const, override));
     MOCK_METHOD(void, openPhysicalChannel, (), (override));
     MOCK_METHOD(void, closePhysicalChannel, (), (override));
     MOCK_METHOD(bool, isPhysicalChannelOpen, (), (const, override));

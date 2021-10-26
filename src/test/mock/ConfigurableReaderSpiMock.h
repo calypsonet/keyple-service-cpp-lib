@@ -15,28 +15,40 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-/* Keyple Core Service */
-#include "Reader.h"
-
 /* Keyple Core Plugin */
+#include "ConfigurableReaderSpi.h"
 #include "ReaderSpi.h"
+
+/* Keyple Core Commons */
+#include "KeypleReaderExtension.h"
 
 using namespace testing;
 
+using namespace keyple::core::common;
 using namespace keyple::core::plugin::spi::reader;
 using namespace keyple::core::service;
 
-class ReaderMock final : public Reader, public ReaderSpi {
+class ConfigurableReaderSpiMock final
+: public KeypleReaderExtension, public ConfigurableReaderSpi {
 public:
-    MOCK_METHOD((const std::string&), getName, (), (const, override, final));
-    MOCK_METHOD(bool, isContactless, (), (override, final));
-    MOCK_METHOD(bool, isCardPresent, (), (override, final));
+    ConfigurableReaderSpiMock(const std::string& name) : mName(name) {}
+    ConfigurableReaderSpiMock() : ConfigurableReaderSpiMock("") {}
+
+    virtual const std::string& getName() const override { return mName; }
+
     MOCK_METHOD(void, openPhysicalChannel, (), (override));
-    MOCK_METHOD(void, closePhysicalChannel, (), (override));
+    MOCK_METHOD(void, closePhysicalChannel, (), (override, final));
     MOCK_METHOD(bool, isPhysicalChannelOpen, (), (const, override));
-    MOCK_METHOD(bool, checkCardPresence, (), (override));
+    MOCK_METHOD(bool, checkCardPresence,(), (override, final));
     MOCK_METHOD((const std::string), getPowerOnData, (), (const, override));
-    MOCK_METHOD(void, onUnregister, (), (override));
+    MOCK_METHOD(bool, isContactless, (), (override, final));
+    MOCK_METHOD(void, onUnregister,(), (override, final));
     MOCK_METHOD((const std::vector<uint8_t>), transmitApdu, (const std::vector<uint8_t>& apduIn), (override));
-    MOCK_METHOD((std::shared_ptr<KeypleReaderExtension>), getExtension, (const std::type_info& readerExtensionClass), (const, override));
+    MOCK_METHOD(bool, isProtocolSupported, (const std::string&), (const, override));
+    MOCK_METHOD(void, activateProtocol, (const std::string&), (override));
+    MOCK_METHOD(void, deactivateProtocol, (const std::string&), (override));
+    MOCK_METHOD(bool, isCurrentProtocol, (const std::string&), (const, override));
+
+private:
+    const std::string mName;
 };

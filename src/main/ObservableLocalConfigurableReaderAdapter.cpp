@@ -32,7 +32,6 @@ void ObservableLocalConfigurableReaderAdapter::deactivateProtocol(const std::str
 {
     deactivateReaderProtocol(readerProtocol);
 }
-};
 
 }
 }

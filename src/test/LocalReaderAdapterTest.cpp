@@ -34,17 +34,18 @@
 
 /* Keyple Core Service */
 #include "LocalReaderAdapter.h"
+#include "LocalConfigurableReaderAdapter.h"
 #include "MultiSelectionProcessing.h"
 
 /* Mock */
 #include "CardSelectionRequestSpiMock.h"
 #include "CardSelectorSpiMock.h"
-#include "ReaderSpiMock.h"
+#include "ConfigurableReaderSpiMock.h"
 
 using namespace testing;
 
 using namespace calypsonet::terminal::reader;
-using namespace keyple::core::commons;
+using namespace keyple::core::common;
 using namespace keyple::core::plugin;
 using namespace keyple::core::plugin::spi::reader;
 using namespace keyple::core::service;
@@ -56,7 +57,7 @@ static const std::string CARD_PROTOCOL = "cardProtocol";
 static const std::string OTHER_CARD_PROTOCOL = "otherCardProtocol";
 static const std::string POWER_ON_DATA = "12345678";
 
-static std::shared_ptr<ReaderSpiMock> readerSpi;
+static std::shared_ptr<ConfigurableReaderSpiMock> readerSpi;
 static std::shared_ptr<CardSelectorSpiMock> cardSelector;
 static std::shared_ptr<CardSelectionRequestSpiMock> cardSelectionRequestSpi;
 
@@ -73,19 +74,16 @@ static void setUp()
 {
     mPhysicalChannelOpen = false;
 
-    readerSpi = std::make_shared<ReaderSpiMock>(READER_NAME);
+    readerSpi = std::make_shared<ConfigurableReaderSpiMock>(READER_NAME);
     EXPECT_CALL(*readerSpi.get(), checkCardPresence()).WillRepeatedly(Return(true));
     EXPECT_CALL(*readerSpi.get(), getPowerOnData()).WillRepeatedly(Return(POWER_ON_DATA));
-    EXPECT_CALL(*readerSpi.get(), isProtocolSupported(CARD_PROTOCOL)).WillRepeatedly(Return(true));
-    EXPECT_CALL(*readerSpi.get(), isCurrentProtocol(CARD_PROTOCOL)).WillRepeatedly(Return(true));
     EXPECT_CALL(*readerSpi.get(), closePhysicalChannel()).WillRepeatedly([]() { mPhysicalChannelOpen = false; });
     EXPECT_CALL(*readerSpi.get(), openPhysicalChannel()).WillRepeatedly([]() { mPhysicalChannelOpen = true; });
     EXPECT_CALL(*readerSpi.get(), isPhysicalChannelOpen()).WillRepeatedly(Return(mPhysicalChannelOpen));
     EXPECT_CALL(*readerSpi.get(), isContactless()).WillRepeatedly(Return(true));
-    EXPECT_CALL(*readerSpi.get(), activateProtocol(_)).WillRepeatedly(Return());
-    EXPECT_CALL(*readerSpi.get(), transmitApdu(_))
-        .WillRepeatedly(Return(ByteArrayUtil::fromHex("6D00")));
-
+    EXPECT_CALL(*readerSpi.get(), transmitApdu(_)).WillRepeatedly(Return(ByteArrayUtil::fromHex("6D00")));
+    EXPECT_CALL(*readerSpi.get(), isProtocolSupported(_)).WillRepeatedly(Return(true));
+    
     cardSelector = std::make_shared<CardSelectorSpiMock>();
     EXPECT_CALL(*cardSelector.get(), getPowerOnDataRegex()).WillRepeatedly(ReturnRef(powerOnData));
     EXPECT_CALL(*cardSelector.get(), getAid()).WillRepeatedly(Return(std::vector<uint8_t>()));
@@ -355,7 +353,7 @@ TEST(LocalReaderAdapterTest,
     EXPECT_CALL(*cardSelectionRequestSpi.get(), getCardSelector())
         .WillRepeatedly(Return(cardSelector));
 
-    LocalReaderAdapter localReaderAdapter(readerSpi, PLUGIN_NAME);
+    LocalConfigurableReaderAdapter localReaderAdapter(readerSpi, PLUGIN_NAME);
     localReaderAdapter.doRegister();
     localReaderAdapter.activateProtocol(CARD_PROTOCOL, CARD_PROTOCOL);
 

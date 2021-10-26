@@ -37,7 +37,7 @@
 
 using namespace testing;
 
-using namespace keyple::core::commons;
+using namespace keyple::core::common;
 using namespace keyple::core::plugin;
 using namespace keyple::core::plugin::spi;
 using namespace keyple::core::plugin::spi::reader::observable;

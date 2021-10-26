@@ -38,5 +38,5 @@ public:
     MOCK_METHOD((const std::vector<std::shared_ptr<ReaderSpi>>),
                 searchAvailableReaders,
                 (),
-                (const, override));
+                (override));
 };
