@@ -100,6 +100,7 @@ ADD_LIBRARY(
     ${CMAKE_CURRENT_SOURCE_DIR}/ReaderEventAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ScheduledCardSelectionsResponseAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/SmartCardServiceAdapter.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/SmartCardServiceProvider.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WaitForCardInsertionStateAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WaitForCardProcessingStateAdapter.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/WaitForCardRemovalStateAdapter.cpp
