@@ -24,8 +24,8 @@ using namespace calypsonet::terminal::card;
 
 class CardRequestSpiMock final : public CardRequestSpi {
 public:
-    MOCK_METHOD(bool, stopOnUnsuccessfulStatusWord, (), (override));
-    MOCK_METHOD((const std::vector<std::shared_ptr<ApduRequestSpi>>),
+    MOCK_METHOD(bool, stopOnUnsuccessfulStatusWord, (), (const, override));
+    MOCK_METHOD((const std::vector<std::shared_ptr<ApduRequestSpi>>&),
                 getApduRequests,
                 (),
                 (const, override));

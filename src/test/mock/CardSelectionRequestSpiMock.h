@@ -24,6 +24,6 @@ using namespace calypsonet::terminal::card;
 
 class CardSelectionRequestSpiMock final : public CardSelectionRequestSpi {
 public:
-    MOCK_METHOD((const std::shared_ptr<CardRequestSpi>), getCardRequest, (), (const, override));
-    MOCK_METHOD((const std::shared_ptr<CardSelectorSpi>), getCardSelector, (), (const, override));
+    MOCK_METHOD((std::shared_ptr<CardRequestSpi>), getCardRequest, (), (const, override));
+    MOCK_METHOD((std::shared_ptr<CardSelectorSpi>), getCardSelector, (), (const, override));
 };
