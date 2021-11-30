@@ -55,13 +55,13 @@ void CardSelectionManagerAdapter::setMultipleSelectionMode()
 int CardSelectionManagerAdapter::prepareSelection(
     const std::shared_ptr<CardSelection> cardSelection) 
 {
-
     Assert::getInstance().notNull(cardSelection, "cardSelection");
 
     /* Keep the selection request */
-    auto selection = std::reinterpret_pointer_cast<CardSelectionSpi>(cardSelection);
+    auto selection = std::dynamic_pointer_cast<CardSelectionSpi>(cardSelection);
     mCardSelections.push_back(selection);
-    mCardSelectionRequests.push_back(selection->getCardSelectionRequest());
+    std::shared_ptr<CardSelectionRequestSpi> selectionRequest = selection->getCardSelectionRequest();
+    mCardSelectionRequests.push_back(selectionRequest);
 
     /* Return the selection index (starting at 0) */
     return mCardSelections.size() - 1;
