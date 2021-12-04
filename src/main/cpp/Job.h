@@ -24,6 +24,8 @@ namespace core {
 namespace service {
 namespace cpp {
 
+using namespace keyple::core::util::cpp;
+
 class Job : public Thread {
 public:
     /**
