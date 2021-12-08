@@ -83,17 +83,16 @@ static void setUp()
     EXPECT_CALL(*readerSpi.get(), isContactless()).WillRepeatedly(Return(true));
     EXPECT_CALL(*readerSpi.get(), transmitApdu(_)).WillRepeatedly(Return(ByteArrayUtil::fromHex("6D00")));
     EXPECT_CALL(*readerSpi.get(), isProtocolSupported(_)).WillRepeatedly(Return(true));
+    EXPECT_CALL(*readerSpi.get(), isCurrentProtocol(_)).WillRepeatedly(Return(true));
+    EXPECT_CALL(*readerSpi.get(), activateProtocol(_)).WillRepeatedly(Return());
     
     cardSelector = std::make_shared<CardSelectorSpiMock>();
     EXPECT_CALL(*cardSelector.get(), getPowerOnDataRegex()).WillRepeatedly(ReturnRef(powerOnData));
     EXPECT_CALL(*cardSelector.get(), getAid()).WillRepeatedly(Return(std::vector<uint8_t>()));
     EXPECT_CALL(*cardSelector.get(), getCardProtocol()).WillRepeatedly(ReturnRef(protocol));
-    EXPECT_CALL(*cardSelector.get(), getFileOccurrence())
-        .WillRepeatedly(Return(CardSelectorSpi::FileOccurrence::FIRST));
-    EXPECT_CALL(*cardSelector.get(), getFileControlInformation())
-        .WillRepeatedly(Return(CardSelectorSpi::FileControlInformation::FCI));
-    EXPECT_CALL(*cardSelector.get(), getSuccessfulSelectionStatusWords())
-        .WillRepeatedly(ReturnRef(successfulStatusWords));
+    EXPECT_CALL(*cardSelector.get(), getFileOccurrence()).WillRepeatedly(Return(CardSelectorSpi::FileOccurrence::FIRST));
+    EXPECT_CALL(*cardSelector.get(), getFileControlInformation()).WillRepeatedly(Return(CardSelectorSpi::FileControlInformation::FCI));
+    EXPECT_CALL(*cardSelector.get(), getSuccessfulSelectionStatusWords()).WillRepeatedly(ReturnRef(successfulStatusWords));
 
     cardSelectionRequestSpi = std::make_shared<CardSelectionRequestSpiMock>();
     EXPECT_CALL(*cardSelectionRequestSpi.get(), getCardRequest()).WillRepeatedly(Return(nullptr));
