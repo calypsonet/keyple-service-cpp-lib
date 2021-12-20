@@ -124,7 +124,8 @@ ObservableReaderStateServiceAdapter::ObservableReaderStateServiceAdapter(
 
 void ObservableReaderStateServiceAdapter::onEvent(const InternalEvent event)
 {
-    std::lock_guard<std::mutex> lock(mMutex);
+    /* C++: cannot use std::lock_guard as mutex needs to be unlocked before calling onEvent */
+    mMutex.lock();
 
     switch (event) {
     case InternalEvent::CARD_INSERTED:
@@ -140,6 +141,7 @@ void ObservableReaderStateServiceAdapter::onEvent(const InternalEvent event)
         break;
     }
 
+    mMutex.unlock();
     mCurrentState->onEvent(event);
 }
 

@@ -601,7 +601,7 @@ void LocalReaderAdapter::closeLogicalAndPhysicalChannelsSilently()
     closeLogicalChannel();
 
     /* Closes the physical channel and resets the current protocol info */
-    mCurrentProtocol = nullptr;
+    mCurrentProtocol = "";
     mUseDefaultProtocol = false;
 
     try {

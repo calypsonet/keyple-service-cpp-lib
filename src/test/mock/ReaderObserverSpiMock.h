@@ -15,36 +15,55 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-/* Keyple Core Service */
-#include "PluginObserverSpi.h"
+/* Calypsonet Terminal Reader */
+#include "CardReaderEvent.h"
+#include "CardReaderObserverSpi.h"
+
+/* Keyple Core Util */
+#include "RuntimeException.h"
+
 
 using namespace testing;
 
-using namespace keyple::core::service::spi;
+using namespace calypsonet::terminal::reader;
+using namespace calypsonet::terminal::reader::spi;
 
-class PluginObserverSpiMock final : public PluginObserverSpi {
+using namespace keyple::core::util::cpp::exception;
+
+class ReaderObserverSpiMock final : public CardReaderObserverSpi {
 public:
-    PluginObserverSpiMock(const std::shared_ptr<RuntimeException> e) : mThrowEx(e) {}
+    ReaderObserverSpiMock(const std::shared_ptr<RuntimeException> e) : mThrowEx(e) {}
 
-    virtual void onPluginEvent(const std::shared_ptr<PluginEvent> pluginEvent) override final
+    void onReaderEvent(std::shared_ptr<CardReaderEvent> readerEvent)
     {
-        mEventTypeReceived.insert({pluginEvent->getType(), pluginEvent});
-        if (mThrowEx) {
+        mEventTypeReceived.insert({readerEvent->getType(), readerEvent});
+        if (mThrowEx != nullptr) {
             throw *mThrowEx.get();
         }
     }
 
-    bool hasReceived(const PluginEvent::Type eventType) const
+    bool hasReceived(const CardReaderEvent::Type eventType)
     {
-        return mEventTypeReceived.find(eventType) != mEventTypeReceived.end();
+        for (const auto& pair : mEventTypeReceived) {
+            if (eventType == pair.first) {
+                return true;
+            }
+        }
+        
+        return false;
     }
 
-    const std::shared_ptr<PluginEvent> getLastEventOfType(const PluginEvent::Type eventType) const
+    const std::shared_ptr<CardReaderEvent> getLastEventOfType(const CardReaderEvent::Type eventType)
     {
-        return mEventTypeReceived.at(eventType);
+        const auto it = mEventTypeReceived.find(eventType);
+        if (it != mEventTypeReceived.end()) {
+            return it->second;
+        }
+        
+        return nullptr;
     }
 
 private:
-    std::map<PluginEvent::Type, std::shared_ptr<PluginEvent>> mEventTypeReceived;
-    const std::shared_ptr<RuntimeException> mThrowEx;
+    std::map<CardReaderEvent::Type, std::shared_ptr<CardReaderEvent>> mEventTypeReceived;
+    std::shared_ptr<RuntimeException> mThrowEx;
 };

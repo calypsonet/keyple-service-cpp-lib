@@ -46,6 +46,14 @@ ObservableLocalPluginAdapter::ObservableLocalPluginAdapter(
 : AbstractObservableLocalPluginAdapter(observablePluginSpi),
   mObservablePluginSpi(observablePluginSpi) {}
 
+ObservableLocalPluginAdapter::~ObservableLocalPluginAdapter()
+{
+    if (mThread) {
+        mThread->end();
+        while (mThread->mRunning || !mThread->mTerminated);
+    }
+}
+
 bool ObservableLocalPluginAdapter::isMonitoring() const
 {
     return mThread != nullptr && mThread->isAlive() && mThread->isMonitoring();
@@ -57,28 +65,17 @@ void ObservableLocalPluginAdapter::addObserver(std::shared_ptr<PluginObserverSpi
 
     if (countObservers() == 1) {
         mLogger->debug("Start monitoring the plugin '%'\n,", getName());
-
         mThread = std::make_shared<EventThread>(getName(), this);
         mThread->setName("PluginEventMonitoringThread");
-        mThread->setUncaughtExceptionHandler(
-            std::make_shared<Thread::UncaughtExceptionHandler>());
-            // FIXME
-            //    {
-            //     public void uncaughtException(Thread t, Throwable e) {
-            //     getObservationManager()
-            //         .getObservationExceptionHandler()
-            //         .onPluginObservationError(thread.pluginName, e);
-            //     }
-            // });
+        mThread->setUncaughtExceptionHandler(std::make_shared<UncaughtExceptionHandler>(this));
         mThread->start();
+        while (!mThread->mStarted);
     }
 }
 
 void ObservableLocalPluginAdapter::removeObserver(const std::shared_ptr<PluginObserverSpi> observer)
 {
     Assert::getInstance().notNull(observer, "observer");
-
-    AbstractObservableLocalPluginAdapter::removeObserver(observer);
 
     if (Arrays::contains(getObservationManager()->getObservers(), observer)) {
         AbstractObservableLocalPluginAdapter::removeObserver(observer);
@@ -103,6 +100,21 @@ void ObservableLocalPluginAdapter::clearObservers()
     }
 }
 
+/* UNCAUGHT EXCEPTION HANDLER ------------------------------------------------------------------- */
+
+ObservableLocalPluginAdapter::UncaughtExceptionHandler::UncaughtExceptionHandler(
+    ObservableLocalPluginAdapter* parent)
+: mParent(parent) {}
+
+void ObservableLocalPluginAdapter::UncaughtExceptionHandler::uncaughtException(
+    std::shared_ptr<Thread> t, std::shared_ptr<Exception> e)
+{
+    (void)t;
+
+    mParent->getObservationManager()->getObservationExceptionHandler()
+                                    ->onPluginObservationError(mParent->mThread->mPluginName, e);
+}
+
 /* EVENT THREAD --------------------------------------------------------------------------------- */
 
 ObservableLocalPluginAdapter::EventThread::EventThread(const std::string& pluginName,
@@ -110,6 +122,8 @@ ObservableLocalPluginAdapter::EventThread::EventThread(const std::string& plugin
 : mPluginName(pluginName),
   mMonitoringCycleDuration(parent->mObservablePluginSpi->getMonitoringCycleDuration()),
   mRunning(true),
+  mStarted(false),
+  mTerminated(false),
   mParent(parent) {}
 
 void ObservableLocalPluginAdapter::EventThread::end()
@@ -208,7 +222,7 @@ void ObservableLocalPluginAdapter::EventThread::processChanges(
 
 void* ObservableLocalPluginAdapter::EventThread::run()
 {
-    mTerminated = false;
+    mStarted = true;
 
     try {
         while (mRunning) {
@@ -217,14 +231,14 @@ void* ObservableLocalPluginAdapter::EventThread::run()
                 mParent->mObservablePluginSpi->searchAvailableReaderNames();
 
             /* Checks if it has changed this algorithm favors cases where nothing change */
-            const std::vector<std::string>& currentlyRegisteredReaderNames =
+            const std::vector<std::string> currentlyRegisteredReaderNames =
                 mParent->getReaderNames();
             if (!Arrays::containsAll(currentlyRegisteredReaderNames, actualNativeReaderNames) ||
                 !Arrays::containsAll(actualNativeReaderNames, currentlyRegisteredReaderNames)) {
                 processChanges(actualNativeReaderNames);
             }
 
-            /* Sleep for a while. */
+            /* Sleep for a while */
             Thread::sleep(mMonitoringCycleDuration);
         }
     } catch (const InterruptedException& e) {

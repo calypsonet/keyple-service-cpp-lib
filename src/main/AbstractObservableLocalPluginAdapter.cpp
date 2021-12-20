@@ -112,7 +112,7 @@ void AbstractObservableLocalPluginAdapter::removeObserver(
     const auto it = std::find(observers.begin(), observers.end(), observer);
 
     if (it != observers.end()) {
-      mObservationManager->removeObserver(observer);
+        mObservationManager->removeObserver(observer);
     }
 }
 

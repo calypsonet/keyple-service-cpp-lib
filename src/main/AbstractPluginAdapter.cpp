@@ -71,13 +71,7 @@ void AbstractPluginAdapter::doRegister()
 void AbstractPluginAdapter::doUnregister()
 {
     mIsRegistered = false;
-
-    for (const auto& pair : mReaders) {
-        std::dynamic_pointer_cast<AbstractReaderAdapter>(pair.second)->doUnregister();
-    }
-
-    mReaders.clear();
-
+    
     for (const auto& pair : mReaders) {
         try {
             std::dynamic_pointer_cast<AbstractReaderAdapter>(pair.second)->doUnregister();

@@ -82,6 +82,7 @@ public:
     {
         for (const auto& readerName : names) {
             auto readerSpi = std::make_shared<ReaderSpiMock>(readerName);
+            EXPECT_CALL(*readerSpi.get(), onUnregister).WillRepeatedly(Return());
             mStubReaders.insert({readerName, readerSpi});
         }
     }

@@ -41,34 +41,6 @@ using namespace keyple::core::util::cpp::exception;
 static const std::string PLUGIN_NAME = "plugin";
 static const std::string READER_NAME_1 = "reader1";
 
-// class OLPAT_PluginObserverSpiMock final : public PluginObserverSpi {
-// public:
-//     OLPAT_PluginObserverSpiMock(const std::shared_ptr<RuntimeException> e) : mThrowEx(e) {}
-
-//     virtual void onPluginEvent(std::shared_ptr<PluginEvent> pluginEvent) override final
-//     {
-//         mEventTypeReceived.insert({pluginEvent->getType(), pluginEvent});
-//         if (mThrowEx != nullptr) {
-//             throw *mThrowEx.get();
-//         }
-//     }
-
-//     bool hasReceived(const PluginEvent::Type eventType)
-//     {
-//         return mEventTypeReceived.find(eventType) != mEventTypeReceived.end();
-//     }
-
-//     const std::shared_ptr<PluginEvent> getLastEventOfType(const PluginEvent::Type eventType)
-//     {
-//         return mEventTypeReceived.find(eventType) != mEventTypeReceived.end() ?
-//                    mEventTypeReceived.at(eventType) : nullptr;
-//     }
-
-// private:
-//     std::map<PluginEvent::Type, std::shared_ptr<PluginEvent>> mEventTypeReceived;
-//     std::shared_ptr<RuntimeException> mThrowEx;
-// };
-
 static std::shared_ptr<ObservableLocalPluginSpiMock> observablePluginMock;
 static std::shared_ptr<ObservableLocalPluginAdapter> pluginAdapter;
 static std::shared_ptr<PluginObservationExceptionHandlerSpiMock> exceptionHandlerMock;
@@ -78,6 +50,7 @@ static void setUp()
 {
     observablePluginMock = std::make_shared<ObservableLocalPluginSpiMock>(PLUGIN_NAME, nullptr);
     observerMock = std::make_shared<PluginObserverSpiMock>(nullptr);
+    
     exceptionHandlerMock = std::make_shared<PluginObservationExceptionHandlerSpiMock>(nullptr);
     pluginAdapter = std::make_shared<ObservableLocalPluginAdapter>(observablePluginMock);
 }
@@ -126,197 +99,193 @@ TEST(ObservableLocalPluginAdapterTest, addObserver_withoutExceptionHandler_throw
     tearDown();
 }
 
-// FIXME
-// TEST(ObservableLocalPluginAdapterTest, notifyObserver_throwException_isPassedTo_exceptionHandler)
-// {
-//     setUp();
+TEST(ObservableLocalPluginAdapterTest, notifyObserver_throwException_isPassedTo_exceptionHandler)
+{
+    setUp();
 
-//     std::shared_ptr<RuntimeException> exception = std::make_shared<RuntimeException>();
-//     //exceptionHandlerMock = new PluginExceptionHandlerMock(new RuntimeException()); // Not used
-//     observerMock = std::make_shared<OLPAT_PluginObserverSpiMock>(exception);
+    std::shared_ptr<RuntimeException> exception = std::make_shared<RuntimeException>();
+    exceptionHandlerMock = std::make_shared<PluginObservationExceptionHandlerSpiMock>(
+                               std::make_shared<RuntimeException>()); // Not used
+    observerMock = std::make_shared<PluginObserverSpiMock>(exception);
 
-//     /* Start plugin */
-//     pluginAdapter->doRegister();
-//     pluginAdapter->setPluginObservationExceptionHandler(exceptionHandlerMock);
-//     pluginAdapter->addObserver(observerMock);
+    /* Start plugin */
+    pluginAdapter->doRegister();
+    pluginAdapter->setPluginObservationExceptionHandler(exceptionHandlerMock);
+    pluginAdapter->addObserver(observerMock);
 
-//     ASSERT_EQ(pluginAdapter->countObservers(), 1);
-//     ASSERT_TRUE(pluginAdapter->isMonitoring());
+    ASSERT_EQ(pluginAdapter->countObservers(), 1);
+    ASSERT_TRUE(pluginAdapter->isMonitoring());
 
-//     /* Add reader name */
-//     observablePluginMock->addReaderName({READER_NAME_1});
+    /* Add reader name */
+    observablePluginMock->addReaderName({READER_NAME_1});
 
-//     await().atMost(1, TimeUnit.SECONDS).until(handlerIsInvoked());
-//     // when exception handler fails, no error is thrown only logs
+    /* Wait until handlerIsInvoked() event, should not take longer than 1 sec */
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 
-//     tearDown();
-// }
+    /* When exception handler fails, no error is thrown only logs */
 
-// static inline void addFirstObserver_shouldStartEventThread()
-// {
-//     pluginAdapter->doRegister();
-//     pluginAdapter->setPluginObservationExceptionHandler(exceptionHandlerMock);
-//     pluginAdapter->addObserver(observerMock);
+    tearDown();
+}
 
-//     ASSERT_EQ(pluginAdapter->countObservers(), 1);
-//     ASSERT_TRUE(pluginAdapter->isMonitoring());
-// }
+static inline void addFirstObserver_shouldStartEventThread()
+{
+    pluginAdapter->doRegister();
+    pluginAdapter->setPluginObservationExceptionHandler(exceptionHandlerMock);
+    pluginAdapter->addObserver(observerMock);
 
-// FIXME
-// TEST(ObservableLocalPluginAdapterTest, addFirstObserver_shouldStartEventThread)
-// {
-//     setUp();
+    ASSERT_EQ(pluginAdapter->countObservers(), 1);
+    ASSERT_TRUE(pluginAdapter->isMonitoring());
+}
 
-//     addFirstObserver_shouldStartEventThread();
+TEST(ObservableLocalPluginAdapterTest, addFirstObserver_shouldStartEventThread)
+{
+    setUp();
 
-//     tearDown();
-// }
+    addFirstObserver_shouldStartEventThread();
 
-// FIXME
-// TEST(ObservableLocalPluginAdapterTest, removeLastObserver_shouldStopEventThread)
-// {
-//     setUp();
+    tearDown();
+}
 
-//     pluginAdapter->doRegister();
-//     pluginAdapter->setPluginObservationExceptionHandler(exceptionHandlerMock);
-//     pluginAdapter->addObserver(observerMock);
+TEST(ObservableLocalPluginAdapterTest, removeLastObserver_shouldStopEventThread)
+{
+    setUp();
 
-//     ASSERT_EQ(pluginAdapter->countObservers(), 1);
-//     ASSERT_TRUE(pluginAdapter->isMonitoring());
+    pluginAdapter->doRegister();
+    pluginAdapter->setPluginObservationExceptionHandler(exceptionHandlerMock);
+    pluginAdapter->addObserver(observerMock);
 
-//     pluginAdapter->removeObserver(observerMock);
+    ASSERT_EQ(pluginAdapter->countObservers(), 1);
+    ASSERT_TRUE(pluginAdapter->isMonitoring());
 
-//     ASSERT_EQ(pluginAdapter->countObservers(), 0);
-//     ASSERT_FALSE(pluginAdapter->isMonitoring());
+    pluginAdapter->removeObserver(observerMock);
 
-//     tearDown();
-// }
+    ASSERT_EQ(pluginAdapter->countObservers(), 0);
+    ASSERT_FALSE(pluginAdapter->isMonitoring());
 
-// FIXME
-// TEST(ObservableLocalPluginAdapterTest, clearObserver_shouldStopEventThread)
-// {
-//     setUp();
+    tearDown();
+}
 
-//     pluginAdapter->doRegister();
-//     pluginAdapter->setPluginObservationExceptionHandler(exceptionHandlerMock);
-//     pluginAdapter->addObserver(observerMock);
+TEST(ObservableLocalPluginAdapterTest, clearObserver_shouldStopEventThread)
+{
+    setUp();
 
-//     ASSERT_EQ(pluginAdapter->countObservers(), 1);
-//     ASSERT_TRUE(pluginAdapter->isMonitoring());
+    pluginAdapter->doRegister();
+    pluginAdapter->setPluginObservationExceptionHandler(exceptionHandlerMock);
+    pluginAdapter->addObserver(observerMock);
 
-//     pluginAdapter->clearObservers();
+    ASSERT_EQ(pluginAdapter->countObservers(), 1);
+    ASSERT_TRUE(pluginAdapter->isMonitoring());
 
-//     ASSERT_EQ(pluginAdapter->countObservers(), 0);
-//     ASSERT_FALSE(pluginAdapter->isMonitoring());
+    pluginAdapter->clearObservers();
 
-//     tearDown();
-// }
+    ASSERT_EQ(pluginAdapter->countObservers(), 0);
+    ASSERT_FALSE(pluginAdapter->isMonitoring());
 
-// static inline void whileMonitoring_readerNames_appears_shouldNotify_andCreateReaders()
-// {
-//     /* Start plugin */
-//     addFirstObserver_shouldStartEventThread();
+    tearDown();
+}
 
-//     /* Add reader name */
-//     observablePluginMock->addReaderName({READER_NAME_1});
+static inline void whileMonitoring_readerNames_appears_shouldNotify_andCreateReaders()
+{
+    /* Start plugin */
+    addFirstObserver_shouldStartEventThread();
 
-//     /* Wait until READER_CONNECTED event, should not take longer than 1 sec */
-//      std::this_thread::sleep_for(std::chrono::seconds(1));
+    /* Add reader name */
+    observablePluginMock->addReaderName({READER_NAME_1});
 
-//     /* Check event is well formed */
-//     const std::shared_ptr<PluginEvent> event =
-//         observerMock->getLastEventOfType(PluginEvent::Type::READER_CONNECTED);
-//     const std::vector<std::string>& readerNames = event->getReaderNames();
-//     ASSERT_EQ(readerNames.size(), 1);
-//     ASSERT_TRUE(std::count(readerNames.begin(), readerNames.end(), READER_NAME_1));
-//     ASSERT_EQ(event->getPluginName(), PLUGIN_NAME);
+    /* Wait until READER_CONNECTED event, should not take longer than 1 sec */
+     std::this_thread::sleep_for(std::chrono::seconds(1));
 
-//     /* Check reader is created */
-//     const std::vector<std::string>& pluginReaderNames = pluginAdapter->getReaderNames();
-//     ASSERT_TRUE(std::count(pluginReaderNames.begin(), pluginReaderNames.end(), READER_NAME_1));
-// }
+    /* Check event is well formed */
+    const std::shared_ptr<PluginEvent> event =
+        observerMock->getLastEventOfType(PluginEvent::Type::READER_CONNECTED);
+    const std::vector<std::string>& readerNames = event->getReaderNames();
+    ASSERT_EQ(readerNames.size(), 1);
+    ASSERT_TRUE(std::count(readerNames.begin(), readerNames.end(), READER_NAME_1));
+    ASSERT_EQ(event->getPluginName(), PLUGIN_NAME);
 
-// FIXME
-// TEST(ObservableLocalPluginAdapterTest,
-//      whileMonitoring_readerNames_appears_shouldNotify_andCreateReaders)
-// {
-//     setUp();
+    /* Check reader is created */
+    const std::vector<std::string>& pluginReaderNames = pluginAdapter->getReaderNames();
+    ASSERT_TRUE(std::count(pluginReaderNames.begin(), pluginReaderNames.end(), READER_NAME_1));
+}
 
-//     whileMonitoring_readerNames_appears_shouldNotify_andCreateReaders();
+TEST(ObservableLocalPluginAdapterTest,
+     whileMonitoring_readerNames_appears_shouldNotify_andCreateReaders)
+{
+    setUp();
 
-//     tearDown();
-// }
+    whileMonitoring_readerNames_appears_shouldNotify_andCreateReaders();
 
-// FIXME
-// TEST(ObservableLocalPluginAdapterTest,
-//      whileMonitoring_readerNames_disappears_shouldNotify_andRemoveReaders)
-// {
-//     setUp();
+    tearDown();
+}
 
-//     whileMonitoring_readerNames_appears_shouldNotify_andCreateReaders();
+TEST(ObservableLocalPluginAdapterTest,
+     whileMonitoring_readerNames_disappears_shouldNotify_andRemoveReaders)
+{
+    setUp();
 
-//     /* Remove reader name */
-//     observablePluginMock->removeReaderName({READER_NAME_1});
+    whileMonitoring_readerNames_appears_shouldNotify_andCreateReaders();
 
-//     /* Wait until READER_DISCONNECTED event, should not take longer than 1 sec */
-//     std::this_thread::sleep_for(std::chrono::seconds(1));
+    /* Remove reader name */
+    observablePluginMock->removeReaderName({READER_NAME_1});
 
-//     /* Check event is well formed */
-//     const std::shared_ptr<PluginEvent> event =
-//         observerMock->getLastEventOfType(PluginEvent::Type::READER_DISCONNECTED);
-//     const std::vector<std::string>& readerNames = event->getReaderNames();
-//     ASSERT_EQ(readerNames.size(), 1);
-//     ASSERT_TRUE(std::count(readerNames.begin(), readerNames.end(), READER_NAME_1));
-//     ASSERT_EQ(event->getPluginName(), PLUGIN_NAME);
+    /* Wait until READER_DISCONNECTED event, should not take longer than 1 sec */
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 
-//     tearDown();
-// }
+    /* Check event is well formed */
+    const std::shared_ptr<PluginEvent> event =
+        observerMock->getLastEventOfType(PluginEvent::Type::READER_DISCONNECTED);
+    const std::vector<std::string>& readerNames = event->getReaderNames();
+    ASSERT_EQ(readerNames.size(), 1);
+    ASSERT_TRUE(std::count(readerNames.begin(), readerNames.end(), READER_NAME_1));
+    ASSERT_EQ(event->getPluginName(), PLUGIN_NAME);
 
-// FIXME
-// TEST(ObservableLocalPluginAdapterTest,
-//      whileMonitoring_observerThrowException_isPassedTo_exceptionHandler)
-// {
-//     setUp();
+    tearDown();
+}
 
-//     const auto exception = std::make_shared<RuntimeException>();
-//     observerMock = std::make_shared<OLPAT_PluginObserverSpiMock>(exception);
+TEST(ObservableLocalPluginAdapterTest,
+     whileMonitoring_observerThrowException_isPassedTo_exceptionHandler)
+{
+    setUp();
 
-//     /* Start plugin */
-//     addFirstObserver_shouldStartEventThread();
+    const auto exception = std::make_shared<RuntimeException>();
+    observerMock = std::make_shared<PluginObserverSpiMock>(exception);
 
-//     /* Add reader name */
-//     observablePluginMock->addReaderName({READER_NAME_1});
+    /* Start plugin */
+    addFirstObserver_shouldStartEventThread();
 
-//     /* Wait until handlerIsInvoked() event, should not take longer than 1 sec */
-//     std::this_thread::sleep_for(std::chrono::seconds(1));
+    /* Add reader name */
+    observablePluginMock->addReaderName({READER_NAME_1});
 
-//     /* Check if exception has been thrown */
-//     ASSERT_EQ(exceptionHandlerMock->getPluginName(), PLUGIN_NAME);
-//     ASSERT_EQ(exceptionHandlerMock->getE(), exception);
+    /* Wait until handlerIsInvoked() event, should not take longer than 1 sec */
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 
-//     tearDown();
-// }
+    /* Check if exception has been thrown */
+    ASSERT_EQ(exceptionHandlerMock->getPluginName(), PLUGIN_NAME);
+    ASSERT_EQ(*exceptionHandlerMock->getE().get(), *exception.get());
 
-// FIXME
-// TEST(ObservableLocalPluginAdapterTest,
-//      whileMonitoring_pluginThrowException_isPassedTo_exceptionHandler)
-// {
-//     const auto exception = std::make_shared<PluginIOException>("error");
-//     observablePluginMock =
-//         std::make_shared<OLPAT_ObservableLocalPluginSpiMock>(PLUGIN_NAME, exception);
-//     pluginAdapter = std::make_shared<ObservableLocalPluginAdapter>(observablePluginMock);
+    tearDown();
+}
 
-//     /* Start plugin */
-//     pluginAdapter->doRegister();
-//     pluginAdapter->setPluginObservationExceptionHandler(exceptionHandlerMock);
-//     pluginAdapter->addObserver(observerMock);
+TEST(ObservableLocalPluginAdapterTest,
+     whileMonitoring_pluginThrowException_isPassedTo_exceptionHandler)
+{
+    setUp();
 
-//     /* Wait until handlerIsInvoked() event, should not take longer than 1 sec */
-//     std::this_thread::sleep_for(std::chrono::seconds(1));
+    const auto exception = std::make_shared<PluginIOException>("error");
+    observablePluginMock = std::make_shared<ObservableLocalPluginSpiMock>(PLUGIN_NAME, exception);
+    pluginAdapter = std::make_shared<ObservableLocalPluginAdapter>(observablePluginMock);
 
-//     /* Check if exception has been thrown */
-//     ASSERT_EQ(exceptionHandlerMock->getPluginName(), PLUGIN_NAME);
-//     ASSERT_EQ(exceptionHandlerMock->getE()->getCause(), exception->getCause());
+    /* Start plugin */
+    pluginAdapter->doRegister();
+    pluginAdapter->setPluginObservationExceptionHandler(exceptionHandlerMock);
+    pluginAdapter->addObserver(observerMock);
 
-//     tearDown();
-// }
+    /* Wait until handlerIsInvoked() event, should not take longer than 1 sec */
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+    /* Check if exception has been thrown */
+    ASSERT_EQ(exceptionHandlerMock->getPluginName(), PLUGIN_NAME);
+    ASSERT_EQ(*exceptionHandlerMock->getE()->getCause().get(), *exception.get());
+
+    tearDown();
+}

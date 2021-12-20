@@ -55,13 +55,7 @@ public:
     /**
      *
      */
-    ~ObservableLocalPluginAdapter()
-    {
-        if (mThread) {
-            mThread->mRunning = false;
-            while(!mThread->mTerminated);
-        }
-    }
+    ~ObservableLocalPluginAdapter();
 
     /**
      * (package-private)<br>
@@ -94,6 +88,28 @@ public:
     virtual void clearObservers() override;
 
 private:
+    /**
+     *
+     */
+    class UncaughtExceptionHandler : public Thread::UncaughtExceptionHandler {
+    public:
+        /**
+         * 
+         */
+        UncaughtExceptionHandler(ObservableLocalPluginAdapter* parent);
+
+        /**
+         * 
+         */
+        void uncaughtException(std::shared_ptr<Thread> t, std::shared_ptr<Exception> e);
+
+    private:
+        /**
+         * 
+         */
+        ObservableLocalPluginAdapter *mParent;
+    };
+
     /**
      * Thread in charge of reporting live events
      */
@@ -132,6 +148,11 @@ private:
          *
          */
         bool mRunning;
+
+        /**
+         * 
+         */
+        bool mStarted;
 
         /**
          *
