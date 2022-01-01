@@ -46,14 +46,9 @@ public:
     /**
      * Returns true if the task is completed
      */
-    bool isDone() const;
+    bool isDone();
 
 private:
-    /**
-     *
-     */
-    std::atomic<bool> mRunning;
-
     /**
      *
      */

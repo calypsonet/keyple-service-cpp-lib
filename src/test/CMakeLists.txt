@@ -66,8 +66,11 @@ ADD_EXECUTABLE(
     ${CMAKE_CURRENT_SOURCE_DIR}/ObservableLocalReaderAutonomousAdapterTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ObservableLocalReaderAutonomousAdapterTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/ObservableLocalReaderBlockingAdapterTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ObservableLocalReaderNonBlockingAdapterTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/ObservableLocalReaderSelectionScenarioTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/SmartCardServiceAdapterTest.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/MainTest.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/util/ReaderAdapterTestUtils.cpp
 )
 
 # Add Google Test

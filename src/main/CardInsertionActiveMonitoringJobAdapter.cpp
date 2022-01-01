@@ -34,7 +34,7 @@ CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob
       CardInsertionActiveMonitoringJobAdapter* parent)
 : mMonitoringState(monitoringState), mParent(parent) {}
 
-void* CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob::run()
+void CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob::execute()
 {
     try {
         mParent->mLogger->debug("[%] Polling from isCardPresent\n", mParent->mReader->getName());
@@ -47,7 +47,7 @@ void* CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob:
             if (mParent->mMonitorInsertion && mParent->mReader->isCardPresent()) {
                 mParent->mLogger->debug("[%] The card is present\n", mParent->mReader->getName());
                 mMonitoringState->onEvent(InternalEvent::CARD_INSERTED);
-                return nullptr;
+                return;
             }
 
             /* Polls for CARD_REMOVED */
@@ -56,7 +56,7 @@ void* CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob:
                                         mParent->mReader->getName());
                 mParent->mLoop = false;
                 mMonitoringState->onEvent(InternalEvent::CARD_REMOVED);
-                return nullptr;
+                return;
             }
 
             mRetries++;
@@ -86,8 +86,6 @@ void* CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob:
                 mParent->mReader->getName(),
                 std::make_shared<RuntimeException>(e));
     }
-
-    return nullptr;
 }
 
 /* CARD INSERTION ACTIVE MONITORING JOB ADAPTER ------------------------------------------------- */

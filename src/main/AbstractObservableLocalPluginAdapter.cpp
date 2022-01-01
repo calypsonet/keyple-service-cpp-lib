@@ -33,11 +33,9 @@ AbstractObservableLocalPluginAdapter::ObservableLocalPluginAdapterJob
                                       AbstractObservableLocalPluginAdapter* parent)
 : mObserver(observer), mEvent(event), mParent(parent) {}
 
-void* AbstractObservableLocalPluginAdapter::ObservableLocalPluginAdapterJob::run()
+void AbstractObservableLocalPluginAdapter::ObservableLocalPluginAdapterJob::execute()
 {
     mParent->notifyObserver(mObserver, mEvent);
-
-    return nullptr;
 }
 
 /* ABSTRACT OBSERVABLE LOCAL PLUGIN ADAPTER ----------------------------------------------------- */

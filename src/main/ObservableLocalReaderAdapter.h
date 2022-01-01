@@ -374,9 +374,9 @@ private:
                                         ObservableLocalReaderAdapter* parent);
 
         /**
-         *
+         * C++: this replaces run() override
          */
-        void* run() final;
+        void execute() final;
 
     private:
         /**

@@ -67,7 +67,7 @@ public:
      * @since 2.0.0
      */
     CardSelectionScenarioAdapter(
-        const std::vector<std::shared_ptr<CardSelectionRequestSpi>> cardSelectionRequests,
+        const std::vector<std::shared_ptr<CardSelectionRequestSpi>>& cardSelectionRequests,
         const MultiSelectionProcessing multiSelectionProcessing,
         const ChannelControl channelControl);
 

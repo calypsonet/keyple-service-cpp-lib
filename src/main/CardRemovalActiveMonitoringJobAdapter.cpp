@@ -41,7 +41,7 @@ CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJob
                                    CardRemovalActiveMonitoringJobAdapter* parent)
 : mMonitoringState(monitoringState), mParent(parent) {}
 
-void* CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJob::run()
+void CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJob::execute()
 {
     try {
         mParent->mLogger->debug("[%] Polling from isCardPresentPing\n",
@@ -55,7 +55,7 @@ void* CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJob::run
                 mParent->mLogger->debug("[%] the card stopped responding\n",
                                         mParent->getReader()->getName());
                 mMonitoringState->onEvent(InternalEvent::CARD_REMOVED);
-                return nullptr;
+                return;
             }
 
             mRetries++;
@@ -83,8 +83,6 @@ void* CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJob::run
                                                        mParent->getReader()->getName(),
                                                        std::make_shared<RuntimeException>(e));
     }
-
-    return nullptr;
 }
 
 /* CARD REMOVAL ACTIVE MONITORING JOB ADAPTER --------------------------------------------------- */

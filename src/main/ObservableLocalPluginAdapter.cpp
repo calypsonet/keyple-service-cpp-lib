@@ -64,7 +64,7 @@ void ObservableLocalPluginAdapter::addObserver(std::shared_ptr<PluginObserverSpi
     AbstractObservableLocalPluginAdapter::addObserver(observer);
 
     if (countObservers() == 1) {
-        mLogger->debug("Start monitoring the plugin '%'\n,", getName());
+        mLogger->debug("Start monitoring the plugin '%'\n", getName());
         mThread = std::make_shared<EventThread>(getName(), this);
         mThread->setName("PluginEventMonitoringThread");
         mThread->setUncaughtExceptionHandler(std::make_shared<UncaughtExceptionHandler>(this));
@@ -220,14 +220,14 @@ void ObservableLocalPluginAdapter::EventThread::processChanges(
     }
 }
 
-void* ObservableLocalPluginAdapter::EventThread::run()
+void ObservableLocalPluginAdapter::EventThread::execute()
 {
     mStarted = true;
 
     try {
         while (mRunning) {
             /* Retrieves the current readers names list */
-            const std::vector<std::string>& actualNativeReaderNames =
+            const std::vector<std::string> actualNativeReaderNames =
                 mParent->mObservablePluginSpi->searchAvailableReaderNames();
 
             /* Checks if it has changed this algorithm favors cases where nothing change */
@@ -257,8 +257,6 @@ void* ObservableLocalPluginAdapter::EventThread::run()
     }
 
     mTerminated = true;
-
-    return nullptr;
 }
 
 }

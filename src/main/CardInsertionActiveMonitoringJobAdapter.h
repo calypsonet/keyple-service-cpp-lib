@@ -117,6 +117,8 @@ private:
 
         /**
          * Monitoring loop
+         * 
+         * C++: this replaces run() override
          *
          * <p>Polls for the presence of a card and loops until no card responds. <br>
          * Triggers a CARD_INSERTED event and exits as soon as a communication with a card is
@@ -124,7 +126,7 @@ private:
          *
          * <p>Any exceptions are notified to the application using the exception handler.
          */
-        virtual void* run() override final;
+        void execute() final;
 
     private:
         /**

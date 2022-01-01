@@ -28,7 +28,7 @@ using namespace keyple::core::util;
 using namespace keyple::core::util::cpp;
 
 CardSelectionScenarioAdapter::CardSelectionScenarioAdapter(
-  const std::vector<std::shared_ptr<CardSelectionRequestSpi>> cardSelectionRequests,
+  const std::vector<std::shared_ptr<CardSelectionRequestSpi>>& cardSelectionRequests,
   const MultiSelectionProcessing multiSelectionProcessing,
   const ChannelControl channelControl)
 : mCardSelectionRequests(cardSelectionRequests),

@@ -36,8 +36,9 @@ ExecutorService::~ExecutorService()
 {
     mRunning = false;
 
-    while (!mTerminated)
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    while (!mTerminated) {
+        Thread::sleep(10);
+    }
 }
 
 void ExecutorService::run()
@@ -76,8 +77,9 @@ void ExecutorService::shutdown()
 {
     mRunning = false;
 
-    while (!mTerminated)
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    while (!mTerminated) {
+        Thread::sleep(10);
+    }
 }
 
 }

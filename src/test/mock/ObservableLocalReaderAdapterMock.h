@@ -1,6 +1,5 @@
 /**************************************************************************************************
- * Copyright (c) 2020 Calypso Networks Association                                                *
- * https://www.calypsonet-asso.org/                                                               *
+ * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/                        *
  *                                                                                                *
  * See the NOTICE file(s) distributed with this work for additional information regarding         *
  * copyright ownership.                                                                           *
@@ -11,46 +10,28 @@
  * SPDX-License-Identifier: EPL-2.0                                                               *
  **************************************************************************************************/
 
-#include "Job.h"
+#pragma once
 
-/* Keyple Core Util */
-#include "IllegalArgumentException.h"
+#include "gmock/gmock.h"
+#include "gtest/gtest.h"
 
-namespace keyple {
-namespace core {
-namespace service {
-namespace cpp {
+/* Keyple Core Service */
+#include "ObservableLocalReaderAdapter.h"
 
-using namespace keyple::core::util::cpp::exception;
+using namespace testing;
 
-Job::Job() : mCancelled(false) {}
+using namespace keyple::core::service;
 
-bool Job::cancel(const bool mayInterruptIfRunning)
-{
-    if (mayInterruptIfRunning) {
-        throw IllegalArgumentException("Unsupported value for mayInterruptIfRunning (true)");
-    }
+class ObservableLocalReaderAdapterMock final : public ObservableLocalReaderAdapter {
+public:
+    ObservableLocalReaderAdapterMock(
+      std::shared_ptr<ObservableReaderSpi> observableReaderSpi, const std::string& pluginName)
+    : ObservableLocalReaderAdapter(observableReaderSpi, pluginName) {}
 
-    if (!isAlive()) {
-        return false;
-    }
-
-    mCancelled = true;
-
-    return true;
-}
-
-bool Job::isDone()
-{
-    return !isAlive();
-}
-
-bool Job::isCancelled() const
-{
-    return mCancelled;
-}
-
-}
-}
-}
-}
+    MOCK_METHOD(const std::vector<std::shared_ptr<CardSelectionResponseApi>>, 
+                transmitCardSelectionRequests,
+                (const std::vector<std::shared_ptr<CardSelectionRequestSpi>>& cardSelectionRequests,
+                 const MultiSelectionProcessing multiSelectionProcessing,
+                 const ChannelControl channelControl),
+                (override, final));
+};

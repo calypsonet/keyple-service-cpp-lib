@@ -21,7 +21,7 @@
 
 /* Mock */
 #include "CardReaderObservationExceptionHandlerSpiMock.h"
-#include "ObservableReaderBlockingSpiMock.h"
+#include "ObservableReaderNonBlockingSpiMock.h"
 #include "ReaderObserverSpiMock.h"
 
 /* Util */
@@ -34,28 +34,25 @@ using namespace keyple::core::util::cpp;
 
 static const std::string PLUGIN_NAME = "plugin";
 
+class ObservableLocalReaderNonBlockingAdapterTest {};
+static const std::shared_ptr<Logger> logger =
+    LoggerFactory::getLogger(typeid(ObservableLocalReaderNonBlockingAdapterTest));
+
 static std::shared_ptr<ObservableLocalReaderAdapter> _reader;
-static std::shared_ptr<ObservableReaderBlockingSpiMock> readerSpi;
+static std::shared_ptr<ObservableReaderNonBlockingSpiMock> readerSpi;
 static std::shared_ptr<ReaderObserverSpiMock> observer;
 static std::shared_ptr<CardReaderObservationExceptionHandlerSpiMock> handler;
 static std::shared_ptr<ObservableLocalReaderSuite> testSuite;
 
-static const long waitInsertion = 1000;
-static const long waitRemoval = 1000;
-
-class ObservableLocalReaderBlockingAdapterTest {};
-static const std::shared_ptr<Logger> logger =
-    LoggerFactory::getLogger(typeid(ObservableLocalReaderBlockingAdapterTest));
-
 /*
  * With
- * WaitForCardInsertionBlockingSpi,
- * WaitForCardRemovalBlockingSpi,
- * WaitForCardRemovalDuringProcessingBlockingSpi
+ * WaitForCardInsertionNonBlockingSpi,
+ * WaitForCardRemovalNonBlockingSpi,
+ * DontWaitForCardRemovalDuringProcessingSpi,
  */
 static void setUp()
 {
-    readerSpi = std::make_shared<ObservableReaderBlockingSpiMock>(READER_NAME, waitInsertion, waitRemoval);
+    readerSpi = std::make_shared<ObservableReaderNonBlockingSpiMock>(READER_NAME);
     handler = std::make_shared<CardReaderObservationExceptionHandlerSpiMock>();
     EXPECT_CALL(*handler.get(), onReaderObservationError(_, _, _)).WillRepeatedly(Return());
     _reader = std::make_shared<ObservableLocalReaderAdapter>(readerSpi, PLUGIN_NAME);
@@ -76,7 +73,7 @@ static void tearDown()
     readerSpi.reset();
 }
 
-TEST(ObservableLocalReaderBlockingAdapterTest, initReader_addObserver_startDetection)
+TEST(ObservableLocalReaderNonBlockingAdapterTest, initReader_addObserver_startDetection)
 {
     setUp();
 
@@ -85,7 +82,7 @@ TEST(ObservableLocalReaderBlockingAdapterTest, initReader_addObserver_startDetec
     tearDown();
 }
 
-TEST(ObservableLocalReaderBlockingAdapterTest, removeObserver)
+TEST(ObservableLocalReaderNonBlockingAdapterTest, removeObserver)
 {
     setUp();
 
@@ -94,7 +91,7 @@ TEST(ObservableLocalReaderBlockingAdapterTest, removeObserver)
     tearDown();
 }
 
-TEST(ObservableLocalReaderBlockingAdapterTest, clearObservers)
+TEST(ObservableLocalReaderNonBlockingAdapterTest, clearObservers)
 {
     setUp();
 
@@ -103,16 +100,21 @@ TEST(ObservableLocalReaderBlockingAdapterTest, clearObservers)
     tearDown();
 }
 
-TEST(ObservableLocalReaderBlockingAdapterTest, insertCard_shouldNotify_CardInsertedEvent)
+static void __insertCard_shouldNotify_CardInsertedEvent()
+{
+    testSuite->insertCard_onWaitForCard_shouldNotify_CardInsertedEvent();
+}
+
+TEST(ObservableLocalReaderNonBlockingAdapterTest, insertCard_shouldNotify_CardInsertedEvent)
 {
     setUp();
 
-    testSuite->insertCard_onWaitForCard_shouldNotify_CardInsertedEvent();
+    __insertCard_shouldNotify_CardInsertedEvent();
 
     tearDown();
 }
 
-TEST(ObservableLocalReaderBlockingAdapterTest, finalizeCardProcessing_afterInsert_switchState)
+TEST(ObservableLocalReaderNonBlockingAdapterTest, finalizeCardProcessing_afterInsert_switchState)
 {
     setUp();
 
@@ -121,7 +123,7 @@ TEST(ObservableLocalReaderBlockingAdapterTest, finalizeCardProcessing_afterInser
     tearDown();
 }
 
-TEST(ObservableLocalReaderBlockingAdapterTest, removeCard_afterFinalize_shouldNotify_CardRemoved)
+TEST(ObservableLocalReaderNonBlockingAdapterTest, removeCard_afterFinalize_shouldNotify_CardRemoved)
 {
     setUp();
 
@@ -130,12 +132,19 @@ TEST(ObservableLocalReaderBlockingAdapterTest, removeCard_afterFinalize_shouldNo
     tearDown();
 }
 
-TEST(ObservableLocalReaderBlockingAdapterTest, removeCard_beforeFinalize_shouldNotify_CardRemoved)
+TEST(ObservableLocalReaderNonBlockingAdapterTest, removeCard_beforeFinalize_shouldNotify_CardRemoved)
 {
     setUp();
 
-    /* TODO flaky?, depends on what values are given for waitInsertion and waitRemoval */
-    testSuite->removeCard_beforeFinalize_shouldNotify_CardRemoved();
+    __insertCard_shouldNotify_CardInsertedEvent();
+
+    logger->debug("Remove card...\n");
+    readerSpi->setCardPresent(false);
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+    /* Card removal is not monitored, no event is thrown */
+    ASSERT_EQ(_reader->getCurrentMonitoringState(), MonitoringState::WAIT_FOR_CARD_PROCESSING);
 
     tearDown();
 }

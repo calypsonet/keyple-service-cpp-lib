@@ -38,7 +38,7 @@ CardRemovalPassiveMonitoringJobAdapter::CardRemovalPassiveMonitoringJob
                                     CardRemovalPassiveMonitoringJobAdapter* parent)
 : mMonitoringState(monitoringState), mParent(parent) {}
 
-void* CardRemovalPassiveMonitoringJobAdapter::CardRemovalPassiveMonitoringJob::run()
+void CardRemovalPassiveMonitoringJobAdapter::CardRemovalPassiveMonitoringJob::execute()
 {
     try {
         while (!isInterrupted()) {
@@ -70,8 +70,6 @@ void* CardRemovalPassiveMonitoringJobAdapter::CardRemovalPassiveMonitoringJob::r
                                                        mParent->getReader()->getName(),
                                                        std::make_shared<RuntimeException>(e));
     }
-
-    return nullptr;
 }
 
 /* CARD REMOVAL PASSIVE MONITORING JOB ADAPTER -------------------------------------------------- */

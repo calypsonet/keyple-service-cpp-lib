@@ -74,7 +74,8 @@ static void setUp()
 {
     mPhysicalChannelOpen = false;
 
-    readerSpi = std::make_shared<ConfigurableReaderSpiMock>(READER_NAME);
+    readerSpi = std::make_shared<ConfigurableReaderSpiMock>();
+    EXPECT_CALL(*readerSpi.get(), getName()).WillRepeatedly(ReturnRef(READER_NAME));
     EXPECT_CALL(*readerSpi.get(), checkCardPresence()).WillRepeatedly(Return(true));
     EXPECT_CALL(*readerSpi.get(), getPowerOnData()).WillRepeatedly(Return(POWER_ON_DATA));
     EXPECT_CALL(*readerSpi.get(), closePhysicalChannel()).WillRepeatedly([]() { mPhysicalChannelOpen = false; });

@@ -55,11 +55,9 @@ ObservableLocalReaderAdapter::ObservableLocalReaderAdapterJob::ObservableLocalRe
   ObservableLocalReaderAdapter* parent)
 : mObserver(observer), mEvent(event), mParent(parent) {}
 
-void* ObservableLocalReaderAdapter::ObservableLocalReaderAdapterJob::run()
+void ObservableLocalReaderAdapter::ObservableLocalReaderAdapterJob::execute()
 {
     mParent->notifyObserver(mObserver, mEvent);
-
-    return nullptr;
 }
 
 /* OBSERVABLE LOCAL READER ADAPTER -------------------------------------------------------------- */
@@ -251,11 +249,10 @@ bool ObservableLocalReaderAdapter::hasACardMatched(
 void ObservableLocalReaderAdapter::processCardRemoved()
 {
     closeLogicalAndPhysicalChannelsSilently();
-    notifyObservers(
-        std::make_shared<ReaderEventAdapter>(getPluginName(),
-                                             getName(),
-                                             CardReaderEvent::Type::CARD_REMOVED,
-                                             nullptr));
+    notifyObservers(std::make_shared<ReaderEventAdapter>(getPluginName(),
+                                                         getName(),
+                                                         CardReaderEvent::Type::CARD_REMOVED,
+                                                         nullptr));
 }
 
 void ObservableLocalReaderAdapter::switchState(const MonitoringState stateId)

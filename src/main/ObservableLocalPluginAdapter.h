@@ -201,8 +201,10 @@ private:
          * Reader monitoring loop<br>
          * Checks reader insertions and removals<br>
          * Notifies observers of any changes
+         * 
+         * C++: this replaces run() override
          */
-        virtual void* run() override;
+        void execute() override;
     };
 
     /**

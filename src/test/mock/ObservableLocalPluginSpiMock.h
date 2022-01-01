@@ -47,6 +47,8 @@ public:
             throw *mPluginError.get();
         }
 
+        std::lock_guard<std::mutex> lock(mMutex);
+
         std::vector<std::string> readerNames;
         for (const auto& reader : mStubReaders) {
             readerNames.push_back(reader.first);
@@ -61,6 +63,8 @@ public:
             throw *mPluginError.get();
         }
 
+        std::lock_guard<std::mutex> lock(mMutex);
+
         const auto it = mStubReaders.find(readerName);
         if (it != mStubReaders.end()) {
             return it->second;
@@ -71,15 +75,20 @@ public:
 
     virtual const std::vector<std::shared_ptr<ReaderSpi>> searchAvailableReaders() override
     {
+        std::lock_guard<std::mutex> lock(mMutex);
+
         std::vector<std::shared_ptr<ReaderSpi>> readers;
         for (const auto& reader : mStubReaders) {
             readers.push_back(reader.second);
         }
+
         return readers;
     }
 
     void addReaderName(const std::vector<std::string>& names)
     {
+        std::lock_guard<std::mutex> lock(mMutex);
+
         for (const auto& readerName : names) {
             auto readerSpi = std::make_shared<ReaderSpiMock>(readerName);
             EXPECT_CALL(*readerSpi.get(), onUnregister).WillRepeatedly(Return());
@@ -89,6 +98,8 @@ public:
 
     void removeReaderName(const std::vector<std::string>& names)
     {
+        std::lock_guard<std::mutex> lock(mMutex);
+        
         for (const auto& readerName : names) {
             mStubReaders.erase(readerName);
         }
@@ -99,4 +110,5 @@ private:
     const int mMonitoringCycleDuration = 0;
     std::map<std::string, std::shared_ptr<ReaderSpi>> mStubReaders;
     const std::shared_ptr<PluginIOException> mPluginError;
+    std::mutex mMutex;
 };

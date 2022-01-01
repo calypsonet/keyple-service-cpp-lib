@@ -86,6 +86,8 @@ public:
      * defined by MultiSelectionProcessing}.<br>
      * At the end of the treatment of each case, the channel is left open or is closed according to
      * the channel control policy.
+     * 
+     * C++: method should be final but cannot perform UTs if so...
      *
      * @param cardSelectionRequests A list of selection cases composed of one or more {@link
      *        CardSelectionRequestSpi}.
@@ -96,11 +98,11 @@ public:
      * @throw CardBrokenCommunicationException if the communication with the card has failed.
      * @since 2.0.0
      */
-    virtual const std::vector<std::shared_ptr<CardSelectionResponseApi>>
+    virtual const std::vector<std::shared_ptr<CardSelectionResponseApi>> 
         transmitCardSelectionRequests(
             const std::vector<std::shared_ptr<CardSelectionRequestSpi>>& cardSelectionRequests,
             const MultiSelectionProcessing multiSelectionProcessing,
-            const ChannelControl channelControl) final;
+            const ChannelControl channelControl);
 
     /**
      * (package-private)<br>

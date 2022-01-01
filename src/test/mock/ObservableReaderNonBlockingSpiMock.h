@@ -24,8 +24,8 @@
 #include "DontWaitForCardRemovalDuringProcessingSpi.h"
 #include "ObservableReaderSpi.h"
 #include "ReaderIOException.h"
-#include "WaitForCardInsertionBlockingSpi.h"
-#include "WaitForCardRemovalBlockingSpi.h"
+#include "WaitForCardInsertionNonBlockingSpi.h"
+#include "WaitForCardRemovalNonBlockingSpi.h"
 #include "WaitForCardRemovalDuringProcessingBlockingSpi.h"
 
 /* Keyple Core Util */
@@ -47,31 +47,17 @@ using namespace keyple::core::plugin::spi::reader::observable::state::removal;
 using namespace keyple::core::util::cpp;
 using namespace keyple::core::util::cpp::exception;
 
-class ObservableReaderBlockingSpiMock final
+class ObservableReaderNonBlockingSpiMock final
 : public KeypleReaderExtension,
   public ConfigurableReaderSpi,
   public ObservableReaderSpi,
-  public WaitForCardInsertionBlockingSpi,
-  public WaitForCardRemovalBlockingSpi,
-  public WaitForCardRemovalDuringProcessingBlockingSpi,
+  public WaitForCardInsertionNonBlockingSpi,
+  public WaitForCardRemovalNonBlockingSpi,
+  public DontWaitForCardRemovalDuringProcessingSpi,
   public ControllableReaderSpiMock {
 public:
-    ObservableReaderBlockingSpiMock(const std::string name, 
-                                    const long waitInsertion, 
-                                    const long waitRemoval)
-    : mDetectionStarted(false),
-      mPhysicalChannelOpen(false),
-      mCardPresent(false),
-      mInsertions(0),
-      mRemovals(0),
-      mWaitInsertion(waitInsertion),
-      mWaitRemoval(waitRemoval),
-      mName(name) {}
-
-    void setCardPresent(const bool cardPresent)
-    {
-        mCardPresent = cardPresent;
-    }
+    ObservableReaderNonBlockingSpiMock(const std::string& name)
+    : mDetectionStarted(false), mPhysicalChannelOpen(false), mCardPresent(false), mName(name) {}
 
     void onStartDetection()
     {
@@ -95,12 +81,12 @@ public:
         return true;
     }
 
-    void activateProtocol(const std::string& readerProtocol)
+    void activateProtocol(const std::string& readerProtocol) 
     {
         (void)readerProtocol;
     }
 
-    void deactivateProtocol(const std::string& readerProtocol) 
+    void deactivateProtocol(const std::string& readerProtocol)
     {
         (void)readerProtocol;
     }
@@ -140,7 +126,7 @@ public:
     const std::vector<uint8_t> transmitApdu(const std::vector<uint8_t>& apduIn)
     {
         (void)apduIn;
-
+        
         if (mCardPresent) {
             return std::vector<uint8_t>();
         } else {
@@ -155,68 +141,15 @@ public:
 
     void onUnregister() {}
 
-    /**
-     * Wait for a one time card insertion
-     *
-     * @throws ReaderIOException
-     * @throws TaskCanceledException
-     */
-    void waitForCardInsertion()
+    void setCardPresent(const bool cardPresent)
     {
-        try {
-            /* Card is detected after a timeout */
-            Thread::sleep(mWaitInsertion);
-            mInsertions++;
-        } catch (const InterruptedException& e) {
-        }
-        
-        /* If card already inserted, throw ex */
-        if (mInsertions > 1) {
-            throw ReaderIOException("no card present");
-        }
-    }
-
-    void stopWaitForCardInsertion()
-    {
-        // FIXME: Thread.currentThread().interrupt();
-    }
-
-    void waitForCardRemoval() 
-    {
-        try {
-            Thread::sleep(mWaitRemoval);
-            /* Card removal is detected after a timeout */
-            mRemovals++;
-        } catch (const InterruptedException& e) {
-        }
-
-        if (mRemovals > 1) {
-            throw ReaderIOException("card not removed ?!");
-        }
-    }
-
-    void stopWaitForCardRemoval()
-    {
-        //FIXME: Thread.currentThread().interrupt();
-    }
-
-    void waitForCardRemovalDuringProcessing()
-    {
-        waitForCardRemoval();
-    }
-
-    void stopWaitForCardRemovalDuringProcessing()
-    {
-        stopWaitForCardRemoval();
+        mCardPresent = cardPresent;
     }
 
 private:
     bool mDetectionStarted;
     bool mPhysicalChannelOpen;
     std::atomic<bool> mCardPresent;
-    std::atomic<int> mInsertions;
-    std::atomic<int> mRemovals;
-    long mWaitInsertion;
-    long mWaitRemoval;
     std::string mName;
 };
+
