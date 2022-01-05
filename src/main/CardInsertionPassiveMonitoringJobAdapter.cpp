@@ -31,7 +31,7 @@ CardInsertionPassiveMonitoringJobAdapter::CardInsertionPassiveMonitoringJob
   ::CardInsertionPassiveMonitoringJob(
       std::shared_ptr<AbstractObservableStateAdapter> monitoringState,
       CardInsertionPassiveMonitoringJobAdapter* parent)
-: mMonitoringState(monitoringState), mParent(parent) {}
+: Job("CardInsertionPassiveMonitoringJob"), mMonitoringState(monitoringState), mParent(parent) {}
 
 void CardInsertionPassiveMonitoringJobAdapter::CardInsertionPassiveMonitoringJob::execute()
 {

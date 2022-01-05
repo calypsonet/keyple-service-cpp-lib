@@ -13,6 +13,8 @@
 
 #include "Job.h"
 
+#include <iostream>
+
 /* Keyple Core Util */
 #include "IllegalArgumentException.h"
 
@@ -23,7 +25,7 @@ namespace cpp {
 
 using namespace keyple::core::util::cpp::exception;
 
-Job::Job() : mCancelled(false) {}
+Job::Job(const std::string& name) : Thread(name), mCancelled(false) {}
 
 bool Job::cancel(const bool mayInterruptIfRunning)
 {
@@ -42,7 +44,7 @@ bool Job::cancel(const bool mayInterruptIfRunning)
 
 bool Job::isDone()
 {
-    return !isAlive();
+    return mDone;
 }
 
 bool Job::isCancelled() const

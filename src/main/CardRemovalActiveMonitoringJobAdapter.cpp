@@ -39,7 +39,9 @@ using InternalEvent = ObservableLocalReaderAdapter::InternalEvent;
 CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJob
   ::CardRemovalActiveMonitoringJob(std::shared_ptr<AbstractObservableStateAdapter> monitoringState,
                                    CardRemovalActiveMonitoringJobAdapter* parent)
-: mMonitoringState(monitoringState), mParent(parent) {}
+: Job("CardRemovalActiveMonitoringJobAdapter"),
+  mMonitoringState(monitoringState),
+  mParent(parent) {}
 
 void CardRemovalActiveMonitoringJobAdapter::CardRemovalActiveMonitoringJob::execute()
 {

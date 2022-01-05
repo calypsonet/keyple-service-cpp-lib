@@ -56,8 +56,8 @@ class ObservableReaderBlockingSpiMock final
   public WaitForCardRemovalDuringProcessingBlockingSpi,
   public ControllableReaderSpiMock {
 public:
-    ObservableReaderBlockingSpiMock(const std::string name, 
-                                    const long waitInsertion, 
+    ObservableReaderBlockingSpiMock(const std::string name,
+                                    const long waitInsertion,
                                     const long waitRemoval)
     : mDetectionStarted(false),
       mPhysicalChannelOpen(false),
@@ -100,7 +100,7 @@ public:
         (void)readerProtocol;
     }
 
-    void deactivateProtocol(const std::string& readerProtocol) 
+    void deactivateProtocol(const std::string& readerProtocol)
     {
         (void)readerProtocol;
     }
@@ -132,7 +132,7 @@ public:
         return mCardPresent;
     }
 
-    const std::string getPowerOnData() const 
+    const std::string getPowerOnData() const
     {
         return "";
     }
@@ -169,7 +169,7 @@ public:
             mInsertions++;
         } catch (const InterruptedException& e) {
         }
-        
+
         /* If card already inserted, throw ex */
         if (mInsertions > 1) {
             throw ReaderIOException("no card present");
@@ -181,7 +181,7 @@ public:
         // FIXME: Thread.currentThread().interrupt();
     }
 
-    void waitForCardRemoval() 
+    void waitForCardRemoval()
     {
         try {
             Thread::sleep(mWaitRemoval);

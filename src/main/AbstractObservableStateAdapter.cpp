@@ -76,6 +76,9 @@ void AbstractObservableStateAdapter::onDeactivate()
                        typeid(id).name(),
                        canceled);
     }
+
+    /* Make sure pointer is set to nullptr to force Job/Thread destruction */
+    mMonitoringEvent = nullptr;
 }
 
 }

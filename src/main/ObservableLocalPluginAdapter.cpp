@@ -119,7 +119,8 @@ void ObservableLocalPluginAdapter::UncaughtExceptionHandler::uncaughtException(
 
 ObservableLocalPluginAdapter::EventThread::EventThread(const std::string& pluginName,
                                                        ObservableLocalPluginAdapter* parent)
-: mPluginName(pluginName),
+: Thread("ObservableLocalPluginAdapter-" + pluginName),
+  mPluginName(pluginName),
   mMonitoringCycleDuration(parent->mObservablePluginSpi->getMonitoringCycleDuration()),
   mRunning(true),
   mStarted(false),

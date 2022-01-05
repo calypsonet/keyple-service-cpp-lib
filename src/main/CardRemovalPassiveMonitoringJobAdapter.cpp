@@ -36,7 +36,9 @@ using InternalEvent = ObservableLocalReaderAdapter::InternalEvent;
 CardRemovalPassiveMonitoringJobAdapter::CardRemovalPassiveMonitoringJob
   ::CardRemovalPassiveMonitoringJob(std::shared_ptr<AbstractObservableStateAdapter> monitoringState,
                                     CardRemovalPassiveMonitoringJobAdapter* parent)
-: mMonitoringState(monitoringState), mParent(parent) {}
+: Job("CardRemovalPassiveMonitoringJobAdapter"),
+  mMonitoringState(monitoringState),
+  mParent(parent) {}
 
 void CardRemovalPassiveMonitoringJobAdapter::CardRemovalPassiveMonitoringJob::execute()
 {
@@ -78,7 +80,7 @@ CardRemovalPassiveMonitoringJobAdapter::CardRemovalPassiveMonitoringJobAdapter(
   ObservableLocalReaderAdapter* reader)
 : AbstractMonitoringJobAdapter(reader)
 {
-    const auto waitForCardRemovalBlockingSpi = 
+    const auto waitForCardRemovalBlockingSpi =
         std::dynamic_pointer_cast<WaitForCardRemovalBlockingSpi>(reader->getObservableReaderSpi());
 
     if (waitForCardRemovalBlockingSpi) {

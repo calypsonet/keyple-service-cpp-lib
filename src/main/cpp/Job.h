@@ -31,7 +31,7 @@ public:
     /**
      *
      */
-    Job();
+    Job(const std::string& name);
 
     /**
      *

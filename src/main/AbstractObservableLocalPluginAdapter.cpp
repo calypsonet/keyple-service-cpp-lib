@@ -31,7 +31,10 @@ AbstractObservableLocalPluginAdapter::ObservableLocalPluginAdapterJob
     ::ObservableLocalPluginAdapterJob(std::shared_ptr<PluginObserverSpi> observer,
                                       const std::shared_ptr<PluginEvent> event,
                                       AbstractObservableLocalPluginAdapter* parent)
-: mObserver(observer), mEvent(event), mParent(parent) {}
+: Job("AbstractObservableLocalPluginAdapter"),
+  mObserver(observer),
+  mEvent(event),
+  mParent(parent) {}
 
 void AbstractObservableLocalPluginAdapter::ObservableLocalPluginAdapterJob::execute()
 {

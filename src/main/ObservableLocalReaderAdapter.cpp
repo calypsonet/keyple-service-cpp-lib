@@ -53,7 +53,7 @@ ObservableLocalReaderAdapter::ObservableLocalReaderAdapterJob::ObservableLocalRe
   std::shared_ptr<CardReaderObserverSpi> observer,
   const std::shared_ptr<ReaderEvent> event,
   ObservableLocalReaderAdapter* parent)
-: mObserver(observer), mEvent(event), mParent(parent) {}
+: Job("ObservableLocalReaderAdapter"), mObserver(observer), mEvent(event), mParent(parent) {}
 
 void ObservableLocalReaderAdapter::ObservableLocalReaderAdapterJob::execute()
 {
@@ -313,8 +313,8 @@ void ObservableLocalReaderAdapter::doUnregister()
 
     notifyObservers(
         std::make_shared<ReaderEventAdapter>(getPluginName(),
-                                             getName(), 
-                                             CardReaderEvent::Type::UNAVAILABLE, 
+                                             getName(),
+                                             CardReaderEvent::Type::UNAVAILABLE,
                                              nullptr));
     clearObservers();
     LocalReaderAdapter::doUnregister();
