@@ -42,15 +42,15 @@ void LocalPoolPluginAdapter::doUnregister()
     try {
         mPoolPluginSpi->onUnregister();
     } catch (const Exception& e) {
-        mLogger->error("Error during the unregistration of the extension of plugin '%'\n", 
-                       getName(), 
+        mLogger->error("Error during the unregistration of the extension of plugin '%'\n",
+                       getName(),
                        e);
     }
 
     AbstractPluginAdapter::doUnregister();
 }
 
-const std::vector<std::string>& LocalPoolPluginAdapter::getReaderGroupReferences() const
+const std::vector<std::string> LocalPoolPluginAdapter::getReaderGroupReferences() const
 {
     checkStatus();
 

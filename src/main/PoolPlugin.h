@@ -44,7 +44,7 @@ public:
      * @return a list of String
      * @since 2.0.0
      */
-    virtual const std::vector<std::string>& getReaderGroupReferences() const = 0;
+    virtual const std::vector<std::string> getReaderGroupReferences() const = 0;
 
     /**
      * Gets a {@link Reader} and makes it exclusive to the caller until the {@link

@@ -56,29 +56,28 @@ public:
      *
      * @since 2.0.0
      */
-    virtual void doUnregister() override final;
+    void doUnregister() final;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0.0
      */
-    virtual const std::vector<std::string>& getReaderGroupReferences() const override final;
+    const std::vector<std::string> getReaderGroupReferences() const final;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0.0
      */
-    virtual std::shared_ptr<Reader> allocateReader(const std::string& readerGroupReference)
-        override final;
+    std::shared_ptr<Reader> allocateReader(const std::string& readerGroupReference) final;
 
     /**
      * {@inheritDoc}
      *
      * @since 2.0.0
      */
-    virtual void releaseReader(std::shared_ptr<Reader> reader) override final;
+    void releaseReader(std::shared_ptr<Reader> reader) final;
 
 private:
     /**

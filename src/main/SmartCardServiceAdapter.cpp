@@ -68,7 +68,7 @@ int SmartCardServiceAdapter::compareVersions(const std::string& providedVersion,
 
     std::vector<std::string> providedVersions;
     std::split(providedVersion, re, std::back_inserter(providedVersions));
-    
+
     std::vector<std::string> localVersions;
     std::split(localVersion, re, std::back_inserter(localVersions));
 
@@ -109,21 +109,21 @@ void SmartCardServiceAdapter::checkPluginVersion(
     const std::shared_ptr<PluginFactorySpi> pluginFactorySpi)
 {
     if (compareVersions(pluginFactorySpi->getCommonApiVersion(),
-                        CommonApiProperties::VERSION) != 0) {
+                        CommonApiProperties_VERSION) != 0) {
         mLogger->warn("The version of Common API used by the provided plugin (%:%) mismatches " \
                       "the version used by the service (%)\n",
                       pluginFactorySpi->getPluginName(),
                       pluginFactorySpi->getCommonApiVersion(),
-                      CommonApiProperties::VERSION);
+                      CommonApiProperties_VERSION);
     }
 
     if (compareVersions(pluginFactorySpi->getPluginApiVersion(),
-                        PluginApiProperties::VERSION) != 0) {
+                        PluginApiProperties_VERSION) != 0) {
         mLogger->warn("The version of Plugin API used by the provided plugin (%:%) mismatches " \
                       "the version used by the service (%)\n",
                       pluginFactorySpi->getPluginName(),
                       pluginFactorySpi->getPluginApiVersion(),
-                      PluginApiProperties::VERSION);
+                      PluginApiProperties_VERSION);
     }
 }
 
@@ -224,46 +224,46 @@ void SmartCardServiceAdapter::checkPoolPluginVersion(
     const std::shared_ptr<PoolPluginFactorySpi> poolPluginFactorySpi)
 {
     if (compareVersions(poolPluginFactorySpi->getCommonApiVersion(),
-                        CommonApiProperties::VERSION) != 0) {
+                        CommonApiProperties_VERSION) != 0) {
         mLogger->warn("The version of Common API used by the provided pool plugin (%:%) " \
                       "mismatches the version used by the service (%)\n",
                       poolPluginFactorySpi->getPoolPluginName(),
                       poolPluginFactorySpi->getCommonApiVersion(),
-                      CommonApiProperties::VERSION);
+                      CommonApiProperties_VERSION);
     }
 
     if (compareVersions(poolPluginFactorySpi->getPluginApiVersion(),
-                        PluginApiProperties::VERSION) != 0) {
+                        PluginApiProperties_VERSION) != 0) {
         mLogger->warn("The version of Plugin API used by the provided pool plugin (%:%) " \
                       "mismatches the version used by the service (%)\n",
                       poolPluginFactorySpi->getPoolPluginName(),
                       poolPluginFactorySpi->getPluginApiVersion(),
-                      PluginApiProperties::VERSION);
+                      PluginApiProperties_VERSION);
     }
 }
 
 void SmartCardServiceAdapter::checkCardExtensionVersion(
     const std::shared_ptr<KeypleCardExtension> cardExtension)
 {
-    if (compareVersions(cardExtension->getCommonApiVersion(), CommonApiProperties::VERSION) != 0) {
+    if (compareVersions(cardExtension->getCommonApiVersion(), CommonApiProperties_VERSION) != 0) {
         mLogger->warn("The version of Common API used by the provided card extension (%) " \
                       "mismatches the version used by the service (%)\n",
                       cardExtension->getCommonApiVersion(),
-                      CommonApiProperties::VERSION);
+                      CommonApiProperties_VERSION);
     }
 
-    if (compareVersions(cardExtension->getCardApiVersion(), CardApiProperties::VERSION) != 0) {
+    if (compareVersions(cardExtension->getCardApiVersion(), CardApiProperties_VERSION) != 0) {
         mLogger->warn("The version of Card API used by the provided card extension (%) " \
                       "mismatches the version used by the service (%)\n",
                       cardExtension->getCardApiVersion(),
-                      CardApiProperties::VERSION);
+                      CardApiProperties_VERSION);
     }
 
-    if (compareVersions(cardExtension->getReaderApiVersion(), ReaderApiProperties::VERSION) != 0) {
+    if (compareVersions(cardExtension->getReaderApiVersion(), ReaderApiProperties_VERSION) != 0) {
         mLogger->warn("The version of Service API used by the provided card extension (%) " \
                       "mismatches the version used by the service (%)\n",
                       cardExtension->getReaderApiVersion(),
-                      ReaderApiProperties::VERSION);
+                      ReaderApiProperties_VERSION);
     }
 }
 
@@ -296,8 +296,8 @@ std::shared_ptr<AbstractPluginAdapter> SmartCardServiceAdapter::createLocalPlugi
     }
 
     std::shared_ptr<AbstractPluginAdapter> plugin = nullptr;
-    
-    
+
+
     auto observable = std::dynamic_pointer_cast<ObservablePluginSpi>(pluginSpi);
     if (observable) {
         plugin = std::make_shared<ObservableLocalPluginAdapter>(observable);
@@ -309,7 +309,7 @@ std::shared_ptr<AbstractPluginAdapter> SmartCardServiceAdapter::createLocalPlugi
             plugin = std::make_shared<LocalPluginAdapter>(pluginSpi);
         }
     }
-    
+
     return plugin;
 }
 
