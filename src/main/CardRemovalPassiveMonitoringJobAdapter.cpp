@@ -102,7 +102,11 @@ std::shared_ptr<Job> CardRemovalPassiveMonitoringJobAdapter::getMonitoringJob(
 
 void CardRemovalPassiveMonitoringJobAdapter::stop()
 {
-    mReaderSpi->stopWaitForCardRemoval();
+    if (mReaderSpi != nullptr) {
+        mReaderSpi->stopWaitForCardRemoval();
+    } else {
+        mReaderProcessingSpi->stopWaitForCardRemovalDuringProcessing();
+    }
 }
 
 
