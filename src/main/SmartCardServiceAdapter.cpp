@@ -94,6 +94,7 @@ int SmartCardServiceAdapter::compareVersions(const std::string& providedVersion,
 
         /* Replaced NumberFormatException by std::invalid_argument */
         } catch (const std::invalid_argument& e) {
+            (void)e;
             throw IllegalStateException("Bad version numbers: provided = " +
                                         providedVersion +
                                         ", local = " +

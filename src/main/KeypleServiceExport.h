@@ -13,7 +13,7 @@
 #pragma once
 
 #if defined(WIN32)
-#if defined(KEYPLESERVICE_API)
+#if defined(KEYPLESERVICE_EXPORT)
 #define KEYPLESERVICE_API __declspec(dllexport)
 #else
 #define KEYPLESERVICE_API __declspec(dllimport)

@@ -77,7 +77,7 @@ public:
      *
      * @since 2.0.0
      */
-    void releaseReader(std::shared_ptr<Reader> reader) final;
+    void releaseReader(const std::shared_ptr<Reader> reader) final;
 
 private:
     /**

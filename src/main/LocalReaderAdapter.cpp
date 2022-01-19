@@ -174,7 +174,7 @@ std::shared_ptr<ApduResponseAdapter> LocalReaderAdapter::processExplicitAidSelec
                                       cardSelector->getFileOccurrence(),
                                       cardSelector->getFileControlInformation());
     selectApplicationCommand[4] = static_cast<uint8_t>(aid.size()); /* Lc */
-    System::arraycopy(aid, 0, selectApplicationCommand, 5, aid.size()); /* Data */
+    System::arraycopy(aid, 0, selectApplicationCommand, 5, static_cast<int>(aid.size()));
     selectApplicationCommand[5 + aid.size()] = 0x00; /* Le */
 
     auto apduRequest = std::make_shared<ApduRequestAdapter>(selectApplicationCommand);
@@ -325,8 +325,8 @@ std::shared_ptr<CardSelectionResponseApi> LocalReaderAdapter::processCardSelecti
 
 std::shared_ptr<ApduResponseAdapter> LocalReaderAdapter::case4HackGetResponse()
 {
-    long timeStamp = System::nanoTime();
-    long elapsed10ms = (timeStamp - mBefore) / 100000;
+    uint64_t timeStamp = System::nanoTime();
+    uint64_t elapsed10ms = (timeStamp - mBefore) / 100000;
     mBefore = timeStamp;
 
     mLogger->debug("[%] case4HackGetResponse => ApduRequest: NAME = \"Internal Get Response\", " \
@@ -358,8 +358,8 @@ std::shared_ptr<ApduResponseAdapter> LocalReaderAdapter::processApduRequest(
 {
     std::shared_ptr<ApduResponseAdapter> apduResponse = nullptr;
 
-    long timeStamp = System::nanoTime();
-    long elapsed10ms = (timeStamp - mBefore) / 100000;
+    uint64_t timeStamp = System::nanoTime();
+    uint64_t elapsed10ms = (timeStamp - mBefore) / 100000;
     mBefore = timeStamp;
 
     mLogger->debug("[%] processApduRequest => %, elapsed % ms\n",

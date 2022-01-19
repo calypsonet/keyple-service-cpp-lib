@@ -42,6 +42,7 @@ void CardInsertionPassiveMonitoringJobAdapter::CardInsertionPassiveMonitoringJob
                 mMonitoringState->onEvent(InternalEvent::CARD_INSERTED);
                 break;
             } catch (const ReaderIOException& e) {
+                (void)e;
                 /* Just warn as it can be a disconnection of the reader */
                 mParent->mLogger->warn("[%] waitForCardPresent => Error while processing card " \
                                        "insertion event\n",

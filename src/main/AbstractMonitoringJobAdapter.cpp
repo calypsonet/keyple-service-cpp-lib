@@ -16,8 +16,6 @@ namespace keyple {
 namespace core {
 namespace service {
 
-using namespace keyple::core::service;
-
 AbstractMonitoringJobAdapter::AbstractMonitoringJobAdapter(ObservableLocalReaderAdapter* reader)
 : mReader(reader) {}
 

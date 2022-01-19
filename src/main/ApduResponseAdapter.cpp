@@ -33,7 +33,7 @@ const std::vector<uint8_t>& ApduResponseAdapter::getApdu() const
 
 const std::vector<uint8_t> ApduResponseAdapter::getDataOut() const
 {
-	return Arrays::copyOfRange(mApdu, 0, mApdu.size() - 2);
+	return Arrays::copyOfRange(mApdu, 0, static_cast<int>(mApdu.size()) - 2);
 }
 
 int ApduResponseAdapter::getStatusWord() const

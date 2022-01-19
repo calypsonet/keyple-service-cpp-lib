@@ -126,7 +126,7 @@ public:
      */
     int countObservers() const
     {
-        return mObservers.size();
+        return static_cast<int>(mObservers.size());
     }
 
     /**

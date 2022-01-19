@@ -20,6 +20,7 @@
 #include "CardSelectionManager.h"
 
 /* Keyple Core Service */
+#include "KeypleServiceExport.h"
 #include "Plugin.h"
 
 /* Keyple Core Commons */
@@ -38,7 +39,7 @@ using namespace keyple::core::common;
  *
  * @since 2.0.0
  */
-class SmartCardService {
+class KEYPLESERVICE_API SmartCardService {
 public:
     /**
      * 

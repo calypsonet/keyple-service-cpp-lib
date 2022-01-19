@@ -12,7 +12,6 @@
 
 #include "CardSelectionScenarioAdapter.h"
 
-
 /* Calypsonet Terminal Card */
 #include "CardSelectionRequestSpi.h"
 
@@ -60,10 +59,10 @@ std::ostream& operator<<(std::ostream& os,
     (void)sa;
 
     os << "CARD_SELECTION_SCENARIO : {"
-        << "<TODO> CardSelectionRequest, "
-        << "<TODO> MultiSelectionProcessing, "
-        << "<TODO> ChannelControl"
-        << "}";
+       << "<TODO> CardSelectionRequest, "
+       << "<TODO> MultiSelectionProcessing, "
+       << "<TODO> ChannelControl"
+       << "}";
 
     return os;
 }

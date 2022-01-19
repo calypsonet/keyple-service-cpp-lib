@@ -71,6 +71,7 @@ void CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob::
                 /* Wait a bit */
                 Thread::sleep(mParent->mCycleDurationMillis);
             } catch (const InterruptedException& ignored) {
+                (void)ignored;
                 /* Restore interrupted state... */
                 interrupt();
                 mParent->mLoop = false;

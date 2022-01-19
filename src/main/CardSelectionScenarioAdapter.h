@@ -47,7 +47,7 @@ using namespace calypsonet::terminal::card::spi;
  *
  * @since 2.0.0
  */
-class CardSelectionScenarioAdapter final {
+class KEYPLESERVICE_API CardSelectionScenarioAdapter final {
 public:
 
     /**

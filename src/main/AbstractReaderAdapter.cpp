@@ -54,8 +54,8 @@ const std::vector<std::shared_ptr<CardSelectionResponseApi>>
 
     std::vector<std::shared_ptr<CardSelectionResponseApi>> cardSelectionResponses;
 
-    long timeStamp = System::nanoTime();
-    long elapsed10ms = (timeStamp - mBefore) / 100000;
+    uint64_t timeStamp = System::nanoTime();
+    uint64_t elapsed10ms = (timeStamp - mBefore) / 100000;
     mBefore = timeStamp;
 
     mLogger->debug("[%] transmit => %, elapsed % ms\n",
@@ -131,22 +131,23 @@ const std::shared_ptr<CardResponseApi> AbstractReaderAdapter::transmitCardReques
 
     std::shared_ptr<CardResponseApi> cardResponse = nullptr;
 
-    long timeStamp = System::nanoTime();
-    long elapsed10ms = (timeStamp - mBefore) / 100000;
+    uint64_t timeStamp = System::nanoTime();
+    uint64_t elapsed10ms = (timeStamp - mBefore) / 100000;
     mBefore = timeStamp;
 
-    mLogger->debug("[%] transmit => %, elapsed % ms\n", getName(), cardRequest, elapsed10ms / 10.0);
+    mLogger->debug("[%] transmit => %, elapsed % ms\n", getName(), cardRequest, elapsed10ms/10.0);
 
     try {
         cardResponse = processCardRequest(cardRequest, channelControl);
     } catch (const Exception& e) {
+        (void)e;
     }
 
     timeStamp = System::nanoTime();
     elapsed10ms = (timeStamp - mBefore) / 100000;
     mBefore = timeStamp;
 
-    mLogger->debug("[%] receive => %, elapsed % ms\n", getName(), cardResponse, elapsed10ms / 10.0);
+    mLogger->debug("[%] receive => %, elapsed % ms\n", getName(), cardResponse, elapsed10ms/10.0);
 
     return cardResponse;
 }

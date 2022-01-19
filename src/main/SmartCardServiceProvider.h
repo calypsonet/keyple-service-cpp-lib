@@ -14,6 +14,9 @@
 
 #include "SmartCardService.h"
 
+ /* Keyple Core Service */
+#include "KeypleServiceExport.h"
+
 namespace keyple {
 namespace core {
 namespace service {
@@ -23,7 +26,7 @@ namespace service {
  *
  * @since 2.0.0
  */
-class SmartCardServiceProvider final {
+class KEYPLESERVICE_API SmartCardServiceProvider final {
 public:
     /**
      * Gets the unique instance of SmartCardService.

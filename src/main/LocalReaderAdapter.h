@@ -182,7 +182,7 @@ private:
     /**
      *
      */
-    long mBefore;
+    uint64_t mBefore;
 
     /**
      *

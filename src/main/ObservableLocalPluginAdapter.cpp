@@ -243,6 +243,7 @@ void ObservableLocalPluginAdapter::EventThread::execute()
             Thread::sleep(mMonitoringCycleDuration);
         }
     } catch (const InterruptedException& e) {
+        (void)e;
         mParent->mLogger->info("[%] The observation of this plugin is stopped, possibly because " \
                                "there is no more registered observer\n",
                                mPluginName);

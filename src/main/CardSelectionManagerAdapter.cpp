@@ -64,7 +64,7 @@ int CardSelectionManagerAdapter::prepareSelection(
     mCardSelectionRequests.push_back(selectionRequest);
 
     /* Return the selection index (starting at 0) */
-    return mCardSelections.size() - 1;
+    return static_cast<int>(mCardSelections.size()) - 1;
 }
 
 void CardSelectionManagerAdapter::prepareReleaseChannel()

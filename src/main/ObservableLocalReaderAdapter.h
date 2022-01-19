@@ -47,7 +47,6 @@ using namespace calypsonet::terminal::reader;
 using namespace calypsonet::terminal::reader::spi;
 using namespace keyple::core::plugin;
 using namespace keyple::core::plugin::spi::reader::observable;
-using namespace keyple::core::service;
 using namespace keyple::core::util::cpp;
 
 class AbstractObservableStateAdapter;
