@@ -140,13 +140,18 @@ const std::shared_ptr<CardResponseApi> AbstractReaderAdapter::transmitCardReques
     try {
         cardResponse = processCardRequest(cardRequest, channelControl);
     } catch (const Exception& e) {
-        (void)e;
+        /* Finally block in Java */
+        timeStamp = System::nanoTime();
+        elapsed10ms = (timeStamp - mBefore) / 100000;
+        mBefore = timeStamp;
+        mLogger->debug("[%] receive => %, elapsed % ms\n", getName(), cardResponse, elapsed10ms/10.0);
+        throw;
     }
 
+    /* Finally block in Java */
     timeStamp = System::nanoTime();
     elapsed10ms = (timeStamp - mBefore) / 100000;
     mBefore = timeStamp;
-
     mLogger->debug("[%] receive => %, elapsed % ms\n", getName(), cardResponse, elapsed10ms/10.0);
 
     return cardResponse;

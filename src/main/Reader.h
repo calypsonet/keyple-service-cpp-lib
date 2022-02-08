@@ -38,12 +38,12 @@ using namespace keyple::core::common;
 class Reader : virtual public CardReader {
 public:
     /**
-     * 
+     *
      */
     virtual ~Reader() = default;
-    
+
     /**
-     * Returns the {@link KeypleReaderExtension} that is reader-specific.
+     * Returns the KeypleReaderExtension that is reader-specific.
      *
      * <p>Note: the provided argument is used at compile time to check the type consistency.
      *

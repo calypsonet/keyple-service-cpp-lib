@@ -64,8 +64,6 @@ public:
 
     ReaderAdapterTestUtils();
     void reset();
-
-private:
     std::shared_ptr<ConfigurableReaderSpiMock> getReaderSpi();
     std::shared_ptr<ConfigurableReaderSpiMock> getReaderSpiSpy();
     std::shared_ptr<ObservableControllableReaderSpiMock> getObservableReaderSpi();

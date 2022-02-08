@@ -15,24 +15,16 @@
 #include "gmock/gmock.h"
 #include "gtest/gtest.h"
 
-/* Keyple Core Common */
-#include "KeyplePluginExtension.h"
-
-/* Keyple Core Plugin */
-#include "PoolPluginSpi.h"
+/* Calypsonet Terminal Card */
+#include "ApduRequestSpi.h"
 
 using namespace testing;
 
-using namespace keyple::core::common;
+using namespace calypsonet::terminal::card::spi;
 
-class PoolPluginSpiMock final : public KeyplePluginExtension, public PoolPluginSpi {
+class ApduRequestSpiMock : public ApduRequestSpi {
 public:
-    MOCK_METHOD((const std::string&), getName, (), (const, override));
-    MOCK_METHOD((const std::vector<std::string>), getReaderGroupReferences, (), (const, override));
-    MOCK_METHOD(void, releaseReader, (std::shared_ptr<ReaderSpi> readerSpi), (override));
-    MOCK_METHOD(void, onUnregister, (), (override));
-    MOCK_METHOD((std::shared_ptr<ReaderSpi>),
-                allocateReader,
-                (const std::string& readerGroupReference),
-                (override));
+    MOCK_METHOD(const std::vector<uint8_t>&, getApdu, (), (const, override));
+    MOCK_METHOD(const std::vector<int>&, getSuccessfulStatusWords, (), (const, override));
+    MOCK_METHOD(const std::string&, getInfo, (), (const, override));
 };

@@ -78,8 +78,7 @@ static void setUp()
     EXPECT_CALL(*poolPluginSpi.get(), allocateReader(GROUP_2)).WillRepeatedly(Return(readerSpi2));
     EXPECT_CALL(*poolPluginSpi.get(), releaseReader(_)).WillRepeatedly(Return());
     EXPECT_CALL(*poolPluginSpi.get(), onUnregister()).WillRepeatedly(Return());
-    EXPECT_CALL(*poolPluginSpi.get(), getReaderGroupReferences())
-        .WillRepeatedly(ReturnRef(groupReference));
+    EXPECT_CALL(*poolPluginSpi.get(), getReaderGroupReferences()).WillRepeatedly(Return(groupReference));
 }
 
 static void tearDown()

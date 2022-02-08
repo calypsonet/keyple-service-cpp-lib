@@ -81,11 +81,10 @@ void CardInsertionActiveMonitoringJobAdapter::CardInsertionActiveMonitoringJob::
         mParent->mLogger->trace("[%] Looping has been stopped\n", mParent->mReader->getName());
 
     } catch (const RuntimeException& e) {
-        std::dynamic_pointer_cast<ObservableLocalReaderAdapter>(mParent->mReader)
+        dynamic_cast<ObservableLocalReaderAdapter*>(mParent->mReader)
             ->getObservationExceptionHandler()
             ->onReaderObservationError(
-                std::dynamic_pointer_cast<ObservableLocalReaderAdapter>(mParent->mReader)
-                    ->getPluginName(),
+                dynamic_cast<ObservableLocalReaderAdapter*>(mParent->mReader)->getPluginName(),
                 mParent->mReader->getName(),
                 std::make_shared<RuntimeException>(e));
     }

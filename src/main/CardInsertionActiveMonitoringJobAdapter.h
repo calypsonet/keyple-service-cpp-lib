@@ -65,7 +65,7 @@ public:
      * @return A not null reference.
      * @since 2.0.0
      */
-    virtual std::shared_ptr<Job> getMonitoringJob(
+    std::shared_ptr<Job> getMonitoringJob(
         const std::shared_ptr<AbstractObservableStateAdapter> monitoringState) override;
 
     /**
@@ -74,7 +74,7 @@ public:
      *
      * @since 2.0.0
      */
-    virtual void stop() override;
+    void stop() override;
 
 private:
     /**
@@ -96,7 +96,7 @@ private:
     /**
      *
      */
-    std::shared_ptr<Reader> mReader;
+    Reader* mReader;
 
     /**
      *
@@ -117,7 +117,7 @@ private:
 
         /**
          * Monitoring loop
-         * 
+         *
          * C++: this replaces run() override
          *
          * <p>Polls for the presence of a card and loops until no card responds. <br>

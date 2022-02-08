@@ -106,7 +106,7 @@ private:
 
         /**
          * Monitoring loop
-         * 
+         *
          * C++: this replaces run() override
          *
          * <p>Waits for the presence of a card until no card is present. <br>

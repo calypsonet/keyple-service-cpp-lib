@@ -67,7 +67,7 @@ LocalReaderAdapter::LocalReaderAdapter(std::shared_ptr<ReaderSpi> readerSpi,
                         pluginName),
   mReaderSpi(readerSpi),
   mBefore(0),
-  mLogicalChannelIsOpen(false),
+  mIsLogicalChannelOpen(false),
   mUseDefaultProtocol(false),
   mCurrentProtocol(""),
   mProtocolAssociations({}) {}
@@ -100,7 +100,7 @@ void LocalReaderAdapter::closeLogicalChannel()
         reader->closeLogicalChannel();
     }
 
-    mLogicalChannelIsOpen = false;
+    mIsLogicalChannelOpen = false;
 }
 
 uint8_t LocalReaderAdapter::computeSelectApplicationP2(
@@ -276,6 +276,7 @@ std::shared_ptr<LocalReaderAdapter::SelectionStatus> LocalReaderAdapter::process
 std::shared_ptr<CardSelectionResponseApi> LocalReaderAdapter::processCardSelectionRequest(
     std::shared_ptr<CardSelectionRequestSpi> cardSelectionRequest)
 {
+    mIsLogicalChannelOpen = false;
     std::shared_ptr<SelectionStatus> selectionStatus = nullptr;
 
     try {
@@ -306,7 +307,7 @@ std::shared_ptr<CardSelectionResponseApi> LocalReaderAdapter::processCardSelecti
                       std::vector<std::shared_ptr<ApduResponseApi>>({}), false));
     }
 
-    mLogicalChannelIsOpen = true;
+    mIsLogicalChannelOpen = true;
 
     std::shared_ptr<CardResponseAdapter> cardResponse = nullptr;
 
@@ -439,7 +440,7 @@ std::shared_ptr<CardResponseAdapter> LocalReaderAdapter::processCardRequest(
         }
     }
 
-    return std::make_shared<CardResponseAdapter>(apduResponses, mLogicalChannelIsOpen);
+    return std::make_shared<CardResponseAdapter>(apduResponses, mIsLogicalChannelOpen);
 }
 
 void LocalReaderAdapter::releaseChannel()
@@ -568,7 +569,7 @@ std::vector<std::shared_ptr<CardSelectionResponseApi>>
              */
             closeLogicalChannel();
         } else {
-            if (mLogicalChannelIsOpen) {
+            if (mIsLogicalChannelOpen) {
                 /* The logical channel being open, we stop here */
                 break; /* Exit for loop */
             }
@@ -588,11 +589,11 @@ void LocalReaderAdapter::doUnregister()
     try {
         mReaderSpi->onUnregister();
     } catch (const Exception& e) {
-        mLogger->error("Error during the unregistration of the extension of reader '%'\n", 
+        mLogger->error("Error during the unregistration of the extension of reader '%' (%)\n",
                        getName(),
                        e);
     }
-    
+
     AbstractReaderAdapter::doUnregister();
 }
 
@@ -609,14 +610,13 @@ void LocalReaderAdapter::closeLogicalAndPhysicalChannelsSilently()
     } catch (const ReaderIOException& e) {
         mLogger->error("[%] Exception occurred in releaseSeChannel. Message: %\n",
                        getName(),
-                       e.getMessage(),
-                       e);
+                       e.getMessage());
     }
 }
 
 bool LocalReaderAdapter::isLogicalChannelOpen() const
 {
-    return mLogicalChannelIsOpen;
+    return mIsLogicalChannelOpen;
 }
 
 std::shared_ptr<ReaderSpi> LocalReaderAdapter::getReaderSpi() const

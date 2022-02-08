@@ -187,7 +187,7 @@ private:
     /**
      *
      */
-    bool mLogicalChannelIsOpen;
+    bool mIsLogicalChannelOpen;
 
     /**
      *

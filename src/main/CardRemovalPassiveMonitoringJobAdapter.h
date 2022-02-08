@@ -102,7 +102,7 @@ private:
     std::shared_ptr<WaitForCardRemovalBlockingSpi> mReaderSpi;
 
     /**
-     * 
+     *
      */
     std::shared_ptr<WaitForCardRemovalDuringProcessingBlockingSpi> mReaderProcessingSpi;
 
