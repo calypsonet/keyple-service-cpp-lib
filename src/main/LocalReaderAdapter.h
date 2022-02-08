@@ -44,6 +44,12 @@ using FileOccurrence = CardSelectorSpi::FileOccurrence;
  * (package-private)<br>
  * Local reader adapter.
  *
+ * <ul>
+ *   <li>RL-CMD-USED.1
+ *   <li>RL-CLA-ACCEPTED.1
+ *   <li>RL-PERF-TIME.1
+ * </ul>
+ *
  * @since 2.0.0
  */
 class LocalReaderAdapter : public AbstractReaderAdapter {
