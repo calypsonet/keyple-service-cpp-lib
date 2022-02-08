@@ -28,10 +28,11 @@ CardSelectionResponseAdapter::CardSelectionResponseAdapter(
 
 const std::string& CardSelectionResponseAdapter::getPowerOnData() const
 {
+    /* RL-ATR-IDENTIFY.1 */
     return mPowerOnData;
 }
 
-const std::shared_ptr<ApduResponseApi> 
+const std::shared_ptr<ApduResponseApi>
     CardSelectionResponseAdapter::getSelectApplicationResponse() const
 {
     return mSelectApplicationResponse;
