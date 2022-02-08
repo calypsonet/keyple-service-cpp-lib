@@ -138,6 +138,7 @@ bool ObservableLocalReaderAdapter::isCardPresentPing()
 
 std::shared_ptr<ReaderEvent> ObservableLocalReaderAdapter::processCardInserted()
 {
+    /* RL-DET-INSNOTIF.1 */
     mLogger->trace("[%] process the inserted card\n", getName());
 
     if (mCardSelectionScenario == nullptr) {
@@ -248,6 +249,7 @@ bool ObservableLocalReaderAdapter::hasACardMatched(
 
 void ObservableLocalReaderAdapter::processCardRemoved()
 {
+    /* RL-DET-REMNOTIF.1 */
     closeLogicalAndPhysicalChannelsSilently();
     notifyObservers(std::make_shared<ReaderEventAdapter>(getPluginName(),
                                                          getName(),
@@ -366,6 +368,7 @@ void ObservableLocalReaderAdapter::clearObservers()
 
 void ObservableLocalReaderAdapter::startCardDetection(const DetectionMode detectionMode)
 {
+    /* RL-DET-REMCTRL.1 */
     checkStatus();
 
     mLogger->debug("The reader '%' of plugin '%' is starting the card detection with polling mode" \
@@ -380,6 +383,7 @@ void ObservableLocalReaderAdapter::startCardDetection(const DetectionMode detect
 
 void ObservableLocalReaderAdapter::stopCardDetection()
 {
+    /* RL-DET-REMCTRL.1 */
     mLogger->debug("The reader '%' of plugin '%' is stopping the card detection\n",
                    getName(),
                    getPluginName());

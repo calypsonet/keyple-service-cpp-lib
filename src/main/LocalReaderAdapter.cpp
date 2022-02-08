@@ -161,6 +161,9 @@ std::shared_ptr<ApduResponseAdapter> LocalReaderAdapter::processExplicitAidSelec
     /*
      * Build a get response command the actual length expected by the card in the get response
      * command is handled in transmitApdu
+     *
+     * RL-SEL-CLA.1
+     * RL-SEL-P2LC.1
      */
     std::vector<uint8_t> selectApplicationCommand(6 + aid.size());
     selectApplicationCommand[0] = 0x00; /* CLA */
@@ -230,6 +233,7 @@ bool LocalReaderAdapter::checkPowerOnData(const std::string& powerOnData,
 std::shared_ptr<LocalReaderAdapter::SelectionStatus> LocalReaderAdapter::processSelection(
     std::shared_ptr<CardSelectorSpi> cardSelector)
 {
+    /* RL-CLA-CHAAUTO.1 */
     std::string powerOnData = "";
     std::shared_ptr<ApduResponseAdapter> fciResponse = nullptr;
     bool hasMatched = true;
@@ -243,9 +247,12 @@ std::shared_ptr<LocalReaderAdapter::SelectionStatus> LocalReaderAdapter::process
     /* Check protocol if enabled */
     if (cardSelector->getCardProtocol() == "" ||
         cardSelector->getCardProtocol() == mCurrentProtocol) {
-        /* Protocol check succeeded, check power-on data if enabled */
+        /*
+         * Protocol check succeeded, check power-on data if enabled
+         * RL-ATR-FILTER
+         * RL-SEL-USAGE.1
+         */
         powerOnData = mReaderSpi->getPowerOnData();
-
         if (checkPowerOnData(powerOnData, cardSelector)) {
             /* No power-on data filter or power-on data check succeeded, select by AID if enabled */
             if (cardSelector->getAid().size() != 0) {
@@ -371,6 +378,7 @@ std::shared_ptr<ApduResponseAdapter> LocalReaderAdapter::processApduRequest(
     apduResponse = std::make_shared<ApduResponseAdapter>(
                        mReaderSpi->transmitApdu(apduRequest->getApdu()));
 
+    /* RL-SW-ANALYSIS.1 */
     if (ApduUtil::isCase4(apduRequest->getApdu()) &&
         apduResponse->getDataOut().size() == 0 &&
         apduResponse->getStatusWord() == DEFAULT_SUCCESSFUL_CODE) {
@@ -459,6 +467,7 @@ void LocalReaderAdapter::releaseChannel()
 
 void LocalReaderAdapter::deactivateReaderProtocol(const std::string& readerProtocol)
 {
+    /* RL-CL-PROTOCOL.1 */
     checkStatus();
     Assert::getInstance().notEmpty(readerProtocol, "readerProtocol");
 
@@ -475,6 +484,7 @@ void LocalReaderAdapter::deactivateReaderProtocol(const std::string& readerProto
 void LocalReaderAdapter::activateReaderProtocol(const std::string& readerProtocol,
                                                 const std::string& applicationProtocol)
 {
+    /* RL-CL-PROTOCOL.1 */
     checkStatus();
     Assert::getInstance().notEmpty(readerProtocol, "readerProtocol")
                          .notEmpty(applicationProtocol, "applicationProtocol");
@@ -491,6 +501,10 @@ void LocalReaderAdapter::activateReaderProtocol(const std::string& readerProtoco
 
 bool LocalReaderAdapter::isCardPresent()
 {
+    /*
+     * RL-DET-PCRQ.1
+     * RL-DET-PCAPDU.1
+     */
     checkStatus();
 
     try {
