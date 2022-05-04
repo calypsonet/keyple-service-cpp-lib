@@ -34,7 +34,7 @@ public:
      * @return A not null reference.
      * @since 2.0.0
      */
-    static SmartCardService& getService();
+    static std::shared_ptr<SmartCardService> getService();
 
 private:
     /**

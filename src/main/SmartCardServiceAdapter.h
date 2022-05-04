@@ -55,7 +55,7 @@ public:
      * @return single instance of SmartCardServiceAdapter
      * @since 2.0.0
      */
-    static SmartCardServiceAdapter& getInstance();
+    static std::shared_ptr<SmartCardServiceAdapter> getInstance();
 
     /**
      * {@inheritDoc}
@@ -100,7 +100,7 @@ public:
      *
      * @since 2.0.0
      */
-    void checkCardExtension(const std::shared_ptr<KeypleCardExtension> cardExtension) override final;
+    void checkCardExtension(const std::shared_ptr<KeypleCardExtension> cardExtension) const final;
 
     /**
      * {@inheritDoc}
@@ -225,6 +225,11 @@ private:
     /**
      *
      */
+    static std::shared_ptr<SmartCardServiceAdapter> mInstance;
+
+    /**
+     *
+     */
     // private final Object pluginMonitor = new Object();
 
     /**
@@ -257,7 +262,7 @@ private:
      * @return 0 if providedVersion equals localVersion, &lt; 0 if providedVersion &lt; localVersion,
      *     &gt; 0 if providedVersion &gt; localVersion.
      */
-    int compareVersions(const std::string& providedVersion, const std::string& localVersion);
+    int compareVersions(const std::string& providedVersion, const std::string& localVersion) const;
 
     /**
      * (private)<br>
@@ -319,7 +324,7 @@ private:
      *
      * @param cardExtension The card extension.
      */
-    void checkCardExtensionVersion(const std::shared_ptr<KeypleCardExtension> cardExtension);
+    void checkCardExtensionVersion(const std::shared_ptr<KeypleCardExtension> cardExtension) const;
 
     /**
      * (private)<br>

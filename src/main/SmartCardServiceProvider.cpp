@@ -21,7 +21,7 @@ namespace service {
 
 SmartCardServiceProvider::SmartCardServiceProvider() {}
 
-SmartCardService& SmartCardServiceProvider::getService()
+std::shared_ptr<SmartCardService> SmartCardServiceProvider::getService()
 {
         return SmartCardServiceAdapter::getInstance();
 }

@@ -54,15 +54,19 @@ using namespace keyple::core::plugin::spi;
 using namespace keyple::core::util;
 using namespace keyple::core::util::cpp::exception;
 
-SmartCardServiceAdapter& SmartCardServiceAdapter::getInstance()
-{
-    static SmartCardServiceAdapter instance;
+std::shared_ptr<SmartCardServiceAdapter> SmartCardServiceAdapter::mInstance;
 
-    return instance;
+std::shared_ptr<SmartCardServiceAdapter> SmartCardServiceAdapter::getInstance()
+{
+    if (mInstance == nullptr) {
+        mInstance = std::shared_ptr<SmartCardServiceAdapter>(new SmartCardServiceAdapter());
+    }
+
+    return mInstance;
 }
 
 int SmartCardServiceAdapter::compareVersions(const std::string& providedVersion,
-                                             const std::string& localVersion)
+                                             const std::string& localVersion) const
 {
     const std::regex re("[.]");
 
@@ -211,7 +215,7 @@ std::shared_ptr<Plugin> SmartCardServiceAdapter::getPlugin(const std::string& pl
 }
 
 void SmartCardServiceAdapter::checkCardExtension(
-    const std::shared_ptr<KeypleCardExtension> cardExtension)
+    const std::shared_ptr<KeypleCardExtension> cardExtension) const
 {
     checkCardExtensionVersion(cardExtension);
 }
@@ -244,7 +248,7 @@ void SmartCardServiceAdapter::checkPoolPluginVersion(
 }
 
 void SmartCardServiceAdapter::checkCardExtensionVersion(
-    const std::shared_ptr<KeypleCardExtension> cardExtension)
+    const std::shared_ptr<KeypleCardExtension> cardExtension) const
 {
     if (compareVersions(cardExtension->getCommonApiVersion(), CommonApiProperties_VERSION) != 0) {
         mLogger->warn("The version of Common API used by the provided card extension (%) " \

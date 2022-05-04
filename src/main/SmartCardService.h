@@ -42,10 +42,10 @@ using namespace keyple::core::common;
 class KEYPLESERVICE_API SmartCardService {
 public:
     /**
-     * 
+     *
      */
     virtual ~SmartCardService() = default;
-    
+
     /**
      * Registers a new plugin to the service.
      *
@@ -99,7 +99,8 @@ public:
      * @param cardExtension A not null {@link KeypleCardExtension} reference object
      * @since 2.0.0
      */
-    virtual void checkCardExtension(const std::shared_ptr<KeypleCardExtension> cardExtension) = 0;
+    virtual void checkCardExtension(const std::shared_ptr<KeypleCardExtension> cardExtension) const
+        = 0;
 
     /**
      * Registers a new distributed local service to the service.

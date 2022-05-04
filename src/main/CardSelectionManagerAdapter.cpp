@@ -47,13 +47,13 @@ CardSelectionManagerAdapter::CardSelectionManagerAdapter()
 : mMultiSelectionProcessing(MultiSelectionProcessing::FIRST_MATCH),
   mChannelControl(ChannelControl::KEEP_OPEN) {}
 
-void CardSelectionManagerAdapter::setMultipleSelectionMode() 
+void CardSelectionManagerAdapter::setMultipleSelectionMode()
 {
     mMultiSelectionProcessing = MultiSelectionProcessing::PROCESS_ALL;
 }
 
 int CardSelectionManagerAdapter::prepareSelection(
-    const std::shared_ptr<CardSelection> cardSelection) 
+    const std::shared_ptr<CardSelection> cardSelection)
 {
     Assert::getInstance().notNull(cardSelection, "cardSelection");
 
@@ -72,7 +72,7 @@ void CardSelectionManagerAdapter::prepareReleaseChannel()
     mChannelControl = ChannelControl::CLOSE_AFTER;
 }
 
-const std::shared_ptr<CardSelectionResult> 
+const std::shared_ptr<CardSelectionResult>
     CardSelectionManagerAdapter::processCardSelectionScenario(std::shared_ptr<CardReader> reader)
 {
         Assert::getInstance().notNull(reader, "reader");
@@ -83,14 +83,14 @@ const std::shared_ptr<CardSelectionResult>
         try {
             cardSelectionResponses =
                 std::dynamic_pointer_cast<AbstractReaderAdapter>(reader)
-                    ->transmitCardSelectionRequests(mCardSelectionRequests, 
+                    ->transmitCardSelectionRequests(mCardSelectionRequests,
                                                     mMultiSelectionProcessing,
                                                     mChannelControl);
         } catch (const ReaderBrokenCommunicationException& e) {
             throw ReaderCommunicationException(
                 e.getMessage(), std::make_shared<ReaderBrokenCommunicationException>(e));
         } catch (const CardBrokenCommunicationException& e) {
-            throw CardCommunicationException(e.getMessage(), 
+            throw CardCommunicationException(e.getMessage(),
                                              std::make_shared<CardBrokenCommunicationException>(e));
         }
 
@@ -110,18 +110,18 @@ const std::shared_ptr<CardSelectionResult>
     Assert::getInstance().notNull(observableCardReader, "observableCardReader");
 
     auto cardSelectionScenario =
-        std::make_shared<CardSelectionScenarioAdapter>(mCardSelectionRequests, 
-                                                        mMultiSelectionProcessing, 
+        std::make_shared<CardSelectionScenarioAdapter>(mCardSelectionRequests,
+                                                        mMultiSelectionProcessing,
                                                         mChannelControl);
-    
+
     auto local = std::dynamic_pointer_cast<ObservableLocalReaderAdapter>(observableCardReader);
 //        auto remote =std::dynamic_pointer_cast<ObservableRemoteReaderAdapter>(observableCardReader);
     if (local) {
-        local->scheduleCardSelectionScenario(cardSelectionScenario, 
-                                                notificationMode, 
+        local->scheduleCardSelectionScenario(cardSelectionScenario,
+                                                notificationMode,
                                                 detectionMode);
 //        } else if (remote) {
-//            remote->scheduleCardSelectionScenario(cardSelectionScenario, 
+//            remote->scheduleCardSelectionScenario(cardSelectionScenario,
 //                                                  notificationMode,
 //                                                  detectionMode);
     } else {
@@ -129,13 +129,13 @@ const std::shared_ptr<CardSelectionResult>
     }
 }
 
-const std::shared_ptr<CardSelectionResult> 
+const std::shared_ptr<CardSelectionResult>
     CardSelectionManagerAdapter::parseScheduledCardSelectionsResponse(
-        const std::shared_ptr<ScheduledCardSelectionsResponse> scheduledCardSelectionsResponse) 
+        const std::shared_ptr<ScheduledCardSelectionsResponse> scheduledCardSelectionsResponse)
             const
 {
 
-    Assert::getInstance().notNull(scheduledCardSelectionsResponse, 
+    Assert::getInstance().notNull(scheduledCardSelectionsResponse,
                                   "scheduledCardSelectionsResponse");
 
     return processCardSelectionResponses(
@@ -143,7 +143,7 @@ const std::shared_ptr<CardSelectionResult>
             ->getCardSelectionResponses());
 }
 
-const std::shared_ptr<CardSelectionResult> 
+const std::shared_ptr<CardSelectionResult>
     CardSelectionManagerAdapter::processCardSelectionResponses(
         const std::vector<std::shared_ptr<CardSelectionResponseApi>>& cardSelectionResponses) const
 {
@@ -159,18 +159,17 @@ const std::shared_ptr<CardSelectionResult>
             /* Invoke the parse method defined by the card extension to retrieve the smart card */
             std::shared_ptr<SmartCard> smartCard = nullptr;
             try {
-                smartCard = 
-                    std::reinterpret_pointer_cast<SmartCard>(
-                        mCardSelections[index]->parse(cardSelectionResponse));
+                smartCard = std::dynamic_pointer_cast<SmartCard>(
+                                mCardSelections[index]->parse(cardSelectionResponse));
             } catch (const ParseException& e) {
                 throw InvalidCardResponseException(
                           "Error occurred while parsing the card response: " + e.getMessage(),
                           std::make_shared<ParseException>(e));
             }
-            
+
             cardSelectionsResult->addSmartCard(index, smartCard);
         }
-    
+
         index++;
     }
 

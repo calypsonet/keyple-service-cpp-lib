@@ -144,7 +144,9 @@ const std::shared_ptr<CardResponseApi> AbstractReaderAdapter::transmitCardReques
         timeStamp = System::nanoTime();
         elapsed10ms = (timeStamp - mBefore) / 100000;
         mBefore = timeStamp;
-        mLogger->debug("[%] receive => %, elapsed % ms\n", getName(), cardResponse, elapsed10ms/10.0);
+        mLogger->debug("[%] receive => %, elapsed % ms\n", getName(),
+                       cardResponse,
+                       elapsed10ms / 10.0);
         throw;
     }
 
